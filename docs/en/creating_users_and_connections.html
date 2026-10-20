@@ -252,6 +252,30 @@ it in a new <strong>Connection Outer Tab</strong> as we can see in the next ch
 Right-clicking a row opens a context menu (<em>Connect</em>/<em>Edit</em>/<em>Delete</em> —
 <em>Delete</em> is omitted for a connection that is already open), and right-clicking empty space
 in the list offers <em>New Connection</em>/<em>Refresh</em>.</p>
+<h4>Using AWS IAM authentication</h4>
+<p>For Amazon RDS and Aurora (PostgreSQL, MySQL, MariaDB), tick <em>Use AWS IAM authentication</em>
+in the connection's form. Instead of a password, OmniDB then signs a short-lived token (valid for 15
+minutes) with your AWS credentials for every new connection, the same way
+<code>aws rds generate-db-auth-token</code> does. The password field is disabled.</p>
+<ul>
+<li><em>Credentials</em>: <em>AWS profile</em> uses your AWS configuration
+(<code>~/.aws/config</code> and <code>~/.aws/credentials</code>, including SSO and assume-role
+profiles — run <code>aws sso login</code> first for SSO); leave <em>Profile</em> blank for the
+default one. <em>Access key stored in OmniDB</em> stores an access key ID and secret access key with
+the connection instead, the secret encrypted like a password.</li>
+<li><em>Region</em>: optional for an <code>*.rds.amazonaws.com</code> endpoint, whose name already
+contains it; otherwise the profile's region is used.</li>
+</ul>
+<p>The database user has to allow IAM logins (<code>GRANT rds_iam TO user</code> on PostgreSQL,
+<code>IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS'</code> on MySQL/MariaDB), and your AWS identity
+needs the <code>rds-db:connect</code> permission for it. The connection is always encrypted: a
+PostgreSQL connection string with <code>sslmode=disable</code> is refused, and the server certificate
+is verified only if you ask for it (<code>sslmode=verify-full</code> with
+<code>sslrootcert</code> pointing at the RDS CA bundle). In the
+sandboxed macOS app, profile credentials need a one-time <em>Allow access to ~/.aws…</em> in the
+form — see <a href="desktop_app.html">Desktop App</a>. On a multi-user OmniDB server, profile
+credentials mean the server's own AWS identity and are limited to superusers; everyone can use a
+stored access key.</p>
 <h4>Using SSH tunnels</h4>
 <p>OmniDB allows the user to connect to any remote database through SSH tunnels. Tick <em>Use SSH
 tunnel</em> in the connection's own form — that enables the fields below it:</p>

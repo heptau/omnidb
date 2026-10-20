@@ -48,7 +48,12 @@ CREATE TABLE IF NOT EXISTS "OmniDB_app_connection" (
 	"technology_id" integer NOT NULL REFERENCES "OmniDB_app_technology" ("id") DEFERRABLE INITIALLY DEFERRED,
 	"username" varchar(200) NOT NULL,
 	"public" bool NOT NULL,
-	"environment" varchar(20) NOT NULL DEFAULT ''
+	"environment" varchar(20) NOT NULL DEFAULT '',
+	"auth_method" varchar(20) NOT NULL DEFAULT '',
+	"aws_region" varchar(50) NOT NULL DEFAULT '',
+	"aws_profile" varchar(200) NOT NULL DEFAULT '',
+	"aws_access_key_id" varchar(200) NOT NULL DEFAULT '',
+	"aws_secret_access_key" text NOT NULL DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS "OmniDB_app_connection_user_id_423a02be" ON "OmniDB_app_connection" ("user_id");
 CREATE INDEX IF NOT EXISTS "OmniDB_app_connection_technology_id_65db623e" ON "OmniDB_app_connection" ("technology_id");

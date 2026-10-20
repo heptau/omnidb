@@ -1234,6 +1234,14 @@
       document.getElementById("modal_password")
     ).hide();
   }
+  function usesAWSIAM(p_database_index) {
+    var v_connections = v_connTabControl && v_connTabControl.tag ? v_connTabControl.tag.connections : null;
+    if (!v_connections) return false;
+    for (var i2 = 0; i2 < v_connections.length; i2++) {
+      if (v_connections[i2].v_conn_id == p_database_index) return !!v_connections[i2].v_aws_iam;
+    }
+    return false;
+  }
   function resolvePgpassLookupInfo(p_database_index) {
     var v_connections = v_connTabControl && v_connTabControl.tag ? v_connTabControl.tag.connections : null;
     if (!v_connections) return null;
@@ -1261,6 +1269,11 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initPasswordModal);
   else setTimeout(initPasswordModal, 0);
   function showPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_message, p_send_tab_id = true) {
+    if (usesAWSIAM(p_database_index)) {
+      showError(p_message || t$1("passwords.aws_iam_failed"));
+      if (p_cancel_callback_function) p_cancel_callback_function();
+      return;
+    }
     v_modal_password_ok_clicked = false;
     v_modal_password_cancel_callback = p_cancel_callback_function;
     var v_content_div = (
@@ -37078,6 +37091,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       user: el("conn_form_user").value,
       password: el("conn_form_user_pass").value,
       temp_password: p_password,
+      auth_method: awsIAMAuthMethod(),
+      aws: awsIAMRequestData(),
       tunnel: {
         enabled: el("conn_form_use_tunnel").checked,
         server: el("conn_form_ssh_server").value,
@@ -37094,6 +37109,10 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         showAlert$1(p_return.v_data);
       },
       function(p_return) {
+        if (awsIAMAuthMethod()) {
+          showAlert$1(p_return.v_data);
+          return;
+        }
         showConfirm(
           "",
           function() {
@@ -37146,6 +37165,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       user: el("conn_form_user").value,
       password: el("conn_form_user_pass").value,
       title: el("conn_form_title").value,
+      auth_method: awsIAMAuthMethod(),
+      aws: awsIAMRequestData(),
       tunnel: {
         enabled: el("conn_form_use_tunnel").checked,
         server: el("conn_form_ssh_server").value,
@@ -37438,6 +37459,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     el("conn_form_ssh_password").value = "";
     el("conn_form_ssh_key").value = "";
     el("conn_form_public").checked = p_conn_obj.public;
+    var v_aws = p_conn_obj.aws || {};
+    el("conn_form_use_aws_iam").checked = p_conn_obj.auth_method === "aws_iam";
+    el("conn_form_aws_credentials").value = v_aws.access_key_id ? "access_key" : "profile";
+    el("conn_form_aws_region").value = v_aws.region || "";
+    el("conn_form_aws_profile").value = v_aws.profile || "";
+    el("conn_form_aws_access_key_id").value = v_aws.access_key_id || "";
+    el("conn_form_aws_secret_access_key").value = "";
+    setStoredSecretIcon("conn_form_aws_secret_access_key", !!v_aws.secret);
     let v_enable_list = [];
     let v_disable_list = [];
     if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
@@ -37540,6 +37569,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     }
     updateModalEditConnectionFields(v_disable_list, v_enable_list);
+    updateAWSIAMFields();
     showConnectionDetail(p_conn_obj, false);
   }
   function newConnection() {
@@ -37566,6 +37596,13 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     el("conn_form_ssh_key").value = "";
     el("conn_form_ssh_key_input").value = null;
     el("conn_form_ssh_key_input_label").textContent = t$1("connections.click_to_select");
+    el("conn_form_use_aws_iam").checked = false;
+    el("conn_form_aws_credentials").value = "profile";
+    el("conn_form_aws_region").value = "";
+    el("conn_form_aws_profile").value = "";
+    el("conn_form_aws_access_key_id").value = "";
+    el("conn_form_aws_secret_access_key").value = "";
+    setStoredSecretIcon("conn_form_aws_secret_access_key", false);
     el("conn_form_user_pass_check_icon")?.remove();
     el("conn_form_ssh_password_check_icon")?.remove();
     el("conn_form_ssh_key_check_icon")?.remove();
@@ -37739,6 +37776,111 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     }
     updateModalEditConnectionFields(v_disable_list, v_enable_list, v_form_cases);
+    updateAWSIAMFields();
+  }
+  const AWS_IAM_TECHNOLOGIES = ["postgresql", "mysql", "mariadb"];
+  function awsIAMAuthMethod() {
+    return AWS_IAM_TECHNOLOGIES.includes(el("conn_form_type").value) && el("conn_form_use_aws_iam").checked ? "aws_iam" : "";
+  }
+  function awsIAMRequestData() {
+    var v_access_key = el("conn_form_aws_credentials").value === "access_key";
+    return {
+      region: el("conn_form_aws_region").value.trim(),
+      profile: v_access_key ? "" : el("conn_form_aws_profile").value.trim(),
+      access_key_id: v_access_key ? el("conn_form_aws_access_key_id").value.trim() : "",
+      secret_access_key: v_access_key ? el("conn_form_aws_secret_access_key").value : ""
+    };
+  }
+  function setStoredSecretIcon(p_input_id, p_stored) {
+    var v_icon_id = p_input_id + "_check_icon";
+    if (!p_stored) {
+      el(v_icon_id)?.remove();
+    } else if (!el(v_icon_id)) {
+      el(p_input_id).previousElementSibling.insertAdjacentHTML(
+        "beforeend",
+        '<i id="' + v_icon_id + '" class="fas fa-check text-success ms-2"></i>'
+      );
+    }
+  }
+  function updateAWSIAMFields() {
+    var v_supported = AWS_IAM_TECHNOLOGIES.includes(el("conn_form_type").value);
+    el("conn_form_aws_card").style.display = v_supported ? "" : "none";
+    var v_on = v_supported && el("conn_form_use_aws_iam").checked;
+    var v_access_key = el("conn_form_aws_credentials").value === "access_key";
+    el("conn_form_aws_profile_row").style.display = v_access_key ? "none" : "";
+    el("conn_form_aws_key_row").style.display = v_access_key ? "" : "none";
+    for (const [v_id, v_enabled] of [
+      ["conn_form_aws_credentials", v_on],
+      ["conn_form_aws_region", v_on],
+      ["conn_form_aws_profile", v_on && !v_access_key],
+      ["conn_form_aws_access_key_id", v_on && v_access_key],
+      ["conn_form_aws_secret_access_key", v_on && v_access_key]
+    ]) {
+      if (v_enabled) el(v_id).removeAttribute("disabled");
+      else el(v_id).setAttribute("disabled", true);
+    }
+    if (v_on) {
+      var v_pass = el("conn_form_user_pass");
+      v_pass.value = "";
+      v_pass.setAttribute("disabled", true);
+      v_pass.setAttribute("readonly", true);
+      if (v_access_key && el("conn_form_aws_access_key_id").value.trim() === "") {
+        el("conn_form_button_test_connection").setAttribute("disabled", true);
+        el("conn_form_button_save_connection").setAttribute("disabled", true);
+      }
+    }
+    refreshAWSConfigGrantRow(v_on && !v_access_key);
+  }
+  var v_aws_config_status = null;
+  var v_aws_config_status_pending = false;
+  function refreshAWSConfigGrantRow(p_relevant) {
+    var v_row = el("conn_form_aws_grant_row");
+    if (!p_relevant || !gv_desktopMode) {
+      v_row.style.display = "none";
+      return;
+    }
+    if (v_aws_config_status === null) {
+      v_row.style.display = "none";
+      if (v_aws_config_status_pending) return;
+      v_aws_config_status_pending = true;
+      fetch("/aws_config_status/", { method: "POST", headers: jsonPostHeaders(), body: "{}" }).then(function(p_response) {
+        return p_response.json();
+      }).then(function(p_result) {
+        if (!p_result.error) v_aws_config_status = p_result;
+      }).catch(function() {
+      }).finally(function() {
+        v_aws_config_status_pending = false;
+        if (v_aws_config_status) updateAWSIAMFields();
+      });
+      return;
+    }
+    if (!v_aws_config_status.needed && !v_aws_config_status.granted) {
+      v_row.style.display = "none";
+      return;
+    }
+    v_row.style.display = "";
+    if (v_aws_config_status.needed) {
+      el("conn_form_aws_grant_text").textContent = t$1("connections.aws_grant_needed");
+      el("conn_form_aws_grant_button").textContent = t$1("connections.aws_grant_button");
+    } else {
+      el("conn_form_aws_grant_text").textContent = t$1("connections.aws_granted", { path: v_aws_config_status.path });
+      el("conn_form_aws_grant_button").textContent = t$1("connections.aws_grant_change");
+    }
+  }
+  function grantAWSConfigAccess() {
+    fetch("/aws_config_grant/", { method: "POST", headers: jsonPostHeaders(), body: "{}" }).then(function(p_response) {
+      return p_response.json();
+    }).then(function(p_result) {
+      if (p_result.cancelled) return;
+      if (p_result.error) {
+        showAlert$1(p_result.error);
+        return;
+      }
+      v_aws_config_status = { needed: false, granted: true, path: p_result.path };
+      updateAWSIAMFields();
+    }).catch(function(p_err) {
+      showAlert$1(t$1("connections.aws_grant_unreachable", { error: p_err }));
+    });
   }
   function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
     for (let i2 = 0; i2 < p_disable_list.length; i2++) {
@@ -37847,6 +37989,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     deleteSelectedConnection,
     editConnection,
     getGroups,
+    grantAWSConfigAccess,
     groupChange,
     handlePgpassImportFileChosen,
     importConnectionsFromPgpass,
@@ -37863,6 +38006,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     startConnectionManagement,
     testConnection,
     toggleConnectionsPublic,
+    updateAWSIAMFields,
     updateConnectionKey,
     updateConnectionsTitleInfo,
     updateModalEditConnectionFields,
@@ -42614,10 +42758,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     "conn_form_use_tunnel",
     "conn_form_ssh_server",
     "conn_form_ssh_port",
-    "conn_form_ssh_user"
+    "conn_form_ssh_user",
+    "conn_form_use_aws_iam",
+    "conn_form_aws_access_key_id"
   ]) {
     bind(id, "input", updateModalEditConnectionState);
   }
+  bind("conn_form_aws_credentials", "change", () => updateAWSIAMFields());
+  bind("conn_form_aws_grant_button", "click", () => grantAWSConfigAccess());
   bind("conn_form_ssh_password", "input", updateConnectionKey);
   bind("conn_form_ssh_key_input", "change", updateConnectionKey);
   bind("conn_form_button_connect", "click", () => connectSelectedConnection());

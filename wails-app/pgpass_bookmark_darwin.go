@@ -51,6 +51,37 @@ func pickPgpassFile(ctx context.Context) (path string, bookmark []byte, cancelle
 	return C.GoString(outPath), C.GoBytes(unsafe.Pointer(outBookmark), outBookmarkLen), false, nil
 }
 
+// pickAWSConfigDir is pickPgpassFile's counterpart for the AWS IAM ~/.aws
+// folder grant (see awsiam.go): a folder picker opening in the user's real
+// ~/.aws, with a security-scoped bookmark for the pick.
+func pickAWSConfigDir(ctx context.Context) (path string, bookmark []byte, cancelled bool, err error) {
+	title := C.CString("Select your .aws folder")
+	defer C.free(unsafe.Pointer(title))
+	startDir := C.CString(".aws")
+	defer C.free(unsafe.Pointer(startDir))
+
+	var outPath *C.char
+	var outBookmark *C.uchar
+	var outBookmarkLen C.int
+	var outCancelled C.int
+	var outErr *C.char
+
+	ok := C.omnidb_pick_and_bookmark(title, nil, 1, startDir, &outPath, &outBookmark, &outBookmarkLen, &outCancelled, &outErr)
+	if outCancelled != 0 {
+		return "", nil, true, nil
+	}
+	if ok == 0 {
+		defer C.free(unsafe.Pointer(outErr))
+		return "", nil, false, errors.New(C.GoString(outErr))
+	}
+	defer C.free(unsafe.Pointer(outPath))
+	if outBookmark == nil {
+		return C.GoString(outPath), nil, false, nil
+	}
+	defer C.free(unsafe.Pointer(outBookmark))
+	return C.GoString(outPath), C.GoBytes(unsafe.Pointer(outBookmark), outBookmarkLen), false, nil
+}
+
 // resolvedBookmark is what resolveSecurityScopedBookmark hands back — Stop
 // must be called (typically deferred) once the caller is done reading the
 // file, to release the sandbox extension it granted. Path is only valid

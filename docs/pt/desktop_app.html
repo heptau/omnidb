@@ -187,7 +187,7 @@ o diálogo nativo <em>Guardar como</em>, pelo que escolhe diretamente para onde
 <a href="writing_sql_queries.html">Escrever Consultas SQL</a>.</p>
 <h4>macOS: sandbox, dados anteriores e <code>.pgpass</code></h4>
 <p>A aplicação macOS é executada na App Sandbox, que lhe dá a sua própria pasta pessoal privada. Daí resultam
-duas consequências:</p>
+três consequências:</p>
 <ul>
 <li><strong>Os dados de uma instalação anterior sem sandbox</strong> em <code>~/.omnidb</code> não ficam
 visíveis automaticamente. No primeiro arranque sem quaisquer dados, o OmniDB propõe importá-los — escolha
@@ -200,6 +200,11 @@ e o OmniDB memoriza a permissão, pelo que todas as ligações PostgreSQL seg
 tal como o <code>psql</code> faria. <em>Importar ligações de .pgpass…</em> na
 secção Ligações concede o mesmo acesso. Consulte
 <a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>.</li>
+<li><strong><code>~/.aws</code></strong> também não pode ser lido até o autorizar. Uma ligação com
+autenticação AWS IAM através de um perfil da AWS mostra no seu formulário <em>Permitir acesso a
+~/.aws…</em>: selecione uma vez a sua pasta <code>.aws</code> (o diálogo abre-se nela) e o OmniDB
+memoriza a autorização, lendo a mesma configuração, credenciais e cache de tokens SSO que a AWS CLI. Só o
+token de base de dados assinado sai do processo da aplicação, nunca as suas credenciais AWS.</li>
 </ul>
 		</main>
 	</div>

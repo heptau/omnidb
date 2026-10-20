@@ -265,6 +265,30 @@
 		derecho en una fila se abre un menú contextual (<em>Connect</em>/<em>Edit</em>/<em>Delete</em>;
 		<em>Delete</em> no aparece en una conexión ya abierta), y al hacerlo sobre un espacio vacío de la
 		lista se ofrece <em>New Connection</em>/<em>Refresh</em>.</p>
+		<h4>Usar la autenticación AWS IAM</h4>
+		<p>Para Amazon RDS y Aurora (PostgreSQL, MySQL, MariaDB), marque <em>Usar autenticación AWS IAM</em>
+		en el formulario de la conexión. En lugar de una contraseña, OmniDB firma entonces con sus credenciales
+		de AWS un token de corta duración (válido 15 minutos) para cada nueva conexión, igual que
+		<code>aws rds generate-db-auth-token</code>. El campo de contraseña queda desactivado.</p>
+		<ul>
+		<li><em>Credenciales</em>: <em>Perfil de AWS</em> usa su configuración de AWS
+		(<code>~/.aws/config</code> y <code>~/.aws/credentials</code>, incluidos perfiles SSO y assume-role —
+		para SSO ejecute antes <code>aws sso login</code>); deje <em>Perfil</em> vacío para el predeterminado.
+		<em>Clave de acceso guardada en OmniDB</em> guarda en su lugar un ID de clave de acceso y una clave
+		secreta con la conexión, la secreta cifrada como una contraseña.</li>
+		<li><em>Región</em>: opcional para un endpoint <code>*.rds.amazonaws.com</code>, cuyo nombre ya la
+		contiene; en otro caso se usa la región del perfil.</li>
+		</ul>
+		<p>El usuario de la base de datos debe permitir inicios de sesión IAM (<code>GRANT rds_iam TO user</code>
+		en PostgreSQL, <code>IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS'</code> en MySQL/MariaDB), y su
+		identidad de AWS necesita el permiso <code>rds-db:connect</code> para él. La conexión siempre va cifrada:
+		se rechaza una cadena de conexión PostgreSQL con <code>sslmode=disable</code>, y el certificado del
+		servidor solo se verifica si lo pide (<code>sslmode=verify-full</code> con <code>sslrootcert</code>
+		apuntando al paquete de CA de RDS). En la aplicación de macOS
+		con sandbox, las credenciales de perfil necesitan una sola vez <em>Permitir acceso a ~/.aws…</em> en el
+		formulario — vea <a href="desktop_app.html">Aplicación de escritorio</a>. En un servidor OmniDB
+		multiusuario, las credenciales de perfil son la propia identidad de AWS del servidor y están limitadas a
+		superusuarios; cualquiera puede usar una clave de acceso guardada.</p>
 		<h4>Uso de túneles SSH</h4>
 		<p>OmniDB permite conectarse a cualquier base de datos remota a través de túneles SSH. Marque
 		<em>Use SSH tunnel</em> (Usar túnel SSH) en el formulario de la conexión: eso habilita los campos

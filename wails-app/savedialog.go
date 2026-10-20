@@ -38,7 +38,10 @@ type saveDialogResponse struct {
 // granted access to (/pgpass-resolve) or show a native "Open" dialog to
 // grant that access in the first place (/pgpass-grant, both in
 // pgpassdialog.go), show that same dialog and list every entry in the
-// picked file for bulk import (/pgpass-import, see pgpassimport.go), or
+// picked file for bulk import (/pgpass-import, see pgpassimport.go), sign
+// an AWS IAM database token with the user's AWS profile, check or grant
+// access to their ~/.aws folder for that (/aws-token, /aws-config-status,
+// /aws-config-grant, see awsiam.go), or
 // report the signed-in user's UI language so the native menu bar can be
 // rebuilt in it (/notify-language, see menu_i18n.go), or retitle the native
 // window to match whichever section the left rail currently has active
@@ -76,6 +79,9 @@ func (a *App) startSaveDialogServer() error {
 	mux.HandleFunc("/pgpass-resolve", a.handlePgpassResolveRequest)
 	mux.HandleFunc("/pgpass-grant", a.handlePgpassGrantRequest)
 	mux.HandleFunc("/pgpass-import", a.handlePgpassImportRequest)
+	mux.HandleFunc("/aws-token", a.handleAWSTokenRequest)
+	mux.HandleFunc("/aws-config-status", a.handleAWSConfigStatusRequest)
+	mux.HandleFunc("/aws-config-grant", a.handleAWSConfigGrantRequest)
 	mux.HandleFunc("/notify-language", a.handleNotifyLanguageRequest)
 	mux.HandleFunc("/notify-title", a.handleNotifyTitleRequest)
 

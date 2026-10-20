@@ -187,7 +187,7 @@ de la page d’accueil, le menu Aide) s’ouvrent dans votre navigateur web par 
 la boîte de dialogue native <em>Enregistrer sous</em>, pour que vous choisissiez directement l’emplacement du fichier — voir
 <a href="writing_sql_queries.html">Écrire des requêtes SQL</a>.</p>
 <h4>macOS : sandbox, données précédentes et <code>.pgpass</code></h4>
-<p>L’application macOS s’exécute dans l’App Sandbox, qui lui attribue son propre dossier personnel privé. Deux
+<p>L’application macOS s’exécute dans l’App Sandbox, qui lui attribue son propre dossier personnel privé. Trois
 conséquences :</p>
 <ul>
 <li><strong>Les données d’une installation antérieure, hors sandbox</strong>, situées dans <code>~/.omnidb</code> ne sont pas
@@ -201,6 +201,12 @@ et OmniDB mémorise l’autorisation, de sorte que toutes les connexions Postgre
 exactement comme le ferait <code>psql</code>. <em>Importer des connexions depuis .pgpass…</em> dans la
 section Connexions accorde le même accès. Voir
 <a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>.</li>
+<li><strong><code>~/.aws</code></strong> n’est pas non plus lisible tant que vous ne l’avez pas
+autorisé. Une connexion utilisant l’authentification AWS IAM avec un profil AWS affiche dans son
+formulaire <em>Autoriser l'accès à ~/.aws…</em> : sélectionnez une fois votre dossier <code>.aws</code>
+(la boîte de dialogue s’y ouvre) et OmniDB mémorise l’autorisation, en lisant la même configuration, les
+mêmes identifiants et le même cache de jetons SSO que l’AWS CLI. Seul le jeton de base de données signé
+quitte le processus de l’application, jamais vos identifiants AWS.</li>
 </ul>
 		</main>
 	</div>

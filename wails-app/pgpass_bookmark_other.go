@@ -33,6 +33,23 @@ func pickPgpassFile(ctx context.Context) (path string, bookmark []byte, cancelle
 	return path, nil, false, nil
 }
 
+// pickAWSConfigDir mirrors pickPgpassFile for the AWS IAM ~/.aws folder
+// grant (see awsiam.go) -- never actually needed outside the macOS sandbox,
+// but harmless: picking a folder just points OmniDB at a different one.
+func pickAWSConfigDir(ctx context.Context) (path string, bookmark []byte, cancelled bool, err error) {
+	path, err = wailsruntime.OpenDirectoryDialog(ctx, wailsruntime.OpenDialogOptions{
+		Title:           "Select your .aws folder",
+		ShowHiddenFiles: true,
+	})
+	if err != nil {
+		return "", nil, false, err
+	}
+	if path == "" {
+		return "", nil, true, nil
+	}
+	return path, nil, false, nil
+}
+
 // resolvedBookmark/resolveSecurityScopedBookmark exist only so
 // pgpassdialog.go compiles unchanged on every platform — pickPgpassFile
 // never produces a bookmark here, so nothing this platform saves is ever

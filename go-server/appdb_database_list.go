@@ -89,6 +89,10 @@ type databaseListEntry struct {
 	Port           string
 	Username       string
 	PgpassDatabase string
+	// AWSIAM is true for a connection that authenticates with an AWS IAM
+	// token -- passwords.js shows the auth error instead of a password
+	// prompt for it, since no typed password could help.
+	AWSIAM bool
 }
 
 // resolvePgpassMatchFields returns the discrete host/port/user/database
@@ -195,6 +199,7 @@ func buildDatabaseList(conns []appConnection, viewerID int64) (databases []datab
 			Port:           port,
 			Username:       username,
 			PgpassDatabase: pgpassDatabase,
+			AWSIAM:         c.AuthMethod == authMethodAWSIAM && awsIAMSupported(c.Technology),
 		})
 	}
 	return databases, terminals

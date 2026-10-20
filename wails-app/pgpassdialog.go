@@ -71,14 +71,6 @@ const (
 	pgpassStoredBookmarkTag = "bookmark\n"
 )
 
-func pgpassLocationPath() (string, error) {
-	home, err := appHomeDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(home, pgpassLocationFileName), nil
-}
-
 // encodePgpassLocation/decodePgpassLocation are the on-disk format of that
 // file. A nil bookmark means "nothing to resolve, just remember where the
 // file is".
@@ -119,19 +111,47 @@ func decodePgpassLocation(data []byte) (pgpassLocation, error) {
 	return pgpassLocation{path: resolved.Path, stop: resolved.Stop, refreshed: refreshed}, nil
 }
 
-// writePgpassLocationFile persists the granted location, creating
-// appHomeDir() first if it doesn't exist yet — appHomeDir() itself only
-// computes the path, it doesn't guarantee the directory exists (unlike
-// go-server's own resolveHomeDir, which the parallel comment on
-// appHomeDir claims to mirror but doesn't, for this one side effect). This
-// matters here specifically: os.WriteFile does not create parent
-// directories, so on whatever launch happens to run this before go-server
-// has otherwise caused that directory to exist, the write would silently
-// fail and the grant would quietly never get saved at all — every relaunch
-// would then fall back to the Open panel forever with no visible error,
-// which is exactly the bug report this fixes.
-func writePgpassLocationFile(data []byte) error {
-	locationPath, err := pgpassLocationPath()
+// grantedLocationStore is one persisted, user-granted filesystem location
+// (the .pgpass file, the AWS IAM ~/.aws folder) -- saved in fileName inside
+// appHomeDir(), in encodePgpassLocation's format, and resolved at most once
+// per launch.
+//
+// It's resolved once and then kept open for the rest of the launch, rather
+// than resolved and released around every read. Two reasons: resolving a
+// security-scoped bookmark is the expensive part (the read itself is a few
+// microseconds), and this is on the connect path -- go-server opens a
+// short-lived connection per request (see go-server/postgresql.go's
+// openPostgreSQLTarget), so a read can happen many times per user action.
+type grantedLocationStore struct {
+	fileName string
+
+	mu     sync.Mutex
+	access *pgpassLocation
+}
+
+var pgpassAccess = &grantedLocationStore{fileName: pgpassLocationFileName}
+
+func (g *grantedLocationStore) locationPath() (string, error) {
+	home, err := appHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, g.fileName), nil
+}
+
+// save persists the granted location, creating appHomeDir() first if it
+// doesn't exist yet -- appHomeDir() itself only computes the path, it
+// doesn't guarantee the directory exists (unlike go-server's own
+// resolveHomeDir, which the parallel comment on appHomeDir claims to mirror
+// but doesn't, for this one side effect). This matters here specifically:
+// os.WriteFile does not create parent directories, so on whatever launch
+// happens to run this before go-server has otherwise caused that directory
+// to exist, the write would silently fail and the grant would quietly never
+// get saved at all -- every relaunch would then fall back to the Open panel
+// forever with no visible error, which is exactly the bug report this
+// fixes.
+func (g *grantedLocationStore) save(data []byte) error {
+	locationPath, err := g.locationPath()
 	if err != nil {
 		return err
 	}
@@ -141,35 +161,21 @@ func writePgpassLocationFile(data []byte) error {
 	return os.WriteFile(locationPath, data, 0o600)
 }
 
-// The granted location is resolved at most once per launch and then kept
-// open for the rest of it, rather than resolved and released around every
-// read. Two reasons: resolving a security-scoped bookmark is the expensive
-// part (the read itself is a few microseconds), and this is now on the
-// connect path — go-server opens a short-lived connection per request (see
-// go-server/postgresql.go's openPostgreSQLTarget), so a read can happen
-// many times per user action instead of once per password prompt as it did
-// when this was only reachable from a button.
-var (
-	pgpassAccessMu sync.Mutex
-	pgpassAccess   *pgpassLocation
-)
+// get returns the currently-accessible location, resolving the saved one on
+// first use. ok is false for anything that means "no usable granted
+// location right now" -- nothing saved yet, corrupt data, or a bookmark that
+// no longer resolves (moved or deleted, access revoked) -- which callers
+// report as "not granted" rather than as an error, since the answer in every
+// one of those cases is the same: the user needs to point at it again.
+func (g *grantedLocationStore) get() (path string, ok bool) {
+	g.mu.Lock()
+	defer g.mu.Unlock()
 
-// grantedPgpassLocation returns the currently-accessible .pgpass file,
-// resolving the saved location on first use. ok is false for anything that
-// means "no usable granted location right now" — nothing saved yet, corrupt
-// data, or a bookmark that no longer resolves (file moved or deleted, access
-// revoked) — which callers report as "not granted" rather than as an error,
-// since the answer in every one of those cases is the same: the user needs
-// to point at the file again.
-func grantedPgpassLocation() (path string, ok bool) {
-	pgpassAccessMu.Lock()
-	defer pgpassAccessMu.Unlock()
-
-	if pgpassAccess != nil {
-		return pgpassAccess.path, true
+	if g.access != nil {
+		return g.access.path, true
 	}
 
-	locationPath, err := pgpassLocationPath()
+	locationPath, err := g.locationPath()
 	if err != nil {
 		return "", false
 	}
@@ -185,24 +191,30 @@ func grantedPgpassLocation() (path string, ok bool) {
 		// Best-effort: a failure here just costs one more (harmless)
 		// stale-but-working resolve on the next launch, not a real
 		// problem, so its error is deliberately dropped.
-		_ = writePgpassLocationFile(location.refreshed)
+		_ = g.save(location.refreshed)
 	}
-	pgpassAccess = &location
+	g.access = &location
 	return location.path, true
 }
 
-// releasePgpassAccess drops the cached grant — called when a read through it
-// fails (so the next attempt resolves the saved location afresh instead of
-// holding a grant that has stopped working) and after a new pick replaces
-// what was saved.
-func releasePgpassAccess() {
-	pgpassAccessMu.Lock()
-	defer pgpassAccessMu.Unlock()
-	if pgpassAccess != nil {
-		pgpassAccess.stop()
-		pgpassAccess = nil
+// release drops the cached grant -- called when a read through it fails (so
+// the next attempt resolves the saved location afresh instead of holding a
+// grant that has stopped working) and after a new pick replaces what was
+// saved.
+func (g *grantedLocationStore) release() {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	if g.access != nil {
+		g.access.stop()
+		g.access = nil
 	}
 }
+
+func writePgpassLocationFile(data []byte) error { return pgpassAccess.save(data) }
+
+func grantedPgpassLocation() (path string, ok bool) { return pgpassAccess.get() }
+
+func releasePgpassAccess() { pgpassAccess.release() }
 
 // readGrantedPassfile parses the granted .pgpass file. A read failure gets
 // exactly one retry through a freshly-resolved grant: a bookmark resolved

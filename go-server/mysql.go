@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"crypto/tls"
 	"database/sql"
 	"net"
 
@@ -31,6 +33,28 @@ func openMySQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 	cfg.AllowAllFiles = false
 	// Visible in performance_schema.session_connect_attrs.
 	cfg.ConnectionAttributes = "program_name:" + omnidbVersion
+	if info.usesAWSIAM() {
+		// RDS's IAM plugin takes the token through mysql_clear_password,
+		// which this driver only allows over TLS once AllowCleartextPasswords
+		// is on -- and RDS refuses it over plaintext anyway. No fallback to
+		// an unencrypted connection: a server without TLS is an error. The
+		// certificate isn't verified (the RDS CA isn't in the system roots),
+		// the same encrypted-but-unverified level as PostgreSQL's
+		// sslmode=require.
+		cfg.AllowCleartextPasswords = true
+		cfg.TLS = &tls.Config{InsecureSkipVerify: true}
+		endpoint := info.awsIAMEndpoint(info.Server, port)
+		if err := cfg.Apply(mysql.BeforeConnect(func(ctx context.Context, c *mysql.Config) error {
+			token, err := awsIAMAuthToken(ctx, info, endpoint, c.User)
+			if err != nil {
+				return err
+			}
+			c.Passwd = token
+			return nil
+		})); err != nil {
+			return nil, err
+		}
+	}
 	connector, err := mysql.NewConnector(cfg)
 	if err != nil {
 		return nil, err

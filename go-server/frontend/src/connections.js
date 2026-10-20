@@ -834,6 +834,8 @@ export function testConnection(p_password = null) {
 		user: el("conn_form_user").value,
 		password: el("conn_form_user_pass").value,
 		temp_password: p_password,
+		auth_method: awsIAMAuthMethod(),
+		aws: awsIAMRequestData(),
 		tunnel: {
 			enabled: el("conn_form_use_tunnel").checked,
 			server: el("conn_form_ssh_server").value,
@@ -859,6 +861,12 @@ export function testConnection(p_password = null) {
 			showAlert(p_return.v_data);
 		},
 		function (p_return) {
+			// A typed password can't fix an IAM token failure (wrong region,
+			// missing grant, expired SSO session...) -- just show the error.
+			if (awsIAMAuthMethod()) {
+				showAlert(p_return.v_data);
+				return;
+			}
 			showConfirm(
 				"",
 				function () {
@@ -911,6 +919,8 @@ export function saveConnection() {
 		user: el("conn_form_user").value,
 		password: el("conn_form_user_pass").value,
 		title: el("conn_form_title").value,
+		auth_method: awsIAMAuthMethod(),
+		aws: awsIAMRequestData(),
 		tunnel: {
 			enabled: el("conn_form_use_tunnel").checked,
 			server: el("conn_form_ssh_server").value,
@@ -1312,6 +1322,14 @@ export function editConnection(p_conn_obj) {
 	el("conn_form_ssh_password").value = "";
 	el("conn_form_ssh_key").value = "";
 	el("conn_form_public").checked = p_conn_obj.public;
+	var v_aws = p_conn_obj.aws || {};
+	el("conn_form_use_aws_iam").checked = p_conn_obj.auth_method === "aws_iam";
+	el("conn_form_aws_credentials").value = v_aws.access_key_id ? "access_key" : "profile";
+	el("conn_form_aws_region").value = v_aws.region || "";
+	el("conn_form_aws_profile").value = v_aws.profile || "";
+	el("conn_form_aws_access_key_id").value = v_aws.access_key_id || "";
+	el("conn_form_aws_secret_access_key").value = "";
+	setStoredSecretIcon("conn_form_aws_secret_access_key", !!v_aws.secret);
 
 	let v_enable_list = [];
 	let v_disable_list = [];
@@ -1424,6 +1442,7 @@ export function editConnection(p_conn_obj) {
 
 	// Updating the fields.
 	updateModalEditConnectionFields(v_disable_list, v_enable_list);
+	updateAWSIAMFields();
 
 	showConnectionDetail(p_conn_obj, false);
 }
@@ -1453,6 +1472,13 @@ export function newConnection() {
 	el("conn_form_ssh_key").value = "";
 	el("conn_form_ssh_key_input").value = null;
 	el("conn_form_ssh_key_input_label").textContent = t("connections.click_to_select");
+	el("conn_form_use_aws_iam").checked = false;
+	el("conn_form_aws_credentials").value = "profile";
+	el("conn_form_aws_region").value = "";
+	el("conn_form_aws_profile").value = "";
+	el("conn_form_aws_access_key_id").value = "";
+	el("conn_form_aws_secret_access_key").value = "";
+	setStoredSecretIcon("conn_form_aws_secret_access_key", false);
 
 	el("conn_form_user_pass_check_icon")?.remove();
 	el("conn_form_ssh_password_check_icon")?.remove();
@@ -1680,6 +1706,163 @@ export function updateModalEditConnectionState(e) {
 
 	// Updating the fields.
 	updateModalEditConnectionFields(v_disable_list, v_enable_list, v_form_cases);
+	updateAWSIAMFields();
+}
+
+// --- AWS IAM database authentication ----------------------------------------
+//
+// The form's "Use AWS IAM authentication" card (workspace.html), for the
+// engines Amazon RDS supports it on. With it on, OmniDB signs a short-lived
+// token per new connection instead of sending a password (see
+// go-server/aws_iam_auth.go), so the password field is disabled. Credentials
+// come either from an AWS profile -- resolved by the desktop shell in the
+// desktop app, which in the macOS sandbox first needs the ~/.aws folder
+// granted once (wails-app/awsiam.go) -- or from an access key pair stored
+// with the connection.
+
+const AWS_IAM_TECHNOLOGIES = ["postgresql", "mysql", "mariadb"];
+
+/** @returns {string} "aws_iam" when the form's IAM card is in effect, else "". */
+function awsIAMAuthMethod() {
+	return AWS_IAM_TECHNOLOGIES.includes(el("conn_form_type").value) && el("conn_form_use_aws_iam").checked
+		? "aws_iam"
+		: "";
+}
+
+function awsIAMRequestData() {
+	var v_access_key = el("conn_form_aws_credentials").value === "access_key";
+	return {
+		region: el("conn_form_aws_region").value.trim(),
+		profile: v_access_key ? "" : el("conn_form_aws_profile").value.trim(),
+		access_key_id: v_access_key ? el("conn_form_aws_access_key_id").value.trim() : "",
+		secret_access_key: v_access_key ? el("conn_form_aws_secret_access_key").value : "",
+	};
+}
+
+/**
+ * Shows/hides the "already stored" check mark next to a secret field's label,
+ * same as the password/SSH ones in editConnection.
+ * @param {string} p_input_id
+ * @param {boolean} p_stored
+ */
+function setStoredSecretIcon(p_input_id, p_stored) {
+	var v_icon_id = p_input_id + "_check_icon";
+	if (!p_stored) {
+		el(v_icon_id)?.remove();
+	} else if (!el(v_icon_id)) {
+		el(p_input_id).previousElementSibling.insertAdjacentHTML(
+			"beforeend",
+			'<i id="' + v_icon_id + '" class="fas fa-check text-success ms-2"></i>',
+		);
+	}
+}
+
+/**
+ * Applies the IAM card's state on top of whatever updateModalEditConnectionState
+ * / editConnection just decided for the rest of the form. Disables rather than
+ * clears: switching IAM off and on again shouldn't lose what was typed.
+ */
+export function updateAWSIAMFields() {
+	var v_supported = AWS_IAM_TECHNOLOGIES.includes(el("conn_form_type").value);
+	el("conn_form_aws_card").style.display = v_supported ? "" : "none";
+	var v_on = v_supported && el("conn_form_use_aws_iam").checked;
+	var v_access_key = el("conn_form_aws_credentials").value === "access_key";
+
+	el("conn_form_aws_profile_row").style.display = v_access_key ? "none" : "";
+	el("conn_form_aws_key_row").style.display = v_access_key ? "" : "none";
+	for (const [v_id, v_enabled] of [
+		["conn_form_aws_credentials", v_on],
+		["conn_form_aws_region", v_on],
+		["conn_form_aws_profile", v_on && !v_access_key],
+		["conn_form_aws_access_key_id", v_on && v_access_key],
+		["conn_form_aws_secret_access_key", v_on && v_access_key],
+	]) {
+		if (v_enabled) el(v_id).removeAttribute("disabled");
+		else el(v_id).setAttribute("disabled", true);
+	}
+
+	if (v_on) {
+		var v_pass = el("conn_form_user_pass");
+		v_pass.value = "";
+		v_pass.setAttribute("disabled", true);
+		v_pass.setAttribute("readonly", true);
+		// An access key pair needs its id; without one the server would
+		// quietly fall back to profile credentials.
+		if (v_access_key && el("conn_form_aws_access_key_id").value.trim() === "") {
+			el("conn_form_button_test_connection").setAttribute("disabled", true);
+			el("conn_form_button_save_connection").setAttribute("disabled", true);
+		}
+	}
+	refreshAWSConfigGrantRow(v_on && !v_access_key);
+}
+
+// /aws_config_status/'s answer, fetched once per page load -- the grant only
+// changes through this form's own button, which updates it.
+/** @type {{needed: boolean, granted: boolean, path: string}|null} */
+var v_aws_config_status = null;
+var v_aws_config_status_pending = false;
+
+/**
+ * Shows the "Allow access to ~/.aws" row only where it can matter: the
+ * desktop app, profile credentials, and a shell that reports either a missing
+ * grant (macOS sandbox) or an existing one the user may want to change.
+ * @param {boolean} p_relevant
+ */
+function refreshAWSConfigGrantRow(p_relevant) {
+	var v_row = el("conn_form_aws_grant_row");
+	if (!p_relevant || !gv_desktopMode) {
+		v_row.style.display = "none";
+		return;
+	}
+	if (v_aws_config_status === null) {
+		v_row.style.display = "none";
+		if (v_aws_config_status_pending) return;
+		v_aws_config_status_pending = true;
+		fetch("/aws_config_status/", { method: "POST", headers: jsonPostHeaders(), body: "{}" })
+			.then(function (p_response) {
+				return p_response.json();
+			})
+			.then(function (p_result) {
+				if (!p_result.error) v_aws_config_status = p_result;
+			})
+			.catch(function () {})
+			.finally(function () {
+				v_aws_config_status_pending = false;
+				if (v_aws_config_status) updateAWSIAMFields();
+			});
+		return;
+	}
+	if (!v_aws_config_status.needed && !v_aws_config_status.granted) {
+		v_row.style.display = "none";
+		return;
+	}
+	v_row.style.display = "";
+	if (v_aws_config_status.needed) {
+		el("conn_form_aws_grant_text").textContent = t("connections.aws_grant_needed");
+		el("conn_form_aws_grant_button").textContent = t("connections.aws_grant_button");
+	} else {
+		el("conn_form_aws_grant_text").textContent = t("connections.aws_granted", { path: v_aws_config_status.path });
+		el("conn_form_aws_grant_button").textContent = t("connections.aws_grant_change");
+	}
+}
+
+export function grantAWSConfigAccess() {
+	fetch("/aws_config_grant/", { method: "POST", headers: jsonPostHeaders(), body: "{}" })
+		.then(function (p_response) {
+			return p_response.json();
+		})
+		.then(function (p_result) {
+			if (p_result.cancelled) return;
+			if (p_result.error) {
+				showAlert(p_result.error);
+				return;
+			}
+			v_aws_config_status = { needed: false, granted: true, path: p_result.path };
+			updateAWSIAMFields();
+		})
+		.catch(function (p_err) {
+			showAlert(t("connections.aws_grant_unreachable", { error: p_err }));
+		});
 }
 
 /**

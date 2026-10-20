@@ -261,6 +261,30 @@ une ligne de la liste : OmniDB l’ouvre dans un nouvel <strong>onglet extern
 ligne ouvre un menu contextuel (<em>Connecter</em>/<em>Modifier</em>/<em>Supprimer</em> — <em>Supprimer</em>
 n’apparaît pas pour une connexion déjà ouverte), et un clic droit dans un espace vide de la liste
 propose <em>Nouvelle connexion</em>/<em>Actualiser</em>.</p>
+<h4>Utiliser l’authentification AWS IAM</h4>
+<p>Pour Amazon RDS et Aurora (PostgreSQL, MySQL, MariaDB), cochez <em>Utiliser l'authentification AWS
+IAM</em> dans le formulaire de la connexion. Au lieu d’un mot de passe, OmniDB signe alors avec vos
+identifiants AWS un jeton de courte durée (valable 15 minutes) pour chaque nouvelle connexion, comme
+<code>aws rds generate-db-auth-token</code>. Le champ du mot de passe est désactivé.</p>
+<ul>
+<li><em>Identifiants</em> : <em>Profil AWS</em> utilise votre configuration AWS
+(<code>~/.aws/config</code> et <code>~/.aws/credentials</code>, y compris les profils SSO et
+assume-role — pour SSO, lancez d’abord <code>aws sso login</code>) ; laissez <em>Profil</em> vide pour
+le profil par défaut. <em>Clé d'accès enregistrée dans OmniDB</em> enregistre à la place un ID de clé
+d’accès et une clé secrète avec la connexion, la clé secrète chiffrée comme un mot de passe.</li>
+<li><em>Région</em> : facultative pour un point de terminaison <code>*.rds.amazonaws.com</code>, dont
+le nom la contient déjà ; sinon la région du profil est utilisée.</li>
+</ul>
+<p>L’utilisateur de la base doit autoriser les connexions IAM (<code>GRANT rds_iam TO user</code> sous
+PostgreSQL, <code>IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS'</code> sous MySQL/MariaDB), et votre
+identité AWS a besoin de la permission <code>rds-db:connect</code> pour lui. La connexion est toujours
+chiffrée : une chaîne de connexion PostgreSQL avec <code>sslmode=disable</code> est refusée, et le
+certificat du serveur n’est vérifié que si vous le demandez (<code>sslmode=verify-full</code> avec
+<code>sslrootcert</code> pointant vers le bundle CA de RDS). Dans l’application macOS en sandbox, les identifiants de profil nécessitent une seule fois
+<em>Autoriser l'accès à ~/.aws…</em> dans le formulaire — voir
+<a href="desktop_app.html">Application de bureau</a>. Sur un serveur OmniDB multi-utilisateur, les
+identifiants de profil sont l’identité AWS du serveur lui-même et sont réservés aux superutilisateurs ;
+tout le monde peut utiliser une clé d’accès enregistrée.</p>
 <h4>Utilisation des tunnels SSH</h4>
 <p>OmniDB permet de se connecter à n’importe quelle base de données distante via des tunnels SSH.
 Cochez <em>Utiliser un tunnel SSH</em> dans le formulaire de la connexion

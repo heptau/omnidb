@@ -180,10 +180,11 @@ Links to external pages (the Doc: … entries of the database tree, the Welcome 
 
 **macOS: sandbox, previous data and `.pgpass`**
 
-The macOS app runs in the App Sandbox, which gives it its own private home folder. Two consequences:
+The macOS app runs in the App Sandbox, which gives it its own private home folder. Three consequences:
 
 - Data from an earlier, non-sandboxed install in `~/.omnidb` is not visible automatically. On the first launch without any data, OmniDB offers to import it — choose Import… and pick your previous `.omnidb` folder, or Not Now. You can do the same later with OmniDB > Import Data from Previous Installation….
 - `~/.pgpass` is not readable until you allow it. When a PostgreSQL connection has no stored password, the password prompt offers Grant access to .pgpass…: pick your `.pgpass` file once (hidden files are shown in that dialog) and OmniDB remembers the permission, so every later PostgreSQL connection looks its password up there, just as `psql` would. Import connections from .pgpass… in the Connections section grants the same access. See Creating Users and Connections.
+- `~/.aws` is not readable until you allow it either. A connection using AWS IAM authentication with an AWS profile shows Allow access to ~/.aws… in its form: pick your `.aws` folder once (the dialog opens in it) and OmniDB remembers the permission, reading the same config, credentials and SSO token cache the AWS CLI uses. Only the signed database token ever leaves the app's own process, never your AWS credentials.
 
 ---
 
@@ -251,6 +252,15 @@ The file-import icon next to the + and − buttons reads a `.pgpass` file and cr
 **Opening a connection**
 
 Click Connect in the form, or simply double-click a row in the list, and OmniDB opens it in a new Connection Outer Tab as we can see in the next chapter. Right-clicking a row opens a context menu (Connect/Edit/Delete — Delete is omitted for a connection that is already open), and right-clicking empty space in the list offers New Connection/Refresh.
+
+**Using AWS IAM authentication**
+
+For Amazon RDS and Aurora (PostgreSQL, MySQL, MariaDB), tick Use AWS IAM authentication in the connection's form. Instead of a password, OmniDB then signs a short-lived token (valid for 15 minutes) with your AWS credentials for every new connection, the same way `aws rds generate-db-auth-token` does. The password field is disabled.
+
+- Credentials: AWS profile uses your AWS configuration (`~/.aws/config` and `~/.aws/credentials`, including SSO and assume-role profiles — run `aws sso login` first for SSO); leave Profile blank for the default one. Access key stored in OmniDB stores an access key ID and secret access key with the connection instead, the secret encrypted like a password.
+- Region: optional for an `*.rds.amazonaws.com` endpoint, whose name already contains it; otherwise the profile's region is used.
+
+The database user has to allow IAM logins (`GRANT rds_iam TO user` on PostgreSQL, `IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS'` on MySQL/MariaDB), and your AWS identity needs the `rds-db:connect` permission for it. The connection is always encrypted: a PostgreSQL connection string with `sslmode=disable` is refused, and the server certificate is verified only if you ask for it (`sslmode=verify-full` with `sslrootcert` pointing at the RDS CA bundle). In the sandboxed macOS app, profile credentials need a one-time Allow access to ~/.aws… in the form — see Desktop App. On a multi-user OmniDB server, profile credentials mean the server's own AWS identity and are limited to superusers; everyone can use a stored access key.
 
 **Using SSH tunnels**
 

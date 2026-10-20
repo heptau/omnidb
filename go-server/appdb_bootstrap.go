@@ -162,6 +162,31 @@ func migrateAppDB(db *sql.DB) error {
 		return fmt.Errorf("check OmniDB_app_connection.environment: %w", err)
 	}
 
+	// Add the AWS IAM database authentication columns to
+	// OmniDB_app_connection if missing (v5.5.0+) -- see aws_iam_auth.go.
+	// aws_secret_access_key is stored encrypted like password (see
+	// credential_crypto.go); the rest are plain configuration.
+	for _, c := range []struct {
+		name string
+		typ  string
+	}{
+		{"auth_method", "varchar(20)"},
+		{"aws_region", "varchar(50)"},
+		{"aws_profile", "varchar(200)"},
+		{"aws_access_key_id", "varchar(200)"},
+		{"aws_secret_access_key", "text"},
+	} {
+		var found string
+		err := db.QueryRow(`select name from pragma_table_info('OmniDB_app_connection') where name = ?`, c.name).Scan(&found)
+		if err == sql.ErrNoRows {
+			if _, err := db.Exec(fmt.Sprintf(`alter table OmniDB_app_connection add column "%s" %s NOT NULL DEFAULT ''`, c.name, c.typ)); err != nil {
+				return fmt.Errorf("add %s to OmniDB_app_connection: %w", c.name, err)
+			}
+		} else if err != nil {
+			return fmt.Errorf("check OmniDB_app_connection.%s: %w", c.name, err)
+		}
+	}
+
 	// Add indent format columns to OmniDB_app_userdetails if missing.
 	for _, c := range []struct {
 		name string

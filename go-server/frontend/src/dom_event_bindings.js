@@ -17,6 +17,7 @@ import {
   connectSelectedConnection,
   deleteGroup,
   deleteSelectedConnection,
+  grantAWSConfigAccess,
   groupChange,
   handlePgpassImportFileChosen,
   importConnectionsFromPgpass,
@@ -28,6 +29,7 @@ import {
   saveConnection,
   testConnection,
   toggleConnectionsPublic,
+  updateAWSIAMFields,
   updateConnectionKey,
   updateModalEditConnectionState,
 } from './connections.js'
@@ -164,9 +166,13 @@ for (const id of [
   'conn_form_ssh_server',
   'conn_form_ssh_port',
   'conn_form_ssh_user',
+  'conn_form_use_aws_iam',
+  'conn_form_aws_access_key_id',
 ]) {
   bind(id, 'input', updateModalEditConnectionState)
 }
+bind('conn_form_aws_credentials', 'change', () => updateAWSIAMFields())
+bind('conn_form_aws_grant_button', 'click', () => grantAWSConfigAccess())
 bind('conn_form_ssh_password', 'input', updateConnectionKey)
 bind('conn_form_ssh_key_input', 'change', updateConnectionKey)
 bind('conn_form_button_connect', 'click', () => connectSelectedConnection())

@@ -42,6 +42,17 @@
 int pgpass_pick_file_and_bookmark(char **outPath, unsigned char **outBookmark, int *outBookmarkLen,
 								   int *outCancelled, char **outErr);
 
+// The general form of pgpass_pick_file_and_bookmark, with the same
+// contract for every output: title is the panel's title, name its
+// pre-filled name field (NULL for none), chooseDirectory picks a folder
+// instead of a file, and startDir (NULL for the panel's default) is where
+// the panel opens -- relative to the user's *real* home directory, not the
+// sandbox container's, so "~/.aws" can be offered directly. Used for the
+// AWS IAM ~/.aws folder grant (see awsiam.go).
+int omnidb_pick_and_bookmark(const char *title, const char *name, int chooseDirectory, const char *startDir,
+							  char **outPath, unsigned char **outBookmark, int *outBookmarkLen,
+							  int *outCancelled, char **outErr);
+
 // Resolves previously-saved bookmark data back to a path and starts
 // accessing it as a security-scoped resource — this is what actually
 // re-grants the sandbox extension on a later launch, no Open panel

@@ -106,6 +106,17 @@ func handleGetConnections(upstream *url.URL) http.HandlerFunc {
 				obj["service"] = c.Database
 				obj["user"] = c.Username
 				obj["password"] = c.Password != ""
+				obj["auth_method"] = c.AuthMethod
+				accessKeyID := c.AWSAccessKeyID
+				if c.OwnerID != int64(who.UserID) && accessKeyID != "" {
+					accessKeyID = "********"
+				}
+				obj["aws"] = map[string]any{
+					"region":        c.AWSRegion,
+					"profile":       c.AWSProfile,
+					"access_key_id": accessKeyID,
+					"secret":        c.AWSSecretAccessKey != "",
+				}
 			}
 			connList = append(connList, obj)
 		}
@@ -318,6 +329,8 @@ type saveConnectionRequest struct {
 	ConnString  string            `json:"connstring"`
 	Public      bool              `json:"public"`
 	Environment string            `json:"environment"`
+	AuthMethod  string            `json:"auth_method"`
+	AWS         awsRequestData    `json:"aws"`
 	Tunnel      tunnelRequestData `json:"tunnel"`
 }
 
@@ -361,6 +374,12 @@ func handleSaveConnection(upstream *url.URL) http.HandlerFunc {
 			ConnString:  req.ConnString,
 			Public:      req.Public,
 			Environment: req.Environment,
+
+			AuthMethod:         req.AuthMethod,
+			AWSRegion:          req.AWS.Region,
+			AWSProfile:         req.AWS.Profile,
+			AWSAccessKeyID:     req.AWS.AccessKeyID,
+			AWSSecretAccessKey: req.AWS.SecretAccessKey,
 		})
 		if err != nil {
 			writeEnvelope(w, connectionLookupErrorMessage(err), true, -1)

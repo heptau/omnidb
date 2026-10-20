@@ -18,6 +18,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   one bar per partition). Each series gets a single color and a legend entry, colors stay distinct across refreshes
   when series appear or disappear, and bars don't reserve empty slots for series without a value at that label.
   Existing chart queries are unaffected: a query counts as long format only when its middle column is non-numeric.
+- AWS IAM database authentication for Amazon RDS / Aurora PostgreSQL, MySQL and MariaDB connections: tick "Use AWS
+  IAM authentication" in the connection form and OmniDB signs a short-lived (15-minute) token instead of sending a
+  password, freshly for every new physical connection. Credentials come either from an AWS profile (shared
+  config/credentials files, SSO, assume-role; blank = default profile) or from an access key pair stored with the
+  connection (the secret encrypted like passwords). The region is optional for `*.rds.amazonaws.com` endpoints. IAM
+  connections always use TLS (PostgreSQL `sslmode=disable` is refused, MySQL/MariaDB require TLS, certificates are
+  verified only with an explicit PostgreSQL `sslmode=verify-full`), and an auth failure shows the error instead of a
+  password prompt. In the sandboxed macOS app, profile credentials need a one-time "Allow access to ~/.aws…" grant
+  in the connection form (a security-scoped bookmark, like `.pgpass`); the desktop shell then signs tokens itself, so
+  AWS credentials never reach the backend process. On a multi-user server, profile credentials (the server's own AWS
+  identity) are restricted to superusers. New app-database columns are added automatically on startup. Translated in
+  all nine languages and documented.
 
 ### Changed
 

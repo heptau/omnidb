@@ -1,6 +1,8 @@
 #import "pgpass_bookmark_darwin.h"
 #import <Cocoa/Cocoa.h>
 #import <string.h>
+#import <pwd.h>
+#import <unistd.h>
 
 static unsigned char *copyBookmarkBytes(NSData *bookmark, int *outLen) {
 	NSUInteger len = [bookmark length];
@@ -12,6 +14,26 @@ static unsigned char *copyBookmarkBytes(NSData *bookmark, int *outLen) {
 
 int pgpass_pick_file_and_bookmark(char **outPath, unsigned char **outBookmark, int *outBookmarkLen,
 								   int *outCancelled, char **outErr) {
+	return omnidb_pick_and_bookmark("Select .pgpass file", ".pgpass", 0, NULL,
+									outPath, outBookmark, outBookmarkLen, outCancelled, outErr);
+}
+
+int omnidb_pick_and_bookmark(const char *title, const char *name, int chooseDirectory, const char *startDir,
+							  char **outPath, unsigned char **outBookmark, int *outBookmarkLen,
+							  int *outCancelled, char **outErr) {
+	NSString *panelTitle = [NSString stringWithUTF8String:title];
+	NSString *panelName = name ? [NSString stringWithUTF8String:name] : nil;
+	NSURL *panelDir = nil;
+	if (startDir) {
+		// NSHomeDirectory() is the sandbox container; the passwd entry is
+		// the user's real home, which is where ~/.aws actually lives.
+		struct passwd *pw = getpwuid(getuid());
+		if (pw && pw->pw_dir) {
+			NSString *real = [[NSString stringWithUTF8String:pw->pw_dir]
+				stringByAppendingPathComponent:[NSString stringWithUTF8String:startDir]];
+			panelDir = [NSURL fileURLWithPath:real isDirectory:YES];
+		}
+	}
 	__block int ok = 0;
 	__block BOOL cancelled = NO;
 	__block NSString *resultPath = nil;
@@ -21,11 +43,13 @@ int pgpass_pick_file_and_bookmark(char **outPath, unsigned char **outBookmark, i
 	void (^pick)(void) = ^{
 		@autoreleasepool {
 			NSOpenPanel *panel = [NSOpenPanel openPanel];
-			panel.title = @"Select .pgpass file";
-			panel.nameFieldStringValue = @".pgpass";
+			panel.title = panelTitle;
+			panel.message = panelTitle;
+			if (panelName) panel.nameFieldStringValue = panelName;
+			if (panelDir) panel.directoryURL = panelDir;
 			panel.showsHiddenFiles = YES;
-			panel.canChooseFiles = YES;
-			panel.canChooseDirectories = NO;
+			panel.canChooseFiles = !chooseDirectory;
+			panel.canChooseDirectories = chooseDirectory ? YES : NO;
 			panel.allowsMultipleSelection = NO;
 			// This runs from a background HTTP handler goroutine's
 			// dispatch to the main thread, not from a menu/button click,

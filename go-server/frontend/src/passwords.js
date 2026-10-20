@@ -34,6 +34,7 @@ SOFTWARE.
 
 import { execAjax, jsonPostHeaders } from "./ajax_control_bridge.js";
 import { t } from "./i18n.js";
+import { showError } from "./notification_control.js";
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
@@ -348,6 +349,19 @@ function retryWithPgpassPassword() {
 }
 
 /**
+ * @param {number|string} p_database_index
+ * @returns {boolean}
+ */
+function usesAWSIAM(p_database_index) {
+	var v_connections = v_connTabControl && v_connTabControl.tag ? v_connTabControl.tag.connections : null;
+	if (!v_connections) return false;
+	for (var i = 0; i < v_connections.length; i++) {
+		if (v_connections[i].v_conn_id == p_database_index) return !!v_connections[i].v_aws_iam;
+	}
+	return false;
+}
+
+/**
  * Resolves the postgresql connection details for p_database_index (a
  * connection id, matching v_connTabControl.tag.connections[i].v_conn_id --
  * see connections.js's showConnectionList for the same lookup) into what
@@ -397,6 +411,14 @@ export function showPasswordPrompt(
 	p_message,
 	p_send_tab_id = true,
 ) {
+	// An AWS IAM connection has no password to type: the failure is about
+	// its AWS credentials/permissions, so show it instead of a prompt that
+	// couldn't help (see go-server/aws_iam_auth.go).
+	if (usesAWSIAM(p_database_index)) {
+		showError(p_message || t("passwords.aws_iam_failed"));
+		if (p_cancel_callback_function) p_cancel_callback_function();
+		return;
+	}
 	v_modal_password_ok_clicked = false;
 	v_modal_password_cancel_callback = p_cancel_callback_function;
 	var v_content_div = /** @type {HTMLElement} */ (document.getElementById("modal_password_content"));

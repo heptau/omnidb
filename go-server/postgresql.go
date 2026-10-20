@@ -1,13 +1,17 @@
 package main
 
 import (
+	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -23,7 +27,16 @@ func openPostgreSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	db := stdlib.OpenDB(*cfg)
+	var opts []stdlib.OptionOpenDB
+	if info.usesAWSIAM() {
+		// database/sql may open more physical connections later (a pool,
+		// a dropped connection) -- each one needs a token that's still
+		// valid then, not the one signed when this was first opened.
+		opts = append(opts, stdlib.OptionBeforeConnect(func(ctx context.Context, c *pgx.ConnConfig) error {
+			return applyPostgreSQLAWSIAMToken(ctx, c, info)
+		}))
+	}
+	db := stdlib.OpenDB(*cfg, opts...)
 	if err := db.Ping(); err != nil {
 		db.Close()
 		return nil, err
@@ -58,8 +71,60 @@ func postgresqlConnConfig(info *ConnectionInfo) (*pgx.ConnConfig, error) {
 	if cfg.RuntimeParams["application_name"] == "" {
 		cfg.RuntimeParams["application_name"] = omnidbVersion
 	}
+	if info.usesAWSIAM() {
+		if err := requirePostgreSQLTLS(cfg); err != nil {
+			return nil, err
+		}
+		if err := applyPostgreSQLAWSIAMToken(context.Background(), cfg, info); err != nil {
+			return nil, err
+		}
+		return cfg, nil
+	}
 	applyPgpassPassword(cfg)
 	return cfg, nil
+}
+
+// applyPostgreSQLAWSIAMToken puts a fresh IAM token where the password
+// goes. The token is signed for the host/port/user pgx actually resolved
+// (connection-string values and defaults included), unless an SSH tunnel
+// stands in for the real endpoint.
+func applyPostgreSQLAWSIAMToken(ctx context.Context, cfg *pgx.ConnConfig, info *ConnectionInfo) error {
+	if network, _ := pgconn.NetworkAddress(cfg.Host, cfg.Port); network == "unix" {
+		return errors.New("AWS IAM authentication needs a TCP host, not a Unix socket")
+	}
+	token, err := awsIAMAuthToken(ctx, info, info.awsIAMEndpoint(cfg.Host, strconv.Itoa(int(cfg.Port))), cfg.User)
+	if err != nil {
+		return err
+	}
+	cfg.Password = token
+	return nil
+}
+
+// requirePostgreSQLTLS drops every plaintext connection attempt from cfg:
+// RDS rejects an IAM token over a non-TLS connection, and the token is a
+// live credential that shouldn't cross the network in clear text anyway.
+// The default sslmode=prefer (and an explicit allow) keep only their TLS
+// attempt; sslmode=disable is an error rather than silently overridden.
+// Certificate verification stays whatever sslmode asked for -- a
+// connection string with sslmode=verify-full and sslrootcert pointing at
+// the RDS CA bundle gets full verification.
+func requirePostgreSQLTLS(cfg *pgx.ConnConfig) error {
+	var tlsFallbacks []*pgconn.FallbackConfig
+	for _, fb := range cfg.Fallbacks {
+		if fb.TLSConfig != nil {
+			tlsFallbacks = append(tlsFallbacks, fb)
+		}
+	}
+	if cfg.TLSConfig == nil {
+		if len(tlsFallbacks) == 0 {
+			return errors.New("AWS IAM authentication requires SSL; remove sslmode=disable from the connection string")
+		}
+		// sslmode=allow: plaintext first, TLS as the fallback -- promote it.
+		cfg.Host, cfg.Port, cfg.TLSConfig = tlsFallbacks[0].Host, tlsFallbacks[0].Port, tlsFallbacks[0].TLSConfig
+		tlsFallbacks = tlsFallbacks[1:]
+	}
+	cfg.Fallbacks = tlsFallbacks
+	return nil
 }
 
 // postgresqlDSN builds the connection string opened above. A saved

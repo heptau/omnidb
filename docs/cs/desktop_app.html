@@ -188,7 +188,7 @@ stránce, nabídka Nápověda) se otevírají ve vašem výchozím webovém proh
 kam se soubor uloží — viz <a href="writing_sql_queries.html">Psaní SQL dotazů</a>.</p>
 <h4>macOS: sandbox, předchozí data a <code>.pgpass</code></h4>
 <p>Aplikace pro macOS běží v App Sandboxu, který jí přiděluje vlastní soukromou domovskou složku.
-To má dva důsledky:</p>
+To má tři důsledky:</p>
 <ul>
 <li><strong>Data ze starší, nesandboxované instalace</strong> v <code>~/.omnidb</code> nejsou
 automaticky vidět. Při prvním spuštění bez jakýchkoli dat nabídne OmniDB jejich import — zvolte
@@ -202,6 +202,11 @@ skryté soubory) a OmniDB si oprávnění zapamatuje, takže každé další p�
 heslo vyhledá, stejně jako by to udělal <code>psql</code>. Stejný přístup udělí i
 <em>Importovat připojení ze souboru .pgpass…</em> v sekci Připojení. Viz
 <a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>.</li>
+<li><strong><code>~/.aws</code></strong> také nelze číst, dokud to nepovolíte. Připojení s AWS IAM
+autentizací přes AWS profil nabídne ve svém formuláři <em>Povolit přístup k ~/.aws…</em>: jednou
+vyberte svou složku <code>.aws</code> (dialog se v ní rovnou otevře) a OmniDB si oprávnění zapamatuje;
+čte pak stejnou konfiguraci, credentials i SSO cache tokenů jako AWS CLI. Z procesu aplikace odchází
+jen podepsaný databázový token, nikdy vaše AWS přihlašovací údaje.</li>
 </ul>
 		</main>
 	</div>

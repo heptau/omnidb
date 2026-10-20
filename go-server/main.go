@@ -153,6 +153,8 @@ func run() error {
 		mux.Handle("/open_external_url/", http.HandlerFunc(handleOpenExternalURL))
 		mux.Handle("/pgpass_grant/", http.HandlerFunc(handlePgpassGrant))
 		mux.Handle("/pgpass_import/", http.HandlerFunc(handlePgpassImport))
+		mux.Handle("/aws_config_status/", http.HandlerFunc(handleAWSConfigStatus))
+		mux.Handle("/aws_config_grant/", http.HandlerFunc(handleAWSConfigGrant))
 		mux.Handle("/notify_title/", http.HandlerFunc(handleNotifyTitle))
 	}
 	mux.Handle("/get_properties_sqlite/", handleGetPropertiesSQLite(upstream, proxy))

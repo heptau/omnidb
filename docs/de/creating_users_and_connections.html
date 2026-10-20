@@ -266,6 +266,31 @@ nächsten Kapitel sehen werden. Ein Rechtsklick auf eine Zeile öffnet ein Konte
 (<em>Connect</em>/<em>Edit</em>/<em>Delete</em> — <em>Delete</em> fehlt bei einer bereits geöffneten
 Verbindung), ein Rechtsklick auf leeren Raum in der Liste bietet
 <em>New Connection</em>/<em>Refresh</em>.</p>
+<h4>AWS-IAM-Authentifizierung verwenden</h4>
+<p>Für Amazon RDS und Aurora (PostgreSQL, MySQL, MariaDB) aktivieren Sie im Verbindungsformular
+<em>AWS-IAM-Authentifizierung verwenden</em>. Statt eines Passworts signiert OmniDB dann für jede neue
+Verbindung mit Ihren AWS-Anmeldedaten ein kurzlebiges Token (15 Minuten gültig), genau wie
+<code>aws rds generate-db-auth-token</code>. Das Passwortfeld ist gesperrt.</p>
+<ul>
+<li><em>Anmeldedaten</em>: <em>AWS-Profil</em> nutzt Ihre AWS-Konfiguration
+(<code>~/.aws/config</code> und <code>~/.aws/credentials</code>, auch SSO- und Assume-Role-Profile —
+bei SSO zuerst <code>aws sso login</code> ausführen); ein leeres <em>Profil</em> steht für das
+Standardprofil. <em>In OmniDB gespeicherter Zugriffsschlüssel</em> speichert stattdessen
+Zugriffsschlüssel-ID und geheimen Schlüssel mit der Verbindung, den geheimen verschlüsselt wie ein
+Passwort.</li>
+<li><em>Region</em>: optional bei einem <code>*.rds.amazonaws.com</code>-Endpunkt, dessen Name sie
+bereits enthält; sonst gilt die Region des Profils.</li>
+</ul>
+<p>Der Datenbankbenutzer muss IAM-Anmeldungen zulassen (<code>GRANT rds_iam TO user</code> bei
+PostgreSQL, <code>IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS'</code> bei MySQL/MariaDB), und Ihre
+AWS-Identität braucht dafür die Berechtigung <code>rds-db:connect</code>. Die Verbindung ist immer
+verschlüsselt: Ein PostgreSQL-Verbindungsstring mit <code>sslmode=disable</code> wird abgelehnt, und
+das Serverzertifikat wird nur geprüft, wenn Sie es verlangen (<code>sslmode=verify-full</code> mit
+<code>sslrootcert</code> auf das RDS-CA-Bundle). In der
+sandboxed macOS-App brauchen Profil-Anmeldedaten einmalig <em>Zugriff auf ~/.aws erlauben…</em> im
+Formular — siehe <a href="desktop_app.html">Desktop-App</a>. Auf einem Mehrbenutzer-Server bedeuten
+Profil-Anmeldedaten die AWS-Identität des Servers selbst und sind Superusern vorbehalten; einen
+gespeicherten Zugriffsschlüssel kann jeder verwenden.</p>
 <h4>SSH-Tunnel verwenden</h4>
 <p>OmniDB ermöglicht es, sich über SSH-Tunnel mit jeder entfernten Datenbank zu verbinden. Setzen
 Sie im Formular der jeweiligen Verbindung den Haken bei <em>Use SSH tunnel</em> (SSH-Tunnel

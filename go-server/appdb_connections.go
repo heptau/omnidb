@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -48,6 +49,41 @@ type appConnection struct {
 	// user's own visual organization. Never validated server-side against
 	// that set: an unrecognized value just renders with no color client-side.
 	Environment string
+	// AWS IAM database authentication -- see aws_iam_auth.go. AuthMethod is
+	// "" (password, the default) or authMethodAWSIAM. AWSAccessKeyID non-blank
+	// means "sign with this stored key pair"; blank means "use the AWS
+	// profile/default credential chain" (AWSProfile, blank = default).
+	AuthMethod         string
+	AWSRegion          string
+	AWSProfile         string
+	AWSAccessKeyID     string
+	AWSSecretAccessKey string
+}
+
+// appConnectionColumns/scanAppConnection are the shared column list and
+// row scan of fetchConnectionsForUser and fetchConnectionByID, which select
+// exactly the same columns.
+const appConnectionColumns = `c.id, c.user_id, c.public, t.name, c.alias, c.conn_string,
+	c.server, c.port, c.database, c.username, c.password,
+	c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key, c.environment,
+	c.auth_method, c.aws_region, c.aws_profile, c.aws_access_key_id, c.aws_secret_access_key`
+
+func scanAppConnection(row interface{ Scan(...any) error }) (*appConnection, error) {
+	var c appConnection
+	if err := row.Scan(&c.ID, &c.OwnerID, &c.Public, &c.Technology, &c.Alias, &c.ConnString,
+		&c.Server, &c.Port, &c.Database, &c.Username, &c.Password,
+		&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment,
+		&c.AuthMethod, &c.AWSRegion, &c.AWSProfile, &c.AWSAccessKeyID, &c.AWSSecretAccessKey); err != nil {
+		return nil, err
+	}
+	var err error
+	if c.Password, c.SSHPassword, c.SSHKey, err = decryptConnectionSecrets(c.Password, c.SSHPassword, c.SSHKey); err != nil {
+		return nil, err
+	}
+	if c.AWSSecretAccessKey, err = decryptSecret(c.AWSSecretAccessKey); err != nil {
+		return nil, fmt.Errorf("decrypt aws_secret_access_key: %w", err)
+	}
+	return &c, nil
 }
 
 // fetchTechnologies mirrors the "for tech in Technology.objects.all()" loop
@@ -79,9 +115,7 @@ func fetchTechnologies(db *sql.DB) ([]string, error) {
 // new connection lands at the bottom of the list instead of somewhere random.
 func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) {
 	rows, err := db.Query(`
-		select c.id, c.user_id, c.public, t.name, c.alias, c.conn_string,
-			   c.server, c.port, c.database, c.username, c.password,
-			   c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key, c.environment
+		select `+appConnectionColumns+`
 		from OmniDB_app_connection c
 		join OmniDB_app_technology t on t.id = c.technology_id
 		left join OmniDB_app_connectionorder o on o.connection_id = c.id and o.user_id = ?
@@ -95,16 +129,11 @@ func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) 
 
 	var out []appConnection
 	for rows.Next() {
-		var c appConnection
-		if err := rows.Scan(&c.ID, &c.OwnerID, &c.Public, &c.Technology, &c.Alias, &c.ConnString,
-			&c.Server, &c.Port, &c.Database, &c.Username, &c.Password,
-			&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment); err != nil {
+		c, err := scanAppConnection(rows)
+		if err != nil {
 			return nil, err
 		}
-		if c.Password, c.SSHPassword, c.SSHKey, err = decryptConnectionSecrets(c.Password, c.SSHPassword, c.SSHKey); err != nil {
-			return nil, err
-		}
-		out = append(out, c)
+		out = append(out, *c)
 	}
 	return out, rows.Err()
 }
@@ -120,24 +149,12 @@ func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) 
 // password) and was fixed to check it too — don't add a new caller of this
 // function without the same check.
 func fetchConnectionByID(db *sql.DB, connID int64) (*appConnection, error) {
-	var c appConnection
-	err := db.QueryRow(`
-		select c.id, c.user_id, c.public, t.name, c.alias, c.conn_string,
-			   c.server, c.port, c.database, c.username, c.password,
-			   c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key, c.environment
+	return scanAppConnection(db.QueryRow(`
+		select `+appConnectionColumns+`
 		from OmniDB_app_connection c
 		join OmniDB_app_technology t on t.id = c.technology_id
 		where c.id = ?
-	`, connID).Scan(&c.ID, &c.OwnerID, &c.Public, &c.Technology, &c.Alias, &c.ConnString,
-		&c.Server, &c.Port, &c.Database, &c.Username, &c.Password,
-		&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment)
-	if err != nil {
-		return nil, err
-	}
-	if c.Password, c.SSHPassword, c.SSHKey, err = decryptConnectionSecrets(c.Password, c.SSHPassword, c.SSHKey); err != nil {
-		return nil, err
-	}
-	return &c, nil
+	`, connID))
 }
 
 type appGroup struct {
@@ -275,6 +292,14 @@ type saveConnectionInput struct {
 	ConnString  string
 	Public      bool
 	Environment string
+	// See appConnection's fields of the same names. AWSSecretAccessKey
+	// follows Password's "blank means keep the stored one" rule on update;
+	// a blank AWSAccessKeyID (profile credentials) always clears it.
+	AuthMethod         string
+	AWSRegion          string
+	AWSProfile         string
+	AWSAccessKeyID     string
+	AWSSecretAccessKey string
 }
 
 // saveConnection mirrors save_connection's insert/update branch. Unlike the
@@ -288,7 +313,19 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 		return 0, err
 	}
 
+	if in.AuthMethod != "" && in.AuthMethod != authMethodAWSIAM {
+		return 0, fmt.Errorf("unknown authentication method %q", in.AuthMethod)
+	}
+	if in.AuthMethod == "" || in.AWSAccessKeyID == "" {
+		in.AWSAccessKeyID = ""
+		in.AWSSecretAccessKey = ""
+	}
+
 	if in.ID == -1 {
+		encAWSSecret, err := encryptSecret(in.AWSSecretAccessKey)
+		if err != nil {
+			return 0, err
+		}
 		encPassword, encSSHPassword, encSSHKey, err := encryptConnectionSecrets(in.Password, in.SSHPassword, in.SSHKey)
 		if err != nil {
 			return 0, err
@@ -296,10 +333,12 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 		res, err := db.Exec(`
 			insert into OmniDB_app_connection
 				(user_id, technology_id, server, port, database, username, password, alias,
-				 ssh_server, ssh_port, ssh_user, ssh_password, ssh_key, use_tunnel, conn_string, public, environment)
-			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				 ssh_server, ssh_port, ssh_user, ssh_password, ssh_key, use_tunnel, conn_string, public, environment,
+				 auth_method, aws_region, aws_profile, aws_access_key_id, aws_secret_access_key)
+			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		`, userID, techID, in.Server, in.Port, in.Database, in.Username, encPassword, in.Alias,
-			in.SSHServer, in.SSHPort, in.SSHUser, encSSHPassword, encSSHKey, in.UseTunnel, in.ConnString, in.Public, in.Environment)
+			in.SSHServer, in.SSHPort, in.SSHUser, encSSHPassword, encSSHKey, in.UseTunnel, in.ConnString, in.Public, in.Environment,
+			in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID, encAWSSecret)
 		if err != nil {
 			return 0, err
 		}
@@ -317,10 +356,22 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 	setParts := []string{
 		"technology_id = ?", "server = ?", "port = ?", "database = ?", "username = ?", "alias = ?",
 		"ssh_server = ?", "ssh_port = ?", "ssh_user = ?", "use_tunnel = ?", "conn_string = ?", "public = ?", "environment = ?",
+		"auth_method = ?", "aws_region = ?", "aws_profile = ?", "aws_access_key_id = ?",
 	}
 	args := []any{
 		techID, in.Server, in.Port, in.Database, in.Username, in.Alias,
 		in.SSHServer, in.SSHPort, in.SSHUser, in.UseTunnel, in.ConnString, in.Public, in.Environment,
+		in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID,
+	}
+	if in.AWSAccessKeyID == "" {
+		setParts = append(setParts, "aws_secret_access_key = ''")
+	} else if in.AWSSecretAccessKey != "" {
+		enc, err := encryptSecret(in.AWSSecretAccessKey)
+		if err != nil {
+			return 0, err
+		}
+		setParts = append(setParts, "aws_secret_access_key = ?")
+		args = append(args, enc)
 	}
 	if in.Password != "" {
 		enc, err := encryptSecret(in.Password)

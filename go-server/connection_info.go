@@ -22,6 +22,17 @@ type ConnectionInfo struct {
 	Alias      string `json:"alias"`
 	Public     bool   `json:"public"`
 	ConnString string `json:"connstring"`
+	// AWS IAM database authentication -- see aws_iam_auth.go.
+	AuthMethod         string `json:"-"`
+	AWSRegion          string `json:"-"`
+	AWSProfile         string `json:"-"`
+	AWSAccessKeyID     string `json:"-"`
+	AWSSecretAccessKey string `json:"-"`
+	// IAMEndpointHost/Port are the real database endpoint an IAM token is
+	// signed for, set only when Server/Port point at an SSH tunnel's local
+	// end instead (see awsIAMEndpoint).
+	IAMEndpointHost string `json:"-"`
+	IAMEndpointPort string `json:"-"`
 }
 
 // resolveConnection resolves the raw saved-connection row behind a
@@ -70,18 +81,27 @@ func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*
 		return nil, errSQLiteRestricted
 	}
 
-	return &ConnectionInfo{
-		Found:      true,
-		Technology: c.Technology,
-		Server:     c.Server,
-		Port:       c.Port,
-		Database:   c.Database,
-		Username:   c.Username,
-		Password:   c.Password,
-		Alias:      c.Alias,
-		Public:     c.Public,
-		ConnString: c.ConnString,
-	}, nil
+	info := &ConnectionInfo{
+		Found:              true,
+		Technology:         c.Technology,
+		Server:             c.Server,
+		Port:               c.Port,
+		Database:           c.Database,
+		Username:           c.Username,
+		Password:           c.Password,
+		Alias:              c.Alias,
+		Public:             c.Public,
+		ConnString:         c.ConnString,
+		AuthMethod:         c.AuthMethod,
+		AWSRegion:          c.AWSRegion,
+		AWSProfile:         c.AWSProfile,
+		AWSAccessKeyID:     c.AWSAccessKeyID,
+		AWSSecretAccessKey: c.AWSSecretAccessKey,
+	}
+	if err := checkAWSIAMAllowed(info, who); err != nil {
+		return nil, err
+	}
+	return info, nil
 }
 
 // errSQLiteRestricted is returned for a non-superuser's SQLite connection

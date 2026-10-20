@@ -187,7 +187,7 @@ links, the Help menu) open in your default web browser. Exports and <em>Export a
 the native <em>Save As</em> dialog, so you choose where the file goes directly — see
 <a href="writing_sql_queries.html">Writing SQL Queries</a>.</p>
 <h4>macOS: sandbox, previous data and <code>.pgpass</code></h4>
-<p>The macOS app runs in the App Sandbox, which gives it its own private home folder. Two
+<p>The macOS app runs in the App Sandbox, which gives it its own private home folder. Three
 consequences:</p>
 <ul>
 <li><strong>Data from an earlier, non-sandboxed install</strong> in <code>~/.omnidb</code> is not
@@ -201,6 +201,11 @@ and OmniDB remembers the permission, so every later PostgreSQL connection looks 
 there, just as <code>psql</code> would. <em>Import connections from .pgpass…</em> in the
 Connections section grants the same access. See
 <a href="creating_users_and_connections.html">Creating Users and Connections</a>.</li>
+<li><strong><code>~/.aws</code></strong> is not readable until you allow it either. A connection
+using AWS IAM authentication with an AWS profile shows <em>Allow access to ~/.aws…</em> in its form:
+pick your <code>.aws</code> folder once (the dialog opens in it) and OmniDB remembers the permission,
+reading the same config, credentials and SSO token cache the AWS CLI uses. Only the signed database
+token ever leaves the app's own process, never your AWS credentials.</li>
 </ul>
 		</main>
 	</div>

@@ -25,7 +25,19 @@ type testConnectionRequest struct {
 	ConnString   string            `json:"connstring"`
 	Public       bool              `json:"public"`
 	TempPassword *string           `json:"temp_password"`
+	AuthMethod   string            `json:"auth_method"`
+	AWS          awsRequestData    `json:"aws"`
 	Tunnel       tunnelRequestData `json:"tunnel"`
+}
+
+// awsRequestData is the connection form's AWS IAM authentication block
+// (see aws_iam_auth.go). A blank SecretAccessKey means "keep the stored
+// one", like every other secret field here.
+type awsRequestData struct {
+	Region          string `json:"region"`
+	Profile         string `json:"profile"`
+	AccessKeyID     string `json:"access_key_id"`
+	SecretAccessKey string `json:"secret_access_key"`
 }
 
 type tunnelRequestData struct {
@@ -82,6 +94,13 @@ func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest, who *W
 			req.Database = conn.Database
 			req.User = conn.Username
 			req.ConnString = conn.ConnString
+			req.AuthMethod = conn.AuthMethod
+			req.AWS = awsRequestData{
+				Region:          conn.AWSRegion,
+				Profile:         conn.AWSProfile,
+				AccessKeyID:     conn.AWSAccessKeyID,
+				SecretAccessKey: conn.AWSSecretAccessKey,
+			}
 			req.Tunnel = tunnelRequestData{
 				Enabled: conn.UseTunnel,
 				Server:  conn.SSHServer,
@@ -102,6 +121,11 @@ func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest, who *W
 		}
 		if req.Tunnel.Key == "" {
 			sshKey = conn.SSHKey
+		}
+		// The stored secret only belongs with the stored key id -- a key id
+		// typed into the form replaces both.
+		if req.AWS.SecretAccessKey == "" && req.AWS.AccessKeyID == conn.AWSAccessKeyID {
+			req.AWS.SecretAccessKey = conn.AWSSecretAccessKey
 		}
 	}
 	if req.TempPassword != nil {
@@ -191,6 +215,12 @@ func runTestConnection(lang string, req *testConnectionRequest, password, sshPas
 		Username:   req.User,
 		Password:   password,
 		ConnString: req.ConnString,
+
+		AuthMethod:         req.AuthMethod,
+		AWSRegion:          req.AWS.Region,
+		AWSProfile:         req.AWS.Profile,
+		AWSAccessKeyID:     req.AWS.AccessKeyID,
+		AWSSecretAccessKey: req.AWS.SecretAccessKey,
 	}
 
 	if req.Tunnel.Enabled {
@@ -210,6 +240,8 @@ func runTestConnection(lang string, req *testConnectionRequest, password, sshPas
 		if err != nil {
 			return err.Error(), true
 		}
+		info.IAMEndpointHost = req.Server
+		info.IAMEndpointPort = req.Port
 		info.Server = host
 		info.Port = port
 	}
@@ -269,6 +301,11 @@ func handleTestConnection(upstream *url.URL) http.HandlerFunc {
 				writeEnvelope(w, err.Error(), true, -1)
 				return
 			}
+		}
+
+		if req.AuthMethod == authMethodAWSIAM && req.AWS.AccessKeyID == "" && awsIAMSupported(req.Type) && !awsProfileAllowedFor(who) {
+			writeEnvelope(w, errAWSProfileRestricted.Error(), true, -1)
+			return
 		}
 
 		message, isError := runTestConnection(lang, &req, password, sshPassword, sshKey)

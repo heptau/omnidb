@@ -596,6 +596,7 @@ func handleGetDatabaseList(upstream *url.URL) http.HandlerFunc {
 				"v_port":            d.Port,
 				"v_username":        d.Username,
 				"v_pgpass_database": d.PgpassDatabase,
+				"v_aws_iam":         d.AWSIAM,
 			})
 		}
 		terminalList := make([]map[string]any, 0, len(terminals))

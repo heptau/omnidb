@@ -188,7 +188,7 @@ Willkommensseite, das Menü Hilfe) öffnen sich in Ihrem Standard-Webbrowser. Ex
 exportieren</em> öffnen den nativen Dialog <em>Speichern unter</em>, sodass Sie direkt wählen, wohin die
 Datei geschrieben wird — siehe <a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>.</p>
 <h4>macOS: Sandbox, frühere Daten und <code>.pgpass</code></h4>
-<p>Die macOS-App läuft in der App Sandbox, die ihr einen eigenen, privaten Home-Ordner gibt. Das hat zwei
+<p>Die macOS-App läuft in der App Sandbox, die ihr einen eigenen, privaten Home-Ordner gibt. Das hat drei
 Folgen:</p>
 <ul>
 <li><strong>Daten einer früheren, nicht sandboxed Installation</strong> in <code>~/.omnidb</code> sind
@@ -203,6 +203,12 @@ diesem Dialog angezeigt), und OmniDB merkt sich die Berechtigung, sodass jede sp
 ihr Passwort dort nachschlägt — genau wie <code>psql</code>. <em>Verbindungen aus .pgpass importieren…</em>
 im Bereich Verbindungen gewährt denselben Zugriff. Siehe
 <a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>.</li>
+<li><strong><code>~/.aws</code></strong> ist ebenfalls erst lesbar, wenn Sie es erlauben. Eine
+Verbindung mit AWS-IAM-Authentifizierung über ein AWS-Profil zeigt in ihrem Formular <em>Zugriff auf
+~/.aws erlauben…</em>: Wählen Sie einmal Ihren Ordner <code>.aws</code> (der Dialog öffnet sich darin),
+und OmniDB merkt sich die Berechtigung; gelesen werden dieselbe Konfiguration, dieselben Credentials und
+derselbe SSO-Token-Cache wie bei der AWS CLI. Nur das signierte Datenbank-Token verlässt den Prozess der
+App, nie Ihre AWS-Anmeldedaten.</li>
 </ul>
 		</main>
 	</div>

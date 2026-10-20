@@ -191,7 +191,7 @@ di benvenuto, il menu Aiuto) si aprono nel browser web predefinito. Le esportazi
 direttamente dove salvare il file — vedi <a href="writing_sql_queries.html">Scrittura di query
 SQL</a>.</p>
 <h4>macOS: sandbox, dati precedenti e <code>.pgpass</code></h4>
-<p>L’app per macOS gira nella App Sandbox, che le assegna una propria cartella home privata. Due
+<p>L’app per macOS gira nella App Sandbox, che le assegna una propria cartella home privata. Tre
 conseguenze:</p>
 <ul>
 <li><strong>I dati di una precedente installazione non sandbox</strong> in <code>~/.omnidb</code>
@@ -206,6 +206,12 @@ quella finestra i file nascosti sono visibili) e OmniDB ricorda il permesso, cos
 connessione PostgreSQL cerca lì la propria password, proprio come farebbe <code>psql</code>.
 <em>Importa connessioni da .pgpass…</em> nella sezione Connessioni concede lo stesso accesso.
 Vedi <a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>.</li>
+<li><strong><code>~/.aws</code></strong> non è leggibile finché non lo consenti. Una connessione
+con autenticazione AWS IAM tramite un profilo AWS mostra nel suo modulo <em>Consenti l'accesso a
+~/.aws…</em>: seleziona una volta la tua cartella <code>.aws</code> (la finestra si apre già lì) e
+OmniDB ricorda il permesso, leggendo la stessa configurazione, le stesse credenziali e la stessa cache dei
+token SSO dell'AWS CLI. Esce dal processo dell'app solo il token del database firmato, mai le tue
+credenziali AWS.</li>
 </ul>
 		</main>
 	</div>
