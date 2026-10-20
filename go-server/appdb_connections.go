@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -58,6 +59,11 @@ type appConnection struct {
 	AWSProfile         string
 	AWSAccessKeyID     string
 	AWSSecretAccessKey string
+	// OAuth token authentication -- see oauth_auth.go. Used when AuthMethod
+	// is authMethodOAuth; OAuthSecret is the decrypted static token or
+	// client secret.
+	OAuth       oauthConfig
+	OAuthSecret string
 }
 
 // appConnectionColumns/scanAppConnection are the shared column list and
@@ -66,14 +72,17 @@ type appConnection struct {
 const appConnectionColumns = `c.id, c.user_id, c.public, t.name, c.alias, c.conn_string,
 	c.server, c.port, c.database, c.username, c.password,
 	c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key, c.environment,
-	c.auth_method, c.aws_region, c.aws_profile, c.aws_access_key_id, c.aws_secret_access_key`
+	c.auth_method, c.aws_region, c.aws_profile, c.aws_access_key_id, c.aws_secret_access_key,
+	c.oauth_config, c.oauth_secret`
 
 func scanAppConnection(row interface{ Scan(...any) error }) (*appConnection, error) {
 	var c appConnection
+	var oauthJSON string
 	if err := row.Scan(&c.ID, &c.OwnerID, &c.Public, &c.Technology, &c.Alias, &c.ConnString,
 		&c.Server, &c.Port, &c.Database, &c.Username, &c.Password,
 		&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment,
-		&c.AuthMethod, &c.AWSRegion, &c.AWSProfile, &c.AWSAccessKeyID, &c.AWSSecretAccessKey); err != nil {
+		&c.AuthMethod, &c.AWSRegion, &c.AWSProfile, &c.AWSAccessKeyID, &c.AWSSecretAccessKey,
+		&oauthJSON, &c.OAuthSecret); err != nil {
 		return nil, err
 	}
 	var err error
@@ -82,6 +91,14 @@ func scanAppConnection(row interface{ Scan(...any) error }) (*appConnection, err
 	}
 	if c.AWSSecretAccessKey, err = decryptSecret(c.AWSSecretAccessKey); err != nil {
 		return nil, fmt.Errorf("decrypt aws_secret_access_key: %w", err)
+	}
+	if c.OAuthSecret, err = decryptSecret(c.OAuthSecret); err != nil {
+		return nil, fmt.Errorf("decrypt oauth_secret: %w", err)
+	}
+	if oauthJSON != "" {
+		if err := json.Unmarshal([]byte(oauthJSON), &c.OAuth); err != nil {
+			return nil, fmt.Errorf("parse oauth_config: %w", err)
+		}
 	}
 	return &c, nil
 }
@@ -300,6 +317,10 @@ type saveConnectionInput struct {
 	AWSProfile         string
 	AWSAccessKeyID     string
 	AWSSecretAccessKey string
+	// OAuth/OAuthSecret: see appConnection. A blank OAuthSecret keeps the
+	// stored one on update (unless the mode no longer uses one).
+	OAuth       oauthConfig
+	OAuthSecret string
 }
 
 // saveConnection mirrors save_connection's insert/update branch. Unlike the
@@ -313,8 +334,32 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 		return 0, err
 	}
 
-	if in.AuthMethod != "" && in.AuthMethod != authMethodAWSIAM {
+	if in.AuthMethod != "" && in.AuthMethod != authMethodAWSIAM && in.AuthMethod != authMethodOAuth {
 		return 0, fmt.Errorf("unknown authentication method %q", in.AuthMethod)
+	}
+	oauthJSON := ""
+	if in.AuthMethod == authMethodOAuth {
+		if !oauthSupported(in.Technology) {
+			return 0, fmt.Errorf("OAuth authentication is not available for %s", in.Technology)
+		}
+		if err := in.OAuth.validate(in.OAuthSecret); err != nil {
+			return 0, err
+		}
+		if in.OAuth.Mode == oauthModeCommand {
+			in.OAuth.TokenURL, in.OAuth.ClientID, in.OAuth.Scope = "", "", ""
+		} else {
+			in.OAuth.Command = ""
+		}
+		b, err := json.Marshal(in.OAuth)
+		if err != nil {
+			return 0, err
+		}
+		oauthJSON = string(b)
+	}
+	// Only the token and client-credentials modes keep a secret.
+	oauthUsesSecret := in.AuthMethod == authMethodOAuth && in.OAuth.Mode != oauthModeCommand
+	if !oauthUsesSecret {
+		in.OAuthSecret = ""
 	}
 	if in.AuthMethod == "" || in.AWSAccessKeyID == "" {
 		in.AWSAccessKeyID = ""
@@ -326,6 +371,10 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 		if err != nil {
 			return 0, err
 		}
+		encOAuthSecret, err := encryptSecret(in.OAuthSecret)
+		if err != nil {
+			return 0, err
+		}
 		encPassword, encSSHPassword, encSSHKey, err := encryptConnectionSecrets(in.Password, in.SSHPassword, in.SSHKey)
 		if err != nil {
 			return 0, err
@@ -334,11 +383,13 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 			insert into OmniDB_app_connection
 				(user_id, technology_id, server, port, database, username, password, alias,
 				 ssh_server, ssh_port, ssh_user, ssh_password, ssh_key, use_tunnel, conn_string, public, environment,
-				 auth_method, aws_region, aws_profile, aws_access_key_id, aws_secret_access_key)
-			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				 auth_method, aws_region, aws_profile, aws_access_key_id, aws_secret_access_key,
+				 oauth_config, oauth_secret)
+			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		`, userID, techID, in.Server, in.Port, in.Database, in.Username, encPassword, in.Alias,
 			in.SSHServer, in.SSHPort, in.SSHUser, encSSHPassword, encSSHKey, in.UseTunnel, in.ConnString, in.Public, in.Environment,
-			in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID, encAWSSecret)
+			in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID, encAWSSecret,
+			oauthJSON, encOAuthSecret)
 		if err != nil {
 			return 0, err
 		}
@@ -356,12 +407,12 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 	setParts := []string{
 		"technology_id = ?", "server = ?", "port = ?", "database = ?", "username = ?", "alias = ?",
 		"ssh_server = ?", "ssh_port = ?", "ssh_user = ?", "use_tunnel = ?", "conn_string = ?", "public = ?", "environment = ?",
-		"auth_method = ?", "aws_region = ?", "aws_profile = ?", "aws_access_key_id = ?",
+		"auth_method = ?", "aws_region = ?", "aws_profile = ?", "aws_access_key_id = ?", "oauth_config = ?",
 	}
 	args := []any{
 		techID, in.Server, in.Port, in.Database, in.Username, in.Alias,
 		in.SSHServer, in.SSHPort, in.SSHUser, in.UseTunnel, in.ConnString, in.Public, in.Environment,
-		in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID,
+		in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID, oauthJSON,
 	}
 	if in.AWSAccessKeyID == "" {
 		setParts = append(setParts, "aws_secret_access_key = ''")
@@ -371,6 +422,16 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 			return 0, err
 		}
 		setParts = append(setParts, "aws_secret_access_key = ?")
+		args = append(args, enc)
+	}
+	if !oauthUsesSecret {
+		setParts = append(setParts, "oauth_secret = ''")
+	} else if in.OAuthSecret != "" {
+		enc, err := encryptSecret(in.OAuthSecret)
+		if err != nil {
+			return 0, err
+		}
+		setParts = append(setParts, "oauth_secret = ?")
 		args = append(args, enc)
 	}
 	if in.Password != "" {

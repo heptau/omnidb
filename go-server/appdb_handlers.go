@@ -117,6 +117,22 @@ func handleGetConnections(upstream *url.URL) http.HandlerFunc {
 					"access_key_id": accessKeyID,
 					"secret":        c.AWSSecretAccessKey != "",
 				}
+				oauth := c.OAuth
+				if c.OwnerID != int64(who.UserID) {
+					// A shared connection's other users only need to know how
+					// it authenticates, not the owner's command/endpoints.
+					oauth = oauthConfig{Preset: oauth.Preset, Mode: oauth.Mode, Delivery: oauth.Delivery}
+				}
+				obj["oauth"] = map[string]any{
+					"preset":    oauth.Preset,
+					"mode":      oauth.Mode,
+					"delivery":  oauth.Delivery,
+					"command":   oauth.Command,
+					"token_url": oauth.TokenURL,
+					"client_id": oauth.ClientID,
+					"scope":     oauth.Scope,
+					"secret":    c.OAuthSecret != "",
+				}
 			}
 			connList = append(connList, obj)
 		}
@@ -331,6 +347,7 @@ type saveConnectionRequest struct {
 	Environment string            `json:"environment"`
 	AuthMethod  string            `json:"auth_method"`
 	AWS         awsRequestData    `json:"aws"`
+	OAuth       oauthRequestData  `json:"oauth"`
 	Tunnel      tunnelRequestData `json:"tunnel"`
 }
 
@@ -380,6 +397,8 @@ func handleSaveConnection(upstream *url.URL) http.HandlerFunc {
 			AWSProfile:         req.AWS.Profile,
 			AWSAccessKeyID:     req.AWS.AccessKeyID,
 			AWSSecretAccessKey: req.AWS.SecretAccessKey,
+			OAuth:              req.OAuth.oauthConfig,
+			OAuthSecret:        req.OAuth.Secret,
 		})
 		if err != nil {
 			writeEnvelope(w, connectionLookupErrorMessage(err), true, -1)

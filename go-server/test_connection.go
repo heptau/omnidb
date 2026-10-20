@@ -27,6 +27,7 @@ type testConnectionRequest struct {
 	TempPassword *string           `json:"temp_password"`
 	AuthMethod   string            `json:"auth_method"`
 	AWS          awsRequestData    `json:"aws"`
+	OAuth        oauthRequestData  `json:"oauth"`
 	Tunnel       tunnelRequestData `json:"tunnel"`
 }
 
@@ -101,6 +102,7 @@ func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest, who *W
 				AccessKeyID:     conn.AWSAccessKeyID,
 				SecretAccessKey: conn.AWSSecretAccessKey,
 			}
+			req.OAuth = oauthRequestData{oauthConfig: conn.OAuth, Secret: conn.OAuthSecret}
 			req.Tunnel = tunnelRequestData{
 				Enabled: conn.UseTunnel,
 				Server:  conn.SSHServer,
@@ -126,6 +128,12 @@ func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest, who *W
 		// typed into the form replaces both.
 		if req.AWS.SecretAccessKey == "" && req.AWS.AccessKeyID == conn.AWSAccessKeyID {
 			req.AWS.SecretAccessKey = conn.AWSSecretAccessKey
+		}
+		// Likewise the stored OAuth secret, as long as the form still
+		// points at the same identity provider / client.
+		if req.OAuth.Secret == "" && conn.AuthMethod == authMethodOAuth &&
+			req.OAuth.Mode == conn.OAuth.Mode && req.OAuth.ClientID == conn.OAuth.ClientID && req.OAuth.TokenURL == conn.OAuth.TokenURL {
+			req.OAuth.Secret = conn.OAuthSecret
 		}
 	}
 	if req.TempPassword != nil {
@@ -221,6 +229,8 @@ func runTestConnection(lang string, req *testConnectionRequest, password, sshPas
 		AWSProfile:         req.AWS.Profile,
 		AWSAccessKeyID:     req.AWS.AccessKeyID,
 		AWSSecretAccessKey: req.AWS.SecretAccessKey,
+		OAuth:              req.OAuth.oauthConfig,
+		OAuthSecret:        req.OAuth.Secret,
 	}
 
 	if req.Tunnel.Enabled {
@@ -306,6 +316,17 @@ func handleTestConnection(upstream *url.URL) http.HandlerFunc {
 		if req.AuthMethod == authMethodAWSIAM && req.AWS.AccessKeyID == "" && awsIAMSupported(req.Type) && !awsProfileAllowedFor(who) {
 			writeEnvelope(w, errAWSProfileRestricted.Error(), true, -1)
 			return
+		}
+
+		if req.AuthMethod == authMethodOAuth && oauthSupported(req.Type) {
+			if err := req.OAuth.validate(req.OAuth.Secret); err != nil {
+				writeEnvelope(w, err.Error(), true, -1)
+				return
+			}
+			if req.OAuth.Mode == oauthModeCommand && !oauthCommandAllowedFor(who) {
+				writeEnvelope(w, errOAuthCommandRestricted.Error(), true, -1)
+				return
+			}
 		}
 
 		message, isError := runTestConnection(lang, &req, password, sshPassword, sshKey)

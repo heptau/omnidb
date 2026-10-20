@@ -276,6 +276,30 @@ sandboxed macOS app, profile credentials need a one-time <em>Allow access to ~/.
 form — see <a href="desktop_app.html">Desktop App</a>. On a multi-user OmniDB server, profile
 credentials mean the server's own AWS identity and are limited to superusers; everyone can use a
 stored access key.</p>
+<h4>Using OAuth / access token authentication</h4>
+<p>For PostgreSQL, tick <em>Use OAuth / access token authentication</em> in the connection's form.
+Instead of a password, OmniDB then gets an access token for every new connection and sends it to the
+server. The password field is disabled and the connection is always encrypted.</p>
+<ul>
+<li><em>Token source</em>: <em>Command</em> runs a shell command that prints the token (or JSON with an
+<code>access_token</code> field), e.g. <code>az account get-access-token --resource-type oss-rdbms
+--query accessToken --output tsv</code>; it runs on the machine where OmniDB runs, so on a multi-user
+server only superusers may use it. <em>Static token</em> stores a token with the connection (encrypted
+like a password; it expires, so this is mostly for testing). <em>Client credentials</em> uses the OAuth
+2.0 client credentials grant with a token URL (<code>https</code>), client ID, scope and a client secret
+stored encrypted; tokens are cached until shortly before they expire.</li>
+<li><em>Send token as</em>: <em>OAUTHBEARER</em> is PostgreSQL 18's native OAuth mechanism — the server
+needs a validator module in <code>oauth_validator_libraries</code> and a <code>oauth</code> entry in
+<code>pg_hba.conf</code>. <em>Password</em> is what Azure Database for PostgreSQL (Entra ID) and Google
+Cloud SQL (IAM) expect.</li>
+<li><em>Preset</em>: <em>Azure Entra ID (Azure CLI)</em>, <em>Azure Entra ID (service principal)</em> (fill
+in your tenant ID, client ID and secret) and <em>Google Cloud SQL IAM (gcloud)</em> fill in the fields above;
+the database user name is your Entra ID / IAM identity. Run <code>az login</code> or <code>gcloud auth
+login</code> first.</li>
+</ul>
+<p>The desktop app finds <code>az</code>/<code>gcloud</code> in the usual install locations
+(Homebrew, <code>~/.local/bin</code>); a token command can't use tools the macOS sandbox hides from the
+app, in which case use <em>Client credentials</em> instead.</p>
 <h4>Using SSH tunnels</h4>
 <p>OmniDB allows the user to connect to any remote database through SSH tunnels. Tick <em>Use SSH
 tunnel</em> in the connection's own form — that enables the fields below it:</p>

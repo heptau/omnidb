@@ -33,6 +33,9 @@ type ConnectionInfo struct {
 	// end instead (see awsIAMEndpoint).
 	IAMEndpointHost string `json:"-"`
 	IAMEndpointPort string `json:"-"`
+	// OAuth token authentication -- see oauth_auth.go.
+	OAuth       oauthConfig `json:"-"`
+	OAuthSecret string      `json:"-"`
 }
 
 // resolveConnection resolves the raw saved-connection row behind a
@@ -97,8 +100,13 @@ func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*
 		AWSProfile:         c.AWSProfile,
 		AWSAccessKeyID:     c.AWSAccessKeyID,
 		AWSSecretAccessKey: c.AWSSecretAccessKey,
+		OAuth:              c.OAuth,
+		OAuthSecret:        c.OAuthSecret,
 	}
 	if err := checkAWSIAMAllowed(info, who); err != nil {
+		return nil, err
+	}
+	if err := checkOAuthAllowed(info, who); err != nil {
 		return nil, err
 	}
 	return info, nil

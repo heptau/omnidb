@@ -93,6 +93,8 @@ type databaseListEntry struct {
 	// token -- passwords.js shows the auth error instead of a password
 	// prompt for it, since no typed password could help.
 	AWSIAM bool
+	// OAuth is the same for a token-authenticated connection (oauth_auth.go).
+	OAuth bool
 }
 
 // resolvePgpassMatchFields returns the discrete host/port/user/database
@@ -200,6 +202,7 @@ func buildDatabaseList(conns []appConnection, viewerID int64) (databases []datab
 			Username:       username,
 			PgpassDatabase: pgpassDatabase,
 			AWSIAM:         c.AuthMethod == authMethodAWSIAM && awsIAMSupported(c.Technology),
+			OAuth:          c.AuthMethod == authMethodOAuth && oauthSupported(c.Technology),
 		})
 	}
 	return databases, terminals

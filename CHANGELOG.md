@@ -30,6 +30,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   AWS credentials never reach the backend process. On a multi-user server, profile credentials (the server's own AWS
   identity) are restricted to superusers. New app-database columns are added automatically on startup. Translated in
   all nine languages and documented.
+- OAuth / access-token authentication for PostgreSQL connections: tick "Use OAuth / access token authentication" in
+  the connection form and OmniDB obtains a token for every new physical connection instead of sending a password. The
+  token comes from a command (anything that prints it, e.g. `az account get-access-token`, `gcloud auth
+  print-access-token`), a static token stored with the connection, or the OAuth 2.0 client credentials grant (token
+  URL, client ID, scope, secret; tokens are cached until shortly before they expire). It is sent either through
+  PostgreSQL 18's native OAUTHBEARER SASL mechanism or as the password, which is how Azure Database for PostgreSQL
+  (Entra ID) and Cloud SQL (IAM) take theirs; presets for Azure CLI, Azure service principal and gcloud fill the form
+  in. Secrets are encrypted like passwords, the connection always uses TLS and an auth failure shows the error instead
+  of a password prompt. A token command runs on the OmniDB host, so on a multi-user server it is restricted to
+  superusers; token URLs must be https (plain http only on localhost). New app-database columns are added
+  automatically on startup. Translated in all nine languages; documented in English and Czech.
 
 ### Changed
 

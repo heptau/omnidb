@@ -30,6 +30,8 @@ import {
   testConnection,
   toggleConnectionsPublic,
   updateAWSIAMFields,
+  updateOAuthFields,
+  oauthPresetChanged,
   updateConnectionKey,
   updateModalEditConnectionState,
 } from './connections.js'
@@ -172,6 +174,25 @@ for (const id of [
   bind(id, 'input', updateModalEditConnectionState)
 }
 bind('conn_form_aws_credentials', 'change', () => updateAWSIAMFields())
+bind('conn_form_use_oauth', 'input', () => updateOAuthFields('oauth'))
+bind('conn_form_oauth_preset', 'change', () => oauthPresetChanged())
+bind('conn_form_oauth_mode', 'change', () => {
+  const preset = document.getElementById('conn_form_oauth_preset')
+  if (preset instanceof HTMLSelectElement) preset.value = 'custom'
+  updateOAuthFields()
+})
+for (const id of [
+  'conn_form_oauth_delivery',
+  'conn_form_oauth_command',
+  'conn_form_oauth_token_url',
+  'conn_form_oauth_client_id',
+  'conn_form_oauth_scope',
+]) {
+  bind(id, 'input', () => {
+    const preset = document.getElementById('conn_form_oauth_preset')
+    if (preset instanceof HTMLSelectElement) preset.value = 'custom'
+  })
+}
 bind('conn_form_aws_grant_button', 'click', () => grantAWSConfigAccess())
 bind('conn_form_ssh_password', 'input', updateConnectionKey)
 bind('conn_form_ssh_key_input', 'change', updateConnectionKey)

@@ -80,7 +80,7 @@ func TestRequirePostgreSQLTLSDropsPlaintextFallbacks(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if err := requirePostgreSQLTLS(cfg); err != nil {
+		if err := requirePostgreSQLTLS(cfg, "AWS IAM authentication"); err != nil {
 			t.Fatalf("sslmode=%s: %v", mode, err)
 		}
 		if cfg.TLSConfig == nil {
@@ -93,7 +93,7 @@ func TestRequirePostgreSQLTLSDropsPlaintextFallbacks(t *testing.T) {
 		}
 	}
 	cfg, _ := pgx.ParseConfig("postgres://u@db.example.com:5432/db?sslmode=disable")
-	if err := requirePostgreSQLTLS(cfg); err == nil {
+	if err := requirePostgreSQLTLS(cfg, "AWS IAM authentication"); err == nil {
 		t.Fatal("sslmode=disable should be rejected")
 	}
 }

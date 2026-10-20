@@ -262,6 +262,10 @@ For Amazon RDS and Aurora (PostgreSQL, MySQL, MariaDB), tick Use AWS IAM authent
 
 The database user has to allow IAM logins (`GRANT rds_iam TO user` on PostgreSQL, `IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS'` on MySQL/MariaDB), and your AWS identity needs the `rds-db:connect` permission for it. The connection is always encrypted: a PostgreSQL connection string with `sslmode=disable` is refused, and the server certificate is verified only if you ask for it (`sslmode=verify-full` with `sslrootcert` pointing at the RDS CA bundle). In the sandboxed macOS app, profile credentials need a one-time Allow access to ~/.aws… in the form — see Desktop App. On a multi-user OmniDB server, profile credentials mean the server's own AWS identity and are limited to superusers; everyone can use a stored access key.
 
+**Using OAuth / access token authentication**
+
+For PostgreSQL, tick Use OAuth / access token authentication in the connection's form. Instead of a password, OmniDB gets an access token for every new connection and sends it to the server; the connection is always encrypted. Token source: Command (a shell command printing the token, e.g. `az account get-access-token --resource-type oss-rdbms --query accessToken --output tsv`; superusers only on a multi-user server), Static token (stored encrypted), or Client credentials (OAuth 2.0 grant: https token URL, client ID, scope, encrypted secret; tokens cached until shortly before expiry). Send token as: OAUTHBEARER (PostgreSQL 18's native mechanism; the server needs a validator module in oauth_validator_libraries and an oauth entry in pg_hba.conf) or Password (what Azure Database for PostgreSQL and Cloud SQL expect). Presets: Azure Entra ID (Azure CLI), Azure Entra ID (service principal), Google Cloud SQL IAM (gcloud).
+
 **Using SSH tunnels**
 
 OmniDB allows the user to connect to any remote database through SSH tunnels. Tick Use SSH tunnel in the connection's own form — that enables the fields below it:

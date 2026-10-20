@@ -1242,6 +1242,14 @@
     }
     return false;
   }
+  function usesOAuth(p_database_index) {
+    var v_connections = v_connTabControl && v_connTabControl.tag ? v_connTabControl.tag.connections : null;
+    if (!v_connections) return false;
+    for (var i2 = 0; i2 < v_connections.length; i2++) {
+      if (v_connections[i2].v_conn_id == p_database_index) return !!v_connections[i2].v_oauth;
+    }
+    return false;
+  }
   function resolvePgpassLookupInfo(p_database_index) {
     var v_connections = v_connTabControl && v_connTabControl.tag ? v_connTabControl.tag.connections : null;
     if (!v_connections) return null;
@@ -1271,6 +1279,11 @@
   function showPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_message, p_send_tab_id = true) {
     if (usesAWSIAM(p_database_index)) {
       showError(p_message || t$1("passwords.aws_iam_failed"));
+      if (p_cancel_callback_function) p_cancel_callback_function();
+      return;
+    }
+    if (usesOAuth(p_database_index)) {
+      showError(p_message || t$1("passwords.oauth_failed"));
       if (p_cancel_callback_function) p_cancel_callback_function();
       return;
     }
@@ -37091,8 +37104,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       user: el("conn_form_user").value,
       password: el("conn_form_user_pass").value,
       temp_password: p_password,
-      auth_method: awsIAMAuthMethod(),
+      auth_method: authMethodValue(),
       aws: awsIAMRequestData(),
+      oauth: oauthRequestData(),
       tunnel: {
         enabled: el("conn_form_use_tunnel").checked,
         server: el("conn_form_ssh_server").value,
@@ -37109,7 +37123,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         showAlert$1(p_return.v_data);
       },
       function(p_return) {
-        if (awsIAMAuthMethod()) {
+        if (authMethodValue()) {
           showAlert$1(p_return.v_data);
           return;
         }
@@ -37165,8 +37179,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       user: el("conn_form_user").value,
       password: el("conn_form_user_pass").value,
       title: el("conn_form_title").value,
-      auth_method: awsIAMAuthMethod(),
+      auth_method: authMethodValue(),
       aws: awsIAMRequestData(),
+      oauth: oauthRequestData(),
       tunnel: {
         enabled: el("conn_form_use_tunnel").checked,
         server: el("conn_form_ssh_server").value,
@@ -37467,6 +37482,17 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     el("conn_form_aws_access_key_id").value = v_aws.access_key_id || "";
     el("conn_form_aws_secret_access_key").value = "";
     setStoredSecretIcon("conn_form_aws_secret_access_key", !!v_aws.secret);
+    var v_oauth = p_conn_obj.oauth || {};
+    el("conn_form_use_oauth").checked = p_conn_obj.auth_method === "oauth";
+    el("conn_form_oauth_preset").value = v_oauth.preset || "custom";
+    el("conn_form_oauth_mode").value = v_oauth.mode || "command";
+    el("conn_form_oauth_delivery").value = v_oauth.delivery || "oauthbearer";
+    el("conn_form_oauth_command").value = v_oauth.command || "";
+    el("conn_form_oauth_token_url").value = v_oauth.token_url || "";
+    el("conn_form_oauth_client_id").value = v_oauth.client_id || "";
+    el("conn_form_oauth_scope").value = v_oauth.scope || "";
+    el("conn_form_oauth_secret").value = "";
+    setStoredSecretIcon("conn_form_oauth_secret", !!v_oauth.secret);
     let v_enable_list = [];
     let v_disable_list = [];
     if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
@@ -37570,6 +37596,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     }
     updateModalEditConnectionFields(v_disable_list, v_enable_list);
     updateAWSIAMFields();
+    updateOAuthFields();
     showConnectionDetail(p_conn_obj, false);
   }
   function newConnection() {
@@ -37603,6 +37630,10 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     el("conn_form_aws_access_key_id").value = "";
     el("conn_form_aws_secret_access_key").value = "";
     setStoredSecretIcon("conn_form_aws_secret_access_key", false);
+    el("conn_form_use_oauth").checked = false;
+    applyOAuthPreset("custom");
+    el("conn_form_oauth_secret").value = "";
+    setStoredSecretIcon("conn_form_oauth_secret", false);
     el("conn_form_user_pass_check_icon")?.remove();
     el("conn_form_ssh_password_check_icon")?.remove();
     el("conn_form_ssh_key_check_icon")?.remove();
@@ -37777,6 +37808,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     }
     updateModalEditConnectionFields(v_disable_list, v_enable_list, v_form_cases);
     updateAWSIAMFields();
+    updateOAuthFields();
   }
   const AWS_IAM_TECHNOLOGIES = ["postgresql", "mysql", "mariadb"];
   function awsIAMAuthMethod() {
@@ -37791,6 +37823,97 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       secret_access_key: v_access_key ? el("conn_form_aws_secret_access_key").value : ""
     };
   }
+  const OAUTH_PRESETS = {
+    custom: { mode: "command", delivery: "oauthbearer", command: "", token_url: "", scope: "" },
+    azure_cli: {
+      mode: "command",
+      delivery: "password",
+      command: "az account get-access-token --resource-type oss-rdbms --query accessToken --output tsv",
+      token_url: "",
+      scope: ""
+    },
+    azure_sp: {
+      mode: "client_credentials",
+      delivery: "password",
+      command: "",
+      token_url: "https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/token",
+      scope: "https://ossrdbms-aad.database.windows.net/.default"
+    },
+    gcp_cli: {
+      mode: "command",
+      delivery: "password",
+      command: "gcloud auth print-access-token",
+      token_url: "",
+      scope: ""
+    }
+  };
+  function oauthAuthMethod() {
+    return el("conn_form_type").value === "postgresql" && el("conn_form_use_oauth").checked ? "oauth" : "";
+  }
+  function authMethodValue() {
+    return oauthAuthMethod() || awsIAMAuthMethod();
+  }
+  function oauthRequestData() {
+    var v_mode = el("conn_form_oauth_mode").value;
+    var v_cc = v_mode === "client_credentials";
+    return {
+      preset: el("conn_form_oauth_preset").value,
+      mode: v_mode,
+      delivery: el("conn_form_oauth_delivery").value,
+      command: v_mode === "command" ? el("conn_form_oauth_command").value.trim() : "",
+      token_url: v_cc ? el("conn_form_oauth_token_url").value.trim() : "",
+      client_id: v_cc ? el("conn_form_oauth_client_id").value.trim() : "",
+      scope: v_cc ? el("conn_form_oauth_scope").value.trim() : "",
+      secret: v_mode === "command" ? "" : el("conn_form_oauth_secret").value
+    };
+  }
+  function applyOAuthPreset(p_preset) {
+    var v_preset = OAUTH_PRESETS[p_preset] || OAUTH_PRESETS.custom;
+    el("conn_form_oauth_preset").value = OAUTH_PRESETS[p_preset] ? p_preset : "custom";
+    el("conn_form_oauth_mode").value = v_preset.mode;
+    el("conn_form_oauth_delivery").value = v_preset.delivery;
+    el("conn_form_oauth_command").value = v_preset.command;
+    el("conn_form_oauth_token_url").value = v_preset.token_url;
+    el("conn_form_oauth_client_id").value = "";
+    el("conn_form_oauth_scope").value = v_preset.scope;
+  }
+  function oauthPresetChanged() {
+    applyOAuthPreset(el("conn_form_oauth_preset").value);
+    updateOAuthFields();
+  }
+  function updateOAuthFields(p_changed) {
+    var v_supported = el("conn_form_type").value === "postgresql";
+    el("conn_form_oauth_card").style.display = v_supported ? "" : "none";
+    if (p_changed === "oauth" && el("conn_form_use_oauth").checked) {
+      el("conn_form_use_aws_iam").checked = false;
+      updateAWSIAMFields();
+    }
+    var v_on = v_supported && el("conn_form_use_oauth").checked;
+    var v_mode = el("conn_form_oauth_mode").value;
+    el("conn_form_oauth_command_row").style.display = v_mode === "command" ? "" : "none";
+    el("conn_form_oauth_cc_row").style.display = v_mode === "client_credentials" ? "" : "none";
+    el("conn_form_oauth_secret_row").style.display = v_mode === "command" ? "none" : "";
+    el("conn_form_oauth_secret_label").textContent = v_mode === "token" ? t$1("connections.oauth_token") : t$1("connections.oauth_client_secret");
+    for (const v_id of [
+      "conn_form_oauth_preset",
+      "conn_form_oauth_mode",
+      "conn_form_oauth_delivery",
+      "conn_form_oauth_command",
+      "conn_form_oauth_token_url",
+      "conn_form_oauth_client_id",
+      "conn_form_oauth_scope",
+      "conn_form_oauth_secret"
+    ]) {
+      if (v_on) el(v_id).removeAttribute("disabled");
+      else el(v_id).setAttribute("disabled", true);
+    }
+    if (v_on) {
+      var v_pass = el("conn_form_user_pass");
+      v_pass.value = "";
+      v_pass.setAttribute("disabled", true);
+      v_pass.setAttribute("readonly", true);
+    }
+  }
   function setStoredSecretIcon(p_input_id, p_stored) {
     var v_icon_id = p_input_id + "_check_icon";
     if (!p_stored) {
@@ -37803,6 +37926,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     }
   }
   function updateAWSIAMFields() {
+    if (el("conn_form_use_aws_iam").checked && el("conn_form_use_oauth").checked && el("conn_form_type").value === "postgresql") {
+      el("conn_form_use_oauth").checked = false;
+    }
     var v_supported = AWS_IAM_TECHNOLOGIES.includes(el("conn_form_type").value);
     el("conn_form_aws_card").style.display = v_supported ? "" : "none";
     var v_on = v_supported && el("conn_form_use_aws_iam").checked;
@@ -37982,6 +38108,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     __proto__: null,
     ENVIRONMENT_META,
     adjustTechSelector,
+    applyOAuthPreset,
     connectSelectedConnection,
     deleteConnection,
     deleteGroup,
@@ -37998,6 +38125,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     newConnection,
     newGroup,
     newGroupConfirm,
+    oauthPresetChanged,
     renameGroup,
     renameGroupConfirm,
     saveConnection,
@@ -38010,7 +38138,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     updateConnectionKey,
     updateConnectionsTitleInfo,
     updateModalEditConnectionFields,
-    updateModalEditConnectionState
+    updateModalEditConnectionState,
+    updateOAuthFields
   }, Symbol.toStringTag, { value: "Module" }));
   function createOmnis() {
     return {
@@ -42765,6 +42894,25 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     bind(id, "input", updateModalEditConnectionState);
   }
   bind("conn_form_aws_credentials", "change", () => updateAWSIAMFields());
+  bind("conn_form_use_oauth", "input", () => updateOAuthFields("oauth"));
+  bind("conn_form_oauth_preset", "change", () => oauthPresetChanged());
+  bind("conn_form_oauth_mode", "change", () => {
+    const preset = document.getElementById("conn_form_oauth_preset");
+    if (preset instanceof HTMLSelectElement) preset.value = "custom";
+    updateOAuthFields();
+  });
+  for (const id of [
+    "conn_form_oauth_delivery",
+    "conn_form_oauth_command",
+    "conn_form_oauth_token_url",
+    "conn_form_oauth_client_id",
+    "conn_form_oauth_scope"
+  ]) {
+    bind(id, "input", () => {
+      const preset = document.getElementById("conn_form_oauth_preset");
+      if (preset instanceof HTMLSelectElement) preset.value = "custom";
+    });
+  }
   bind("conn_form_aws_grant_button", "click", () => grantAWSConfigAccess());
   bind("conn_form_ssh_password", "input", updateConnectionKey);
   bind("conn_form_ssh_key_input", "change", updateConnectionKey);

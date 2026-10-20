@@ -362,6 +362,19 @@ function usesAWSIAM(p_database_index) {
 }
 
 /**
+ * @param {number|string} p_database_index
+ * @returns {boolean}
+ */
+function usesOAuth(p_database_index) {
+	var v_connections = v_connTabControl && v_connTabControl.tag ? v_connTabControl.tag.connections : null;
+	if (!v_connections) return false;
+	for (var i = 0; i < v_connections.length; i++) {
+		if (v_connections[i].v_conn_id == p_database_index) return !!v_connections[i].v_oauth;
+	}
+	return false;
+}
+
+/**
  * Resolves the postgresql connection details for p_database_index (a
  * connection id, matching v_connTabControl.tag.connections[i].v_conn_id --
  * see connections.js's showConnectionList for the same lookup) into what
@@ -416,6 +429,11 @@ export function showPasswordPrompt(
 	// couldn't help (see go-server/aws_iam_auth.go).
 	if (usesAWSIAM(p_database_index)) {
 		showError(p_message || t("passwords.aws_iam_failed"));
+		if (p_cancel_callback_function) p_cancel_callback_function();
+		return;
+	}
+	if (usesOAuth(p_database_index)) {
+		showError(p_message || t("passwords.oauth_failed"));
 		if (p_cancel_callback_function) p_cancel_callback_function();
 		return;
 	}

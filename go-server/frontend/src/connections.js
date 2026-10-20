@@ -834,8 +834,9 @@ export function testConnection(p_password = null) {
 		user: el("conn_form_user").value,
 		password: el("conn_form_user_pass").value,
 		temp_password: p_password,
-		auth_method: awsIAMAuthMethod(),
+		auth_method: authMethodValue(),
 		aws: awsIAMRequestData(),
+		oauth: oauthRequestData(),
 		tunnel: {
 			enabled: el("conn_form_use_tunnel").checked,
 			server: el("conn_form_ssh_server").value,
@@ -863,7 +864,7 @@ export function testConnection(p_password = null) {
 		function (p_return) {
 			// A typed password can't fix an IAM token failure (wrong region,
 			// missing grant, expired SSO session...) -- just show the error.
-			if (awsIAMAuthMethod()) {
+			if (authMethodValue()) {
 				showAlert(p_return.v_data);
 				return;
 			}
@@ -919,8 +920,9 @@ export function saveConnection() {
 		user: el("conn_form_user").value,
 		password: el("conn_form_user_pass").value,
 		title: el("conn_form_title").value,
-		auth_method: awsIAMAuthMethod(),
+		auth_method: authMethodValue(),
 		aws: awsIAMRequestData(),
+		oauth: oauthRequestData(),
 		tunnel: {
 			enabled: el("conn_form_use_tunnel").checked,
 			server: el("conn_form_ssh_server").value,
@@ -1330,6 +1332,17 @@ export function editConnection(p_conn_obj) {
 	el("conn_form_aws_access_key_id").value = v_aws.access_key_id || "";
 	el("conn_form_aws_secret_access_key").value = "";
 	setStoredSecretIcon("conn_form_aws_secret_access_key", !!v_aws.secret);
+	var v_oauth = p_conn_obj.oauth || {};
+	el("conn_form_use_oauth").checked = p_conn_obj.auth_method === "oauth";
+	el("conn_form_oauth_preset").value = v_oauth.preset || "custom";
+	el("conn_form_oauth_mode").value = v_oauth.mode || "command";
+	el("conn_form_oauth_delivery").value = v_oauth.delivery || "oauthbearer";
+	el("conn_form_oauth_command").value = v_oauth.command || "";
+	el("conn_form_oauth_token_url").value = v_oauth.token_url || "";
+	el("conn_form_oauth_client_id").value = v_oauth.client_id || "";
+	el("conn_form_oauth_scope").value = v_oauth.scope || "";
+	el("conn_form_oauth_secret").value = "";
+	setStoredSecretIcon("conn_form_oauth_secret", !!v_oauth.secret);
 
 	let v_enable_list = [];
 	let v_disable_list = [];
@@ -1443,6 +1456,7 @@ export function editConnection(p_conn_obj) {
 	// Updating the fields.
 	updateModalEditConnectionFields(v_disable_list, v_enable_list);
 	updateAWSIAMFields();
+	updateOAuthFields();
 
 	showConnectionDetail(p_conn_obj, false);
 }
@@ -1479,6 +1493,10 @@ export function newConnection() {
 	el("conn_form_aws_access_key_id").value = "";
 	el("conn_form_aws_secret_access_key").value = "";
 	setStoredSecretIcon("conn_form_aws_secret_access_key", false);
+	el("conn_form_use_oauth").checked = false;
+	applyOAuthPreset("custom");
+	el("conn_form_oauth_secret").value = "";
+	setStoredSecretIcon("conn_form_oauth_secret", false);
 
 	el("conn_form_user_pass_check_icon")?.remove();
 	el("conn_form_ssh_password_check_icon")?.remove();
@@ -1707,6 +1725,7 @@ export function updateModalEditConnectionState(e) {
 	// Updating the fields.
 	updateModalEditConnectionFields(v_disable_list, v_enable_list, v_form_cases);
 	updateAWSIAMFields();
+	updateOAuthFields();
 }
 
 // --- AWS IAM database authentication ----------------------------------------
@@ -1739,6 +1758,126 @@ function awsIAMRequestData() {
 	};
 }
 
+// --- OAuth / access-token authentication ------------------------------------
+//
+// The form's "Use OAuth / access token authentication" card (PostgreSQL
+// only). A token is obtained per new connection -- from a command, a stored
+// token, or the OAuth client credentials grant -- and sent either through
+// PostgreSQL 18's OAUTHBEARER mechanism or as the password (Azure, Cloud SQL).
+// See go-server/oauth_auth.go. The presets only fill the fields in.
+
+/** @type {Record<string, {mode: string, delivery: string, command: string, token_url: string, scope: string}>} */
+const OAUTH_PRESETS = {
+	custom: { mode: "command", delivery: "oauthbearer", command: "", token_url: "", scope: "" },
+	azure_cli: {
+		mode: "command",
+		delivery: "password",
+		command: "az account get-access-token --resource-type oss-rdbms --query accessToken --output tsv",
+		token_url: "",
+		scope: "",
+	},
+	azure_sp: {
+		mode: "client_credentials",
+		delivery: "password",
+		command: "",
+		token_url: "https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/token",
+		scope: "https://ossrdbms-aad.database.windows.net/.default",
+	},
+	gcp_cli: {
+		mode: "command",
+		delivery: "password",
+		command: "gcloud auth print-access-token",
+		token_url: "",
+		scope: "",
+	},
+};
+
+/** @returns {string} "oauth" when the form's OAuth card is in effect. */
+function oauthAuthMethod() {
+	return el("conn_form_type").value === "postgresql" && el("conn_form_use_oauth").checked ? "oauth" : "";
+}
+
+/** @returns {string} the auth_method to save/test with: "oauth", "aws_iam" or "". */
+function authMethodValue() {
+	return oauthAuthMethod() || awsIAMAuthMethod();
+}
+
+function oauthRequestData() {
+	var v_mode = el("conn_form_oauth_mode").value;
+	var v_cc = v_mode === "client_credentials";
+	return {
+		preset: el("conn_form_oauth_preset").value,
+		mode: v_mode,
+		delivery: el("conn_form_oauth_delivery").value,
+		command: v_mode === "command" ? el("conn_form_oauth_command").value.trim() : "",
+		token_url: v_cc ? el("conn_form_oauth_token_url").value.trim() : "",
+		client_id: v_cc ? el("conn_form_oauth_client_id").value.trim() : "",
+		scope: v_cc ? el("conn_form_oauth_scope").value.trim() : "",
+		secret: v_mode === "command" ? "" : el("conn_form_oauth_secret").value,
+	};
+}
+
+/** @param {string} p_preset */
+export function applyOAuthPreset(p_preset) {
+	var v_preset = OAUTH_PRESETS[p_preset] || OAUTH_PRESETS.custom;
+	el("conn_form_oauth_preset").value = OAUTH_PRESETS[p_preset] ? p_preset : "custom";
+	el("conn_form_oauth_mode").value = v_preset.mode;
+	el("conn_form_oauth_delivery").value = v_preset.delivery;
+	el("conn_form_oauth_command").value = v_preset.command;
+	el("conn_form_oauth_token_url").value = v_preset.token_url;
+	el("conn_form_oauth_client_id").value = "";
+	el("conn_form_oauth_scope").value = v_preset.scope;
+}
+
+/** Choosing a preset overwrites the fields it covers; editing them afterwards makes it "Custom". */
+export function oauthPresetChanged() {
+	applyOAuthPreset(el("conn_form_oauth_preset").value);
+	updateOAuthFields();
+}
+
+/**
+ * Applies the OAuth card's state on top of what updateModalEditConnectionState
+ * / editConnection decided for the rest of the form -- the same disable-don't-
+ * clear approach as updateAWSIAMFields. OAuth and AWS IAM are exclusive.
+ * @param {Event|string} [p_changed] id of the checkbox the user just toggled, if any
+ */
+export function updateOAuthFields(p_changed) {
+	var v_supported = el("conn_form_type").value === "postgresql";
+	el("conn_form_oauth_card").style.display = v_supported ? "" : "none";
+	if (p_changed === "oauth" && el("conn_form_use_oauth").checked) {
+		el("conn_form_use_aws_iam").checked = false;
+		updateAWSIAMFields();
+	}
+	var v_on = v_supported && el("conn_form_use_oauth").checked;
+	var v_mode = el("conn_form_oauth_mode").value;
+
+	el("conn_form_oauth_command_row").style.display = v_mode === "command" ? "" : "none";
+	el("conn_form_oauth_cc_row").style.display = v_mode === "client_credentials" ? "" : "none";
+	el("conn_form_oauth_secret_row").style.display = v_mode === "command" ? "none" : "";
+	el("conn_form_oauth_secret_label").textContent =
+		v_mode === "token" ? t("connections.oauth_token") : t("connections.oauth_client_secret");
+	for (const v_id of [
+		"conn_form_oauth_preset",
+		"conn_form_oauth_mode",
+		"conn_form_oauth_delivery",
+		"conn_form_oauth_command",
+		"conn_form_oauth_token_url",
+		"conn_form_oauth_client_id",
+		"conn_form_oauth_scope",
+		"conn_form_oauth_secret",
+	]) {
+		if (v_on) el(v_id).removeAttribute("disabled");
+		else el(v_id).setAttribute("disabled", true);
+	}
+
+	if (v_on) {
+		var v_pass = el("conn_form_user_pass");
+		v_pass.value = "";
+		v_pass.setAttribute("disabled", true);
+		v_pass.setAttribute("readonly", true);
+	}
+}
+
 /**
  * Shows/hides the "already stored" check mark next to a secret field's label,
  * same as the password/SSH ones in editConnection.
@@ -1763,6 +1902,11 @@ function setStoredSecretIcon(p_input_id, p_stored) {
  * clears: switching IAM off and on again shouldn't lose what was typed.
  */
 export function updateAWSIAMFields() {
+	if (el("conn_form_use_aws_iam").checked && el("conn_form_use_oauth").checked && el("conn_form_type").value === "postgresql") {
+		// Exclusive with OAuth; whichever was ticked last (updateOAuthFields
+		// unticks AWS itself when OAuth is the newer choice) wins.
+		el("conn_form_use_oauth").checked = false;
+	}
 	var v_supported = AWS_IAM_TECHNOLOGIES.includes(el("conn_form_type").value);
 	el("conn_form_aws_card").style.display = v_supported ? "" : "none";
 	var v_on = v_supported && el("conn_form_use_aws_iam").checked;

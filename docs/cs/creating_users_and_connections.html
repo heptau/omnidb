@@ -276,6 +276,30 @@ V sandboxované aplikaci pro macOS potřebují profilové údaje jednorázové
 <a href="desktop_app.html">Desktopová aplikace</a>. Na víceuživatelském serveru OmniDB znamenají
 profilové údaje vlastní AWS identitu serveru, a proto jsou vyhrazené superuživatelům; uložený
 přístupový klíč může použít kdokoli.</p>
+<h4>Autentizace OAuth / přístupovým tokenem</h4>
+<p>U PostgreSQL zaškrtněte ve formuláři připojení <em>Použít autentizaci OAuth / přístupovým
+tokenem</em>. Místo hesla pak OmniDB pro každé nové připojení získá přístupový token a pošle ho serveru.
+Pole pro heslo je zakázané a spojení je vždy šifrované.</p>
+<ul>
+<li><em>Zdroj tokenu</em>: <em>Příkaz</em> spustí shellový příkaz, který token vypíše (nebo JSON s polem
+<code>access_token</code>), např. <code>az account get-access-token --resource-type oss-rdbms --query
+accessToken --output tsv</code>; běží na počítači, kde běží OmniDB, proto ho na víceuživatelském serveru smí
+použít jen superuživatelé. <em>Statický token</em> uloží token s připojením (šifrovaně jako heslo; vyprší, takže
+se hodí hlavně na zkoušení). <em>Client credentials</em> používá OAuth 2.0 client credentials grant s URL
+tokenu (<code>https</code>), client ID, scope a šifrovaně uloženým client secret; tokeny se cachují do chvíle
+krátce před vypršením.</li>
+<li><em>Odeslat token jako</em>: <em>OAUTHBEARER</em> je nativní OAuth mechanismus PostgreSQL 18 — server
+potřebuje validační modul v <code>oauth_validator_libraries</code> a záznam <code>oauth</code> v
+<code>pg_hba.conf</code>. <em>Heslo</em> očekávají Azure Database for PostgreSQL (Entra ID) a Google Cloud SQL
+(IAM).</li>
+<li><em>Předvolba</em>: <em>Azure Entra ID (Azure CLI)</em>, <em>Azure Entra ID (service principal)</em>
+(doplňte tenant ID, client ID a secret) a <em>Google Cloud SQL IAM (gcloud)</em> vyplní pole výše; uživatelské
+jméno v databázi je vaše identita Entra ID / IAM. Nejdřív spusťte <code>az login</code> nebo <code>gcloud auth
+login</code>.</li>
+</ul>
+<p>Desktopová aplikace najde <code>az</code>/<code>gcloud</code> v obvyklých místech instalace (Homebrew,
+<code>~/.local/bin</code>); příkaz pro token nemůže použít nástroje, které macOS sandbox aplikaci skrývá — v tom
+případě použijte <em>Client credentials</em>.</p>
 <h4>Používání SSH tunelů</h4>
 <p>OmniDB umožňuje připojit se k libovolné vzdálené databázi přes SSH tunel. Ve formuláři daného
 připojení zaškrtněte <em>Use SSH tunnel</em> (Použít SSH tunel) — tím se zpřístupní pole pod ním:</p>

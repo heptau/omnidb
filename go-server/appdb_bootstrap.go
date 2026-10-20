@@ -175,6 +175,10 @@ func migrateAppDB(db *sql.DB) error {
 		{"aws_profile", "varchar(200)"},
 		{"aws_access_key_id", "varchar(200)"},
 		{"aws_secret_access_key", "text"},
+		// OAuth token authentication (see oauth_auth.go): oauth_config is
+		// JSON, oauth_secret is encrypted like password.
+		{"oauth_config", "text"},
+		{"oauth_secret", "text"},
 	} {
 		var found string
 		err := db.QueryRow(`select name from pragma_table_info('OmniDB_app_connection') where name = ?`, c.name).Scan(&found)

@@ -28,11 +28,14 @@ func openPostgreSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 		return nil, err
 	}
 	var opts []stdlib.OptionOpenDB
-	if info.usesAWSIAM() {
+	if info.usesAWSIAM() || info.usesOAuthPassword() {
 		// database/sql may open more physical connections later (a pool,
 		// a dropped connection) -- each one needs a token that's still
 		// valid then, not the one signed when this was first opened.
 		opts = append(opts, stdlib.OptionBeforeConnect(func(ctx context.Context, c *pgx.ConnConfig) error {
+			if info.usesOAuth() {
+				return applyPostgreSQLOAuth(ctx, c, info)
+			}
 			return applyPostgreSQLAWSIAMToken(ctx, c, info)
 		}))
 	}
@@ -72,7 +75,7 @@ func postgresqlConnConfig(info *ConnectionInfo) (*pgx.ConnConfig, error) {
 		cfg.RuntimeParams["application_name"] = omnidbVersion
 	}
 	if info.usesAWSIAM() {
-		if err := requirePostgreSQLTLS(cfg); err != nil {
+		if err := requirePostgreSQLTLS(cfg, "AWS IAM authentication"); err != nil {
 			return nil, err
 		}
 		if err := applyPostgreSQLAWSIAMToken(context.Background(), cfg, info); err != nil {
@@ -80,8 +83,40 @@ func postgresqlConnConfig(info *ConnectionInfo) (*pgx.ConnConfig, error) {
 		}
 		return cfg, nil
 	}
+	if info.usesOAuth() {
+		if err := requirePostgreSQLTLS(cfg, "OAuth authentication"); err != nil {
+			return nil, err
+		}
+		if err := applyPostgreSQLOAuth(context.Background(), cfg, info); err != nil {
+			return nil, err
+		}
+		return cfg, nil
+	}
 	applyPgpassPassword(cfg)
 	return cfg, nil
+}
+
+// usesOAuthPassword reports whether the OAuth token goes in as the password
+// (Azure, Cloud SQL), which, unlike OAUTHBEARER, needs a fresh token put
+// into the config before every physical connection.
+func (info *ConnectionInfo) usesOAuthPassword() bool {
+	return info.usesOAuth() && info.OAuth.Delivery == oauthDeliveryPassword
+}
+
+// applyPostgreSQLOAuth hands the connection its token: as the password, or
+// by installing the provider pgx calls when the server asks for the
+// OAUTHBEARER SASL mechanism (PostgreSQL 18+).
+func applyPostgreSQLOAuth(ctx context.Context, cfg *pgx.ConnConfig, info *ConnectionInfo) error {
+	if info.usesOAuthPassword() {
+		token, err := info.oauthToken(ctx)
+		if err != nil {
+			return err
+		}
+		cfg.Password = token
+		return nil
+	}
+	cfg.OAuthTokenProvider = info.oauthToken
+	return nil
 }
 
 // applyPostgreSQLAWSIAMToken puts a fresh IAM token where the password
@@ -108,7 +143,7 @@ func applyPostgreSQLAWSIAMToken(ctx context.Context, cfg *pgx.ConnConfig, info *
 // Certificate verification stays whatever sslmode asked for -- a
 // connection string with sslmode=verify-full and sslrootcert pointing at
 // the RDS CA bundle gets full verification.
-func requirePostgreSQLTLS(cfg *pgx.ConnConfig) error {
+func requirePostgreSQLTLS(cfg *pgx.ConnConfig, what string) error {
 	var tlsFallbacks []*pgconn.FallbackConfig
 	for _, fb := range cfg.Fallbacks {
 		if fb.TLSConfig != nil {
@@ -117,7 +152,7 @@ func requirePostgreSQLTLS(cfg *pgx.ConnConfig) error {
 	}
 	if cfg.TLSConfig == nil {
 		if len(tlsFallbacks) == 0 {
-			return errors.New("AWS IAM authentication requires SSL; remove sslmode=disable from the connection string")
+			return errors.New(what + " requires SSL; remove sslmode=disable from the connection string")
 		}
 		// sslmode=allow: plaintext first, TLS as the fallback -- promote it.
 		cfg.Host, cfg.Port, cfg.TLSConfig = tlsFallbacks[0].Host, tlsFallbacks[0].Port, tlsFallbacks[0].TLSConfig

@@ -289,6 +289,82 @@
 									</div>
 								</div>
 
+								<!-- OAuth / access-token authentication (PostgreSQL only --
+								     connections.js's updateOAuthFields shows it). Azure and
+								     Google Cloud entries are presets filling in the fields below.
+								     See go-server/oauth_auth.go. -->
+								<div class="card mt-4" id="conn_form_oauth_card" style="display: none;">
+									<div class="card-header">
+										<div class="form-group mb-0">
+											<div class="omnidb__form-check form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" value="" id="conn_form_use_oauth">
+												<label class="form-check-label" for="conn_form_use_oauth">
+													<b style="vertical-align: middle;" data-i18n="connections.use_oauth">Use OAuth / access token authentication</b>
+												</label>
+												<i class="fas fa-question-circle text-info ms-2"
+													title="OAuth" data-i18n-title="connections.oauth_tooltip"></i>
+											</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md mb-3">
+												<label for="conn_form_oauth_preset" data-i18n="connections.oauth_preset">Preset</label>
+												<select id="conn_form_oauth_preset" class="form-control" disabled>
+													<option value="custom" data-i18n="connections.oauth_preset_custom">Custom</option>
+													<option value="azure_cli" data-i18n="connections.oauth_preset_azure_cli">Azure Entra ID (Azure CLI)</option>
+													<option value="azure_sp" data-i18n="connections.oauth_preset_azure_sp">Azure Entra ID (service principal)</option>
+													<option value="gcp_cli" data-i18n="connections.oauth_preset_gcp_cli">Google Cloud SQL IAM (gcloud)</option>
+												</select>
+											</div>
+											<div class="col-md mb-3">
+												<label for="conn_form_oauth_mode" data-i18n="connections.oauth_mode">Token source</label>
+												<select id="conn_form_oauth_mode" class="form-control" disabled>
+													<option value="command" data-i18n="connections.oauth_mode_command">Command</option>
+													<option value="token" data-i18n="connections.oauth_mode_token">Static token</option>
+													<option value="client_credentials" data-i18n="connections.oauth_mode_client_credentials">Client credentials</option>
+												</select>
+											</div>
+											<div class="col-md mb-3">
+												<label for="conn_form_oauth_delivery"><span data-i18n="connections.oauth_delivery">Send token as</span> <i class="fas fa-question-circle text-info"
+														title="Delivery" data-i18n-title="connections.oauth_delivery_tooltip"></i></label>
+												<select id="conn_form_oauth_delivery" class="form-control" disabled>
+													<option value="oauthbearer" data-i18n="connections.oauth_delivery_bearer">OAUTHBEARER (PostgreSQL 18+)</option>
+													<option value="password" data-i18n="connections.oauth_delivery_password">Password</option>
+												</select>
+											</div>
+										</div>
+										<div class="row" id="conn_form_oauth_command_row">
+											<div class="col-md mb-3">
+												<label for="conn_form_oauth_command"><span data-i18n="connections.oauth_command">Command</span> <i class="fas fa-question-circle text-info"
+														title="Command" data-i18n-title="connections.oauth_command_tooltip"></i></label>
+												<input type="text" class="form-control" id="conn_form_oauth_command" placeholder="ex: gcloud auth print-access-token" autocomplete="off" spellcheck="false" disabled>
+											</div>
+										</div>
+										<div class="row" id="conn_form_oauth_cc_row" style="display: none;">
+											<div class="col-md-6 mb-3">
+												<label for="conn_form_oauth_token_url" data-i18n="connections.oauth_token_url">Token URL</label>
+												<input type="text" class="form-control" id="conn_form_oauth_token_url" placeholder="https://login.example.com/oauth2/token" autocomplete="off" spellcheck="false" disabled>
+											</div>
+											<div class="col-md mb-3">
+												<label for="conn_form_oauth_client_id" data-i18n="connections.oauth_client_id">Client ID</label>
+												<input type="text" class="form-control" id="conn_form_oauth_client_id" autocomplete="off" spellcheck="false" disabled>
+											</div>
+											<div class="col-md-12 mb-3">
+												<label for="conn_form_oauth_scope" data-i18n="connections.oauth_scope">Scope</label>
+												<input type="text" class="form-control" id="conn_form_oauth_scope" autocomplete="off" spellcheck="false" disabled>
+											</div>
+										</div>
+										<div class="row" id="conn_form_oauth_secret_row" style="display: none;">
+											<div class="col-md mb-3">
+												<label for="conn_form_oauth_secret"><span id="conn_form_oauth_secret_label"></span> <i class="fas fa-question-circle text-info"
+														title="Secret" data-i18n-title="connections.oauth_secret_tooltip"></i></label>
+												<input type="password" class="form-control" id="conn_form_oauth_secret" autocomplete="new-password" disabled>
+											</div>
+										</div>
+									</div>
+								</div>
+
 								<div class="card mt-4">
 									<div class="card-header">
 										<div class="form-group mb-0">
