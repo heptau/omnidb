@@ -881,6 +881,91 @@
     customMenuRecursive,
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
+  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/i;
+  const BOOL_TYPE = /^(BOOL|BOOLEAN)$/i;
+  function isNull(value) {
+    return value === null || value === void 0;
+  }
+  function sqlLiteral(value, type) {
+    if (isNull(value)) return "NULL";
+    const text = String(value);
+    if (type && NUMERIC_TYPE.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text)) return text;
+    if (type && BOOL_TYPE.test(type) && /^(true|false)$/i.test(text)) return text.toUpperCase();
+    return "'" + text.replace(/'/g, "''") + "'";
+  }
+  function quoteIdentifier(name) {
+    return /^[a-z_][a-z0-9_]*$/.test(name) ? name : '"' + name.replace(/"/g, '""') + '"';
+  }
+  function csvCell(value, delimiter) {
+    if (isNull(value)) return "";
+    const text = String(value);
+    return text.includes(delimiter) || /["\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+  }
+  function markdownCell(value) {
+    if (isNull(value)) return "";
+    return String(value).replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\r?\n/g, "<br>");
+  }
+  function formatRows(format, columns, rows, types = null, tableName = null) {
+    const typeAt = (i2) => types && types[i2] || null;
+    switch (format) {
+      case "insert": {
+        const cols = columns.map(quoteIdentifier).join(", ");
+        return rows.map((row) => "INSERT INTO " + (tableName || "table_name") + " (" + cols + ") VALUES (" + row.map((v2, i2) => sqlLiteral(v2, typeAt(i2))).join(", ") + ");").join("\n");
+      }
+      case "json":
+        return JSON.stringify(
+          rows.map((row) => Object.fromEntries(columns.map((c2, i2) => [c2, isNull(row[i2]) ? null : row[i2]]))),
+          null,
+          2
+        );
+      case "markdown": {
+        const header = "| " + columns.map(markdownCell).join(" | ") + " |";
+        const sep = "| " + columns.map(() => "---").join(" | ") + " |";
+        const body = rows.map((row) => "| " + columns.map((_2, i2) => markdownCell(row[i2])).join(" | ") + " |");
+        return [header, sep, ...body].join("\n");
+      }
+      case "csv": {
+        const header = columns.map((c2) => csvCell(c2, ",")).join(",");
+        const body = rows.map((row) => columns.map((_2, i2) => csvCell(row[i2], ",")).join(","));
+        return [header, ...body].join("\n");
+      }
+      default:
+        throw new Error("Unknown copy format: " + format);
+    }
+  }
+  function columnStats(rows, colIndex) {
+    let nulls = 0;
+    let numeric = 0;
+    let sum = 0;
+    let min = Infinity;
+    let max = -Infinity;
+    const distinct = /* @__PURE__ */ new Set();
+    for (const row of rows) {
+      const value = row[colIndex];
+      if (isNull(value) || value === "") {
+        nulls++;
+        continue;
+      }
+      distinct.add(String(value));
+      const n2 = typeof value === "number" ? value : /^\s*-?\d+(\.\d+)?([eE][-+]?\d+)?\s*$/.test(String(value)) ? Number(value) : NaN;
+      if (Number.isFinite(n2)) {
+        numeric++;
+        sum += n2;
+        if (n2 < min) min = n2;
+        if (n2 > max) max = n2;
+      }
+    }
+    return {
+      count: rows.length - nulls,
+      nulls,
+      distinct: distinct.size,
+      numeric,
+      sum: numeric ? sum : null,
+      avg: numeric ? sum / numeric : null,
+      min: numeric ? min : null,
+      max: numeric ? max : null
+    };
+  }
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
   function el$2(id) {
     return (
@@ -2456,6 +2541,16 @@
                   false,
                   v_col_type
                 );
+            } else if (key === "duplicate_row") {
+              var v_src_row = options[0].start.row;
+              var v_edit_object = v_currTabTag.editDataObject;
+              if (v_src_row >= v_edit_object.infoRows.length) return;
+              var v_src_values = this.getDataAtRow(v_src_row);
+              var v_dest_row = v_edit_object.infoRows.length;
+              for (var c2 = 0; c2 < v_edit_object.columns.length; c2++) {
+                if (v_edit_object.columns[c2].v_is_pk || v_src_values[c2 + 1] == null) continue;
+                this.setDataAtCell(v_dest_row, c2 + 1, v_src_values[c2 + 1]);
+              }
             } else if (key === "copy") {
               this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
               document.execCommand("copy");
@@ -2464,6 +2559,9 @@
           items: {
             copy: {
               name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
+            },
+            duplicate_row: {
+              name: '<div style="position: absolute;"><i class="fas fa-clone cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.duplicate_row") + "</div>"
             },
             edit_data: {
               name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Edit Content</div>'
@@ -40990,11 +41088,49 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                         v_lines.push(v_cells.join("	"));
                       }
                       uiCopyTextToClipboard(v_lines.join("\n"));
+                    } else if (key.indexOf("copy_") === 0) {
+                      uiCopyTextToClipboard(
+                        formatRows(
+                          /** @type {import("./grid_copy_as.js").CopyFormat} */
+                          key.substring(5),
+                          v_data.v_col_names,
+                          [this.getDataAtRow(options[0].start.row)],
+                          v_data.v_col_types || null
+                        )
+                      );
+                    } else if (key === "column_stats") {
+                      var v_stats = columnStats(this.getSourceData(), options[0].start.col);
+                      var v_stats_lines = [
+                        v_data.v_col_names[options[0].start.col],
+                        t$1("query.column_stats_counts", { count: v_stats.count, nulls: v_stats.nulls, distinct: v_stats.distinct })
+                      ];
+                      if (v_stats.numeric) {
+                        v_stats_lines.push(
+                          t$1("query.column_stats_numeric", { numeric: v_stats.numeric }),
+                          "SUM: " + v_stats.sum + ", AVG: " + v_stats.avg + ", MIN: " + v_stats.min + ", MAX: " + v_stats.max
+                        );
+                      }
+                      showAlert$1(v_stats_lines.join("\n"));
                     }
                   },
                   items: {
                     copy: {
                       name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("common.copy") + "</div>"
+                    },
+                    copy_insert: {
+                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("query.copy_insert") + "</div>"
+                    },
+                    copy_json: {
+                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("query.copy_json") + "</div>"
+                    },
+                    copy_markdown: {
+                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("query.copy_markdown") + "</div>"
+                    },
+                    copy_csv: {
+                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("query.copy_csv") + "</div>"
+                    },
+                    column_stats: {
+                      name: '<div style="position: absolute;"><i class="fas fa-chart-bar cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("query.column_stats") + "</div>"
                     },
                     view_data: {
                       name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("common.view_content") + "</div>"

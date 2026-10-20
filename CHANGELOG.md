@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Edit Data grid context menu: "Duplicate row" copies the row into a new pending insert (primary key columns are left
+  empty so the database can generate them).
+- Result grid context menu: "Copy row as INSERT / JSON / Markdown / CSV" (values quoted per type, `NULL` kept; the INSERT targets the
+  table of a plain single-table SELECT, `table_name` otherwise) and
+  "Column statistics" (non-empty/NULL/distinct counts plus sum, avg, min, max over the numeric values of the
+  column across the loaded rows).
 - Connections now identify themselves to the server as `OmniDB <version>` (e.g. `OmniDB 5.4.2`): PostgreSQL
   `application_name` (a value set in the connection string or `PGAPPNAME` wins), SQL Server `app name` (also
   overridable in the connection string), MySQL/MariaDB `program_name` connection attribute and Oracle `PROGRAM`.

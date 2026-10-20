@@ -405,6 +405,19 @@ export function queryEditDataReturnRender(p_message, p_context) {
 								false,
 								v_col_type,
 							);
+					} else if (key === "duplicate_row") {
+						var v_src_row = options[0].start.row;
+						var v_edit_object = v_currTabTag.editDataObject;
+						// Only rows that already exist can be duplicated; the trailing spare row is not one.
+						if (v_src_row >= v_edit_object.infoRows.length) return;
+						var v_src_values = this.getDataAtRow(v_src_row);
+						// The copy goes into the spare row (it becomes a pending insert on the first change).
+						// Primary key columns are left empty so the database can generate / the user can supply them.
+						var v_dest_row = v_edit_object.infoRows.length;
+						for (var c = 0; c < v_edit_object.columns.length; c++) {
+							if (v_edit_object.columns[c].v_is_pk || v_src_values[c + 1] == null) continue;
+							this.setDataAtCell(v_dest_row, c + 1, v_src_values[c + 1]);
+						}
 					} else if (key === "copy") {
 						this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
 						document.execCommand("copy");
@@ -413,6 +426,9 @@ export function queryEditDataReturnRender(p_message, p_context) {
 				items: {
 					copy: {
 						name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Copy</div>',
+					},
+					duplicate_row: {
+						name: '<div style=\"position: absolute;\"><i class=\"fas fa-clone cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("edit_data.duplicate_row") + '</div>',
 					},
 					edit_data: {
 						name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Edit Content</div>',

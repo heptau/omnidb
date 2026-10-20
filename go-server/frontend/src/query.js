@@ -32,6 +32,7 @@ SOFTWARE.
 /// Query state
 /// </summary>
 
+import { columnStats, formatRows, guessSourceTable } from "./grid_copy_as.js";
 import { editCellData } from "./header_actions.js";
 import { SetAcked, createRequest, removeContext } from "./long_polling.js";
 import { showAlert, showConfirm } from "./notification_control.js";
@@ -712,11 +713,48 @@ export function querySQLReturnRender(p_message, p_context) {
 											v_lines.push(v_cells.join("\t"));
 										}
 										uiCopyTextToClipboard(v_lines.join("\n"));
+									} else if (key.indexOf("copy_") === 0) {
+										uiCopyTextToClipboard(
+											formatRows(
+												/** @type {import("./grid_copy_as.js").CopyFormat} */ (key.substring(5)),
+												v_data.v_col_names,
+												[this.getDataAtRow(options[0].start.row)],
+												v_data.v_col_types || null,
+											),
+										);
+									} else if (key === "column_stats") {
+										var v_stats = columnStats(this.getSourceData(), options[0].start.col);
+										var v_stats_lines = [
+											v_data.v_col_names[options[0].start.col],
+											t("query.column_stats_counts", { count: v_stats.count, nulls: v_stats.nulls, distinct: v_stats.distinct }),
+										];
+										if (v_stats.numeric) {
+											v_stats_lines.push(
+												t("query.column_stats_numeric", { numeric: v_stats.numeric }),
+												"SUM: " + v_stats.sum + ", AVG: " + v_stats.avg + ", MIN: " + v_stats.min + ", MAX: " + v_stats.max,
+											);
+										}
+										showAlert(v_stats_lines.join("\n"));
 									}
 								},
 								items: {
 									copy: {
 										name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("common.copy") + '</div>',
+									},
+									copy_insert: {
+										name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("query.copy_insert") + '</div>',
+									},
+									copy_json: {
+										name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("query.copy_json") + '</div>',
+									},
+									copy_markdown: {
+										name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("query.copy_markdown") + '</div>',
+									},
+									copy_csv: {
+										name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("query.copy_csv") + '</div>',
+									},
+									column_stats: {
+										name: '<div style=\"position: absolute;\"><i class=\"fas fa-chart-bar cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("query.column_stats") + '</div>',
 									},
 									view_data: {
 										name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("common.view_content") + '</div>',
