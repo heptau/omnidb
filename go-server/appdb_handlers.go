@@ -81,6 +81,7 @@ func handleGetConnections(upstream *url.URL) http.HandlerFunc {
 				"technology":  c.Technology,
 				"alias":       c.Alias,
 				"environment": c.Environment,
+				"read_only":   c.ReadOnly,
 				"conn_string": "",
 				"server":      "",
 				"port":        "",
@@ -345,6 +346,7 @@ type saveConnectionRequest struct {
 	ConnString  string            `json:"connstring"`
 	Public      bool              `json:"public"`
 	Environment string            `json:"environment"`
+	ReadOnly    bool              `json:"read_only"`
 	AuthMethod  string            `json:"auth_method"`
 	AWS         awsRequestData    `json:"aws"`
 	OAuth       oauthRequestData  `json:"oauth"`
@@ -391,6 +393,7 @@ func handleSaveConnection(upstream *url.URL) http.HandlerFunc {
 			ConnString:  req.ConnString,
 			Public:      req.Public,
 			Environment: req.Environment,
+			ReadOnly:    req.ReadOnly,
 
 			AuthMethod:         req.AuthMethod,
 			AWSRegion:          req.AWS.Region,

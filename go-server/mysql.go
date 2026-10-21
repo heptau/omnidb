@@ -33,6 +33,14 @@ func openMySQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 	cfg.AllowAllFiles = false
 	// Visible in performance_schema.session_connect_attrs.
 	cfg.ConnectionAttributes = "program_name:" + omnidbVersion
+	if info.ReadOnly {
+		// MariaDB calls the session variable tx_read_only.
+		variable := "transaction_read_only"
+		if info.Technology == "mariadb" {
+			variable = "tx_read_only"
+		}
+		cfg.Params = map[string]string{variable: "1"}
+	}
 	if info.usesAWSIAM() {
 		// RDS's IAM plugin takes the token through mysql_clear_password,
 		// which this driver only allows over TLS once AllowCleartextPasswords

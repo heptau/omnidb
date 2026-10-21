@@ -74,6 +74,9 @@ func postgresqlConnConfig(info *ConnectionInfo) (*pgx.ConnConfig, error) {
 	if cfg.RuntimeParams["application_name"] == "" {
 		cfg.RuntimeParams["application_name"] = omnidbVersion
 	}
+	if info.ReadOnly {
+		cfg.RuntimeParams["default_transaction_read_only"] = "on"
+	}
 	if info.usesAWSIAM() {
 		if err := requirePostgreSQLTLS(cfg, "AWS IAM authentication"); err != nil {
 			return nil, err

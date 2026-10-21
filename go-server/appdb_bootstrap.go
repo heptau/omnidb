@@ -191,6 +191,18 @@ func migrateAppDB(db *sql.DB) error {
 		}
 	}
 
+	// Add the read_only flag to OmniDB_app_connection if missing (v5.5.0+) --
+	// see readonly.go.
+	var hasReadOnly string
+	err = db.QueryRow(`select name from pragma_table_info('OmniDB_app_connection') where name = 'read_only'`).Scan(&hasReadOnly)
+	if err == sql.ErrNoRows {
+		if _, err := db.Exec(`alter table OmniDB_app_connection add column "read_only" integer NOT NULL DEFAULT 0`); err != nil {
+			return fmt.Errorf("add read_only to OmniDB_app_connection: %w", err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_connection.read_only: %w", err)
+	}
+
 	// Add indent format columns to OmniDB_app_userdetails if missing.
 	for _, c := range []struct {
 		name string

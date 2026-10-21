@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Read-only connections: tick "Read-only connection" in the connection form and writes through it are refused (the
+  Connections list, the Database tab and the connection menu show a lock). PostgreSQL, MySQL/MariaDB and SQLite
+  also switch the session itself to read-only (`default_transaction_read_only`, `transaction_read_only`/
+  `tx_read_only`, `PRAGMA query_only`); for every engine, including Oracle, SQL Server and Firebird, the query
+  editor, the console and Edit Data saves additionally refuse anything but SELECT-like statements. A safety net
+  against accidental changes (the production tab left open), not a security boundary: use a database role without
+  write privileges for a hard guarantee. Connection colour coding already existed as the Environment setting.
 - SQL editor: multi-line statements get a fold widget in the gutter (on top of the existing bracket and block-comment
   folding), and Alt+J selects the next occurrence of the word under the cursor (Alt+Shift+J the previous one) for
   multi-cursor editing. Applies to query and snippet editors.

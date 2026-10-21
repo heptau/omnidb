@@ -95,6 +95,8 @@ type databaseListEntry struct {
 	AWSIAM bool
 	// OAuth is the same for a token-authenticated connection (oauth_auth.go).
 	OAuth bool
+	// ReadOnly marks a connection that refuses writes (readonly.go).
+	ReadOnly bool
 }
 
 // resolvePgpassMatchFields returns the discrete host/port/user/database
@@ -203,6 +205,7 @@ func buildDatabaseList(conns []appConnection, viewerID int64) (databases []datab
 			PgpassDatabase: pgpassDatabase,
 			AWSIAM:         c.AuthMethod == authMethodAWSIAM && awsIAMSupported(c.Technology),
 			OAuth:          c.AuthMethod == authMethodOAuth && oauthSupported(c.Technology),
+			ReadOnly:       c.ReadOnly,
 		})
 	}
 	return databases, terminals

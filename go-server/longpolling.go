@@ -497,6 +497,9 @@ func openNativeQueryTarget(info *ConnectionInfo) (*sql.DB, error) {
 	if isFirebird(info.Technology) {
 		return openFirebirdTarget(info)
 	}
+	if info.ReadOnly {
+		return openSQLiteTargetReadOnly(info.Database)
+	}
 	return openSQLiteTarget(info.Database)
 }
 
@@ -530,6 +533,13 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 	var rows [][]string
 	var cursorExhausted bool
 	if q.VMode == 0 {
+		if info.ReadOnly {
+			if roErr := checkReadOnlySQL(sqlText); roErr != nil {
+				queueQueryError(upstream, cookie, contextCode, roErr)
+				logHistory("error")
+				return
+			}
+		}
 		db, openErr := openNativeQueryTarget(info)
 		if openErr != nil {
 			queueQueryError(upstream, cookie, contextCode, openErr)

@@ -36,6 +36,8 @@ type ConnectionInfo struct {
 	// OAuth token authentication -- see oauth_auth.go.
 	OAuth       oauthConfig `json:"-"`
 	OAuthSecret string      `json:"-"`
+	// ReadOnly: writes through this connection are refused (readonly.go).
+	ReadOnly bool `json:"-"`
 }
 
 // resolveConnection resolves the raw saved-connection row behind a
@@ -102,6 +104,7 @@ func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*
 		AWSSecretAccessKey: c.AWSSecretAccessKey,
 		OAuth:              c.OAuth,
 		OAuthSecret:        c.OAuthSecret,
+		ReadOnly:           c.ReadOnly,
 	}
 	if err := checkAWSIAMAllowed(info, who); err != nil {
 		return nil, err

@@ -226,6 +226,9 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					'<span class="omnidb__connections__list-item-title-text">' +
 					escapeHtml(v_title) +
 					"</span>" +
+					(v_conn_obj.read_only
+						? '<i class="fas fa-lock ms-2" title="' + escapeHtmlAttribute(t("connections.read_only_badge")) + '"></i>'
+						: "") +
 					"</span>" +
 					'<span class="omnidb__connections__list-item-subtitle">' +
 					escapeHtml(v_subtitle) +
@@ -913,6 +916,7 @@ export function saveConnection() {
 		type: el("conn_form_type").value,
 		public: el("conn_form_public").checked,
 		environment: el("conn_form_environment").value,
+		read_only: el("conn_form_read_only").checked,
 		connstring: el("conn_form_connstring").value,
 		server: el("conn_form_server").value,
 		port: el("conn_form_port").value,
@@ -1311,6 +1315,7 @@ export function editConnection(p_conn_obj) {
 	el("conn_form_type").value = p_conn_obj.technology;
 	el("conn_form_title").value = p_conn_obj.alias;
 	el("conn_form_environment").value = p_conn_obj.environment || "";
+	el("conn_form_read_only").checked = !!p_conn_obj.read_only;
 	el("conn_form_connstring").value = p_conn_obj.conn_string;
 	el("conn_form_server").value = p_conn_obj.server;
 	el("conn_form_port").value = p_conn_obj.port;
@@ -1471,6 +1476,7 @@ export function newConnection() {
 	el("conn_form_type").value = "postgresql";
 	el("conn_form_title").value = "";
 	el("conn_form_environment").value = "";
+	el("conn_form_read_only").checked = false;
 	el("conn_form_public").checked = false;
 	el("conn_form_connstring").value = "";
 	el("conn_form_server").value = "";

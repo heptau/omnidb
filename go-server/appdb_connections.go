@@ -64,6 +64,8 @@ type appConnection struct {
 	// client secret.
 	OAuth       oauthConfig
 	OAuthSecret string
+	// ReadOnly blocks writes through this connection -- see readonly.go.
+	ReadOnly bool
 }
 
 // appConnectionColumns/scanAppConnection are the shared column list and
@@ -73,7 +75,7 @@ const appConnectionColumns = `c.id, c.user_id, c.public, t.name, c.alias, c.conn
 	c.server, c.port, c.database, c.username, c.password,
 	c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key, c.environment,
 	c.auth_method, c.aws_region, c.aws_profile, c.aws_access_key_id, c.aws_secret_access_key,
-	c.oauth_config, c.oauth_secret`
+	c.oauth_config, c.oauth_secret, c.read_only`
 
 func scanAppConnection(row interface{ Scan(...any) error }) (*appConnection, error) {
 	var c appConnection
@@ -82,7 +84,7 @@ func scanAppConnection(row interface{ Scan(...any) error }) (*appConnection, err
 		&c.Server, &c.Port, &c.Database, &c.Username, &c.Password,
 		&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment,
 		&c.AuthMethod, &c.AWSRegion, &c.AWSProfile, &c.AWSAccessKeyID, &c.AWSSecretAccessKey,
-		&oauthJSON, &c.OAuthSecret); err != nil {
+		&oauthJSON, &c.OAuthSecret, &c.ReadOnly); err != nil {
 		return nil, err
 	}
 	var err error
@@ -321,6 +323,8 @@ type saveConnectionInput struct {
 	// stored one on update (unless the mode no longer uses one).
 	OAuth       oauthConfig
 	OAuthSecret string
+	// ReadOnly: see appConnection.
+	ReadOnly bool
 }
 
 // saveConnection mirrors save_connection's insert/update branch. Unlike the
@@ -384,12 +388,12 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 				(user_id, technology_id, server, port, database, username, password, alias,
 				 ssh_server, ssh_port, ssh_user, ssh_password, ssh_key, use_tunnel, conn_string, public, environment,
 				 auth_method, aws_region, aws_profile, aws_access_key_id, aws_secret_access_key,
-				 oauth_config, oauth_secret)
-			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				 oauth_config, oauth_secret, read_only)
+			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		`, userID, techID, in.Server, in.Port, in.Database, in.Username, encPassword, in.Alias,
 			in.SSHServer, in.SSHPort, in.SSHUser, encSSHPassword, encSSHKey, in.UseTunnel, in.ConnString, in.Public, in.Environment,
 			in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID, encAWSSecret,
-			oauthJSON, encOAuthSecret)
+			oauthJSON, encOAuthSecret, in.ReadOnly)
 		if err != nil {
 			return 0, err
 		}
@@ -407,12 +411,12 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 	setParts := []string{
 		"technology_id = ?", "server = ?", "port = ?", "database = ?", "username = ?", "alias = ?",
 		"ssh_server = ?", "ssh_port = ?", "ssh_user = ?", "use_tunnel = ?", "conn_string = ?", "public = ?", "environment = ?",
-		"auth_method = ?", "aws_region = ?", "aws_profile = ?", "aws_access_key_id = ?", "oauth_config = ?",
+		"auth_method = ?", "aws_region = ?", "aws_profile = ?", "aws_access_key_id = ?", "oauth_config = ?", "read_only = ?",
 	}
 	args := []any{
 		techID, in.Server, in.Port, in.Database, in.Username, in.Alias,
 		in.SSHServer, in.SSHPort, in.SSHUser, in.UseTunnel, in.ConnString, in.Public, in.Environment,
-		in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID, oauthJSON,
+		in.AuthMethod, in.AWSRegion, in.AWSProfile, in.AWSAccessKeyID, oauthJSON, in.ReadOnly,
 	}
 	if in.AWSAccessKeyID == "" {
 		setParts = append(setParts, "aws_secret_access_key = ''")

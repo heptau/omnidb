@@ -31,6 +31,7 @@ type consoleSession struct {
 	db            *sql.DB
 	conn          *sql.Conn
 	technology    string
+	readOnly      bool // the connection refuses writes (readonly.go)
 	expanded      bool // "\x" toggle
 	timing        bool // "\timing" toggle
 	autocommitOff bool // updated from v_autocommit on every request
@@ -92,7 +93,7 @@ func openOrReuseConsoleSession(clientID, tabID string, info *ConnectionInfo) (*c
 		db.Close()
 		return nil, err
 	}
-	sess := &consoleSession{db: db, conn: conn, technology: info.Technology}
+	sess := &consoleSession{db: db, conn: conn, technology: info.Technology, readOnly: info.ReadOnly}
 	consoleSessions.Store(key, sess)
 	return sess, nil
 }
@@ -275,6 +276,11 @@ func (s *consoleSession) runStatement(ctx context.Context, lang, stmt string) (s
 
 // runSQLLocked runs a real (non-backslash) SQL statement. Caller holds s.mu.
 func (s *consoleSession) runSQLLocked(ctx context.Context, lang, stmt, command string) (string, error) {
+	if s.readOnly {
+		if err := checkReadOnlySQL(stmt); err != nil {
+			return "", err
+		}
+	}
 	// Mirrors psycopg2/pymysql/sqlite3's classic DB-API behavior: with
 	// autocommit off, an implicit transaction opens before the first
 	// statement of each work unit, without the user needing to type BEGIN

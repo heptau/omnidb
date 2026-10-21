@@ -39,7 +39,7 @@ import { customMenu } from "./custom_menu.js";
 import { createRequest } from "./long_polling.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
-import { checkQueryStatus, escapeHtml, v_queryRequestCodes } from "./query.js";
+import { checkQueryStatus, escapeHtml, escapeHtmlAttribute, v_queryRequestCodes } from "./query.js";
 import { recallActiveTab, saveTabNow } from "./tab_persistence.js";
 import { initSectionSwitcher, isSectionActive, switchSection } from "./section_switcher.js";
 import { getConnectedUsersRowData } from "./panel_functions/outer_connected_users_panel.js";
@@ -199,6 +199,9 @@ function buildConnMenuEntry(v_conn) {
 	const details = [];
 	if (v_conn.v_public) {
 		text += '<i class="fas fa-users me-2" style="color:#c57dd2;"></i>';
+	}
+	if (v_conn.v_read_only) {
+		text += '<i class="fas fa-lock me-2" title="' + escapeHtmlAttribute(t("connections.read_only_badge")) + '"></i>';
 	}
 	if (ENV_DOT_CLASS[v_conn.v_environment]) {
 		// Not a <span>: `.aimara_menu span` is the row's full-size click overlay.

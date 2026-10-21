@@ -487,6 +487,15 @@ func runEditDataFetch(upstream *url.URL, cookie string, q editDataFetchRequestDa
 // runEditDataSave delivers thread_save_edit_data's result via Django's real
 // long-polling queue, same pattern as runNativeQuery.
 func runEditDataSave(upstream *url.URL, cookie string, q editDataSaveRequestData, contextCode int, info *ConnectionInfo) {
+	if info.ReadOnly {
+		queueNativeResponse(cookie, map[string]any{
+			"v_code":         responseSaveEditDataResult,
+			"v_context_code": contextCode,
+			"v_error":        true,
+			"v_data":         readOnlyError().Error(),
+		})
+		return
+	}
 	db, err := openNativeQueryTarget(info)
 	if err != nil {
 		queueNativeResponse(cookie, map[string]any{

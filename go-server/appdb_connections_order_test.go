@@ -16,7 +16,7 @@ var connectionOrderSchema = []string{
 		ssh_server text, ssh_user text, use_tunnel bool, technology_id integer, username text, public bool,
 		environment text default '', auth_method text default '', aws_region text default '',
 		aws_profile text default '', aws_access_key_id text default '', aws_secret_access_key text default '',
-		oauth_config text default '', oauth_secret text default '')`,
+		oauth_config text default '', oauth_secret text default '', read_only integer default 0)`,
 	`create table OmniDB_app_connectionorder (id integer primary key, user_id integer, connection_id integer,
 		position integer, unique (user_id, connection_id))`,
 }

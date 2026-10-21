@@ -598,6 +598,7 @@ func handleGetDatabaseList(upstream *url.URL) http.HandlerFunc {
 				"v_pgpass_database": d.PgpassDatabase,
 				"v_aws_iam":         d.AWSIAM,
 				"v_oauth":           d.OAuth,
+				"v_read_only":       d.ReadOnly,
 			})
 		}
 		terminalList := make([]map[string]any, 0, len(terminals))

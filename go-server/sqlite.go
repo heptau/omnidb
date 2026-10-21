@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,6 +31,24 @@ func openSQLiteTarget(path string) (*sql.DB, error) {
 		return nil, err
 	}
 	db, err := sql.Open("sqlite", path)
+	if err != nil {
+		return nil, err
+	}
+	if err := db.Ping(); err != nil {
+		db.Close()
+		return nil, err
+	}
+	return db, nil
+}
+
+// openSQLiteTargetReadOnly is openSQLiteTarget with PRAGMA query_only set on
+// every connection of the pool (via the driver's _pragma DSN option, so a
+// connection database/sql reopens later is read-only too).
+func openSQLiteTargetReadOnly(path string) (*sql.DB, error) {
+	if err := checkSQLiteTargetPath(path); err != nil {
+		return nil, err
+	}
+	db, err := sql.Open("sqlite", "file:"+(&url.URL{Path: path}).EscapedPath()+"?_pragma=query_only(1)")
 	if err != nil {
 		return nil, err
 	}

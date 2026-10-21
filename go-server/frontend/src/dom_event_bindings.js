@@ -170,6 +170,7 @@ for (const id of [
   'conn_form_ssh_user',
   'conn_form_use_aws_iam',
   'conn_form_aws_access_key_id',
+  'conn_form_read_only',
 ]) {
   bind(id, 'input', updateModalEditConnectionState)
 }

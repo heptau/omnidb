@@ -38,7 +38,7 @@ import { showAlert } from "../notification_control.js";
 import { refreshNotifyPane, startNotifyForConnTab } from "../panel_functions/outer_notify_panel.js";
 import { refreshConnectedUsersPane } from "../panel_functions/outer_connected_users_panel.js";
 import { refreshMonitoringPane, startMonitoringForConnTab } from "../panel_functions/outer_monitoring_panel.js";
-import { escapeHtml, v_queryRequestCodes } from "../query.js";
+import { escapeHtml, escapeHtmlAttribute, v_queryRequestCodes } from "../query.js";
 import { whiteHtmlRenderer } from "../renderers.js";
 import { isSectionActive, switchSection } from "../section_switcher.js";
 import { t } from "../i18n.js";
@@ -124,6 +124,9 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		}
 		if (v_conn_name === "" && v_conn.v_alias && v_conn.v_alias !== "") {
 			v_conn_name = escapeHtml(v_conn.v_alias);
+		}
+		if (v_conn.v_read_only) {
+			v_conn_name = '<i class="fas fa-lock me-1" title="' + escapeHtmlAttribute(t("connections.read_only_badge")) + '"></i>' + v_conn_name;
 		}
 		if (!p_tooltip_name) {
 			p_tooltip_name = "";

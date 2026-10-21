@@ -21854,6 +21854,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       if (v_conn_name === "" && v_conn.v_alias && v_conn.v_alias !== "") {
         v_conn_name = escapeHtml(v_conn.v_alias);
       }
+      if (v_conn.v_read_only) {
+        v_conn_name = '<i class="fas fa-lock me-1" title="' + escapeHtmlAttribute(t$1("connections.read_only_badge")) + '"></i>' + v_conn_name;
+      }
       if (!p_tooltip_name) {
         p_tooltip_name = "";
         if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
@@ -35616,6 +35619,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     if (v_conn.v_public) {
       text += '<i class="fas fa-users me-2" style="color:#c57dd2;"></i>';
     }
+    if (v_conn.v_read_only) {
+      text += '<i class="fas fa-lock me-2" title="' + escapeHtmlAttribute(t$1("connections.read_only_badge")) + '"></i>';
+    }
     if (ENV_DOT_CLASS[v_conn.v_environment]) {
       text += '<b class="' + ENV_DOT_CLASS[v_conn.v_environment] + '" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;position:static;"></b>';
     }
@@ -36836,7 +36842,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
             }
           }
           var v_env_meta = ENVIRONMENT_META[v_conn_obj2.environment];
-          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + '</span><span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-title-text">' + escapeHtml(v_title) + '</span></span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="' + escapeHtmlAttribute(t$1("connections.uses_ssh_tunnel")) + '"></i>' : "");
+          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + '</span><span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-title-text">' + escapeHtml(v_title) + "</span>" + (v_conn_obj2.read_only ? '<i class="fas fa-lock ms-2" title="' + escapeHtmlAttribute(t$1("connections.read_only_badge")) + '"></i>' : "") + '</span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="' + escapeHtmlAttribute(t$1("connections.uses_ssh_tunnel")) + '"></i>' : "");
           var v_checkbox = document.createElement("input");
           v_checkbox.className = "connection-card-checkbox";
           v_checkbox.id = "connection_item_input_" + i3;
@@ -37359,6 +37365,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       type: el("conn_form_type").value,
       public: el("conn_form_public").checked,
       environment: el("conn_form_environment").value,
+      read_only: el("conn_form_read_only").checked,
       connstring: el("conn_form_connstring").value,
       server: el("conn_form_server").value,
       port: el("conn_form_port").value,
@@ -37648,6 +37655,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     el("conn_form_type").value = p_conn_obj.technology;
     el("conn_form_title").value = p_conn_obj.alias;
     el("conn_form_environment").value = p_conn_obj.environment || "";
+    el("conn_form_read_only").checked = !!p_conn_obj.read_only;
     el("conn_form_connstring").value = p_conn_obj.conn_string;
     el("conn_form_server").value = p_conn_obj.server;
     el("conn_form_port").value = p_conn_obj.port;
@@ -37795,6 +37803,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     el("conn_form_type").value = "postgresql";
     el("conn_form_title").value = "";
     el("conn_form_environment").value = "";
+    el("conn_form_read_only").checked = false;
     el("conn_form_public").checked = false;
     el("conn_form_connstring").value = "";
     el("conn_form_server").value = "";
@@ -43114,7 +43123,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     "conn_form_ssh_port",
     "conn_form_ssh_user",
     "conn_form_use_aws_iam",
-    "conn_form_aws_access_key_id"
+    "conn_form_aws_access_key_id",
+    "conn_form_read_only"
   ]) {
     bind(id, "input", updateModalEditConnectionState);
   }
