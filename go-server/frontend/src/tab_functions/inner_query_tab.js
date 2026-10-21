@@ -35,7 +35,7 @@ import { installEditorFolding } from "../editor_folding.js";
 import { customMenu } from "../custom_menu.js";
 import { showAlert } from "../notification_control.js";
 import { t } from "../i18n.js";
-import { cancelSQL, checkQueryStatus, escapeHtml, escapeHtmlAttribute, getStatementAtCursor, querySQL } from "../query.js";
+import { applyResultFilter, cancelSQL, checkQueryStatus, escapeHtml, escapeHtmlAttribute, getStatementAtCursor, querySQL } from "../query.js";
 import { createTabControl } from "../tabs.js";
 import { getExplain } from "../tree_context_functions/tree_postgresql.js";
 import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_snippets.js";
@@ -210,7 +210,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("common.cancel")) + '" style="display: none;">' + escapeHtml(t("common.cancel")) + '</button>' +
 		'<button id="bt_export_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="' + escapeHtmlAttribute(t("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button>' +
 		'<select id="sel_export_type_' +
 		v_tab.id +
 		'" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select>' +
@@ -332,6 +332,21 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_query_info_div.id = "div_query_info_" + v_tab.id;
 	v_query_info_div.className = "omnidb__query-info";
 	v_explain_tab.elementA.after(v_query_info_div);
+
+	// Client-side filter over the rows already loaded into the result grid.
+	var v_filter_wrap = document.createElement("div");
+	v_filter_wrap.className = "omnidb__result-filter d-flex align-items-center ms-auto me-2";
+	var v_filter_input = document.createElement("input");
+	v_filter_input.type = "search";
+	v_filter_input.id = "txt_result_filter_" + v_tab.id;
+	v_filter_input.className = "form-control form-control-sm";
+	v_filter_input.style.width = "9rem";
+	v_filter_input.placeholder = t("query.filter_placeholder");
+	v_filter_input.setAttribute("aria-label", t("query.filter_placeholder"));
+	var v_filter_count = document.createElement("small");
+	v_filter_count.className = "ms-2 text-nowrap";
+	v_filter_wrap.append(v_filter_input, v_filter_count);
+	/** @type {HTMLElement} */ (document.getElementById("bt_export_" + v_tab.id)).before(v_filter_wrap);
 
 	// Creating the editor for `query`.
 	var langTools = ace.require("ace/ext/language_tools");
@@ -621,6 +636,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	// v_connTabControl.selectedTab, rather than closing over v_tab: only the
 	// selected tab's toolbar is on screen to be clicked, so the two are the same
 	// element, and keeping the existing lookup keeps the behaviour identical.
+	v_tag.filter_input = v_filter_input;
+	v_tag.filter_count = v_filter_count;
+	v_filter_input.addEventListener("input", () => applyResultFilter(v_tag));
 	v_tag.bt_start.addEventListener("click", () => querySQL(0));
 	v_tag.bt_start_stmt.addEventListener("click", () => querySQL(0, false, getStatementAtCursor()));
 	v_tag.bt_fetch_more.addEventListener("click", () => querySQL(1));

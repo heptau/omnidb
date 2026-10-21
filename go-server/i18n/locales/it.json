@@ -799,6 +799,8 @@
   "query.params_mode_text": "Testo",
   "query.params_mode_sql": "SQL",
   "query.params_run": "Esegui",
+  "query.filter_placeholder": "Filtra righe",
+  "query.filter_count": "{shown} di {total}",
   "query.rows_word.one": "riga",
   "query.rows_word.few": "righe",
   "query.rows_word.other": "righe",

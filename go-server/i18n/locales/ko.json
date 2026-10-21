@@ -794,6 +794,8 @@
   "query.params_mode_text": "텍스트",
   "query.params_mode_sql": "SQL",
   "query.params_run": "실행",
+  "query.filter_placeholder": "행 필터",
+  "query.filter_count": "{shown} / {total}",
   "query.rows_word.one": "행",
   "query.rows_word.other": "행",
   "tutorial.title.navigation_rail": "내비게이션 레일",

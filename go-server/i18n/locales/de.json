@@ -799,6 +799,8 @@
   "query.params_mode_text": "Text",
   "query.params_mode_sql": "SQL",
   "query.params_run": "Ausführen",
+  "query.filter_placeholder": "Zeilen filtern",
+  "query.filter_count": "{shown} von {total}",
   "query.rows_word.one": "Zeile",
   "query.rows_word.few": "Zeilen",
   "query.rows_word.other": "Zeilen",

@@ -121,6 +121,7 @@ export class VirtualGrid {
 		this._rows = [];
 		/** @type {number[]} */
 		this._displayOrder = [];
+		this._rowFilter = null;
 		this._sortColIndex = -1;
 		this._sortDir = 0; // 0 = unsorted, 1 = asc, -1 = desc
 		this._selectedDisplay = -1;
@@ -238,8 +239,26 @@ export class VirtualGrid {
 
 	_setRows(rows) {
 		this._rows = rows;
-		this._displayOrder = rows.map((_, i) => i);
-		if (this._sortColIndex >= 0) this._applySort();
+		this._rebuildOrder();
+	}
+
+	// Row indices in display order, ignoring any row filter: every row, sorted
+	// when a sort column is set.
+	_sortedIndices() {
+		const order = this._rows.map((_, i) => i);
+		if (this._sortColIndex >= 0) {
+			const col = this._sortColIndex;
+			const dir = this._sortDir;
+			order.sort((a, b) => dir * compareValues(this._rows[a][col], this._rows[b][col]));
+		}
+		return order;
+	}
+
+	// The rows actually shown: the sorted order, narrowed by the row filter.
+	_rebuildOrder() {
+		const order = this._sortedIndices();
+		const filter = this._rowFilter;
+		this._displayOrder = filter ? order.filter((i) => filter(this._rows[i])) : order;
 	}
 
 	_ensureSpareRow() {
@@ -481,14 +500,7 @@ export class VirtualGrid {
 	}
 
 	_applySort() {
-		if (this._sortColIndex < 0) {
-			this._displayOrder = this._rows.map((_, i) => i);
-			return;
-		}
-		const col = this._sortColIndex;
-		const dir = this._sortDir;
-		this._displayOrder = this._rows.map((_, i) => i);
-		this._displayOrder.sort((a, b) => dir * compareValues(this._rows[a][col], this._rows[b][col]));
+		this._rebuildOrder();
 	}
 
 	// --- virtualized rendering ---------------------------------------------------
@@ -790,8 +802,33 @@ export class VirtualGrid {
 
 	// --- public, Handsontable-shaped API ----------------------------------------
 
+	// Every row (in sort order), whatever the row filter hides -- callers like
+	// "fetch more" append to this and load the result back.
 	getSourceData() {
+		return this._sortedIndices().map((rowIndex) => this._rows[rowIndex].slice());
+	}
+
+	// Only the rows the row filter lets through.
+	getVisibleData() {
 		return this._displayOrder.map((rowIndex) => this._rows[rowIndex].slice());
+	}
+
+	/**
+	 * Shows only the rows the predicate accepts (null shows all of them again).
+	 * @param {((row: any[]) => boolean) | null} predicate
+	 * @returns {number} how many rows are shown
+	 */
+	setRowFilter(predicate) {
+		this._rowFilter = predicate;
+		this._rebuildOrder();
+		this._selectedDisplay = -1;
+		this._renderedStart = -1;
+		this._renderNow();
+		return this._displayOrder.length;
+	}
+
+	getRowCount() {
+		return this._rows.length;
 	}
 
 	getData() {
@@ -845,8 +882,7 @@ export class VirtualGrid {
 		const rowIndex = this._displayOrder[index];
 		if (rowIndex === undefined) return;
 		this._rows.splice(rowIndex, 1);
-		this._displayOrder = this._rows.map((_, i) => i);
-		if (this._sortColIndex >= 0) this._applySort();
+		this._rebuildOrder();
 		this._renderedStart = -1;
 		this._renderNow();
 	}

@@ -33,6 +33,7 @@ SOFTWARE.
 /// </summary>
 
 import { applyQueryParams, findQueryParams, promptQueryParams } from "./query_params.js";
+import { makeRowFilter } from "./grid_filter.js";
 import { columnStats, formatRows, guessSourceTable, recordViewHtml } from "./grid_copy_as.js";
 import { editCellData } from "./header_actions.js";
 import { SetAcked, createRequest, removeContext } from "./long_polling.js";
@@ -328,6 +329,23 @@ export function querySQL(
 	} else {
 		v_start(p_query);
 	}
+}
+
+/**
+ * Applies the text in a query tab's filter box to its result grid and shows how
+ * many rows are left. Without a filter the count is hidden.
+ * @param {any} p_tab_tag
+ */
+export function applyResultFilter(p_tab_tag) {
+	if (!p_tab_tag.filter_input) return;
+	var v_ht = p_tab_tag.ht;
+	var v_filter = makeRowFilter(p_tab_tag.filter_input.value);
+	if (!v_ht) {
+		p_tab_tag.filter_count.textContent = "";
+		return;
+	}
+	var v_shown = v_ht.setRowFilter(v_filter);
+	p_tab_tag.filter_count.textContent = v_filter ? t("query.filter_count", { shown: v_shown, total: v_ht.getRowCount() }) : "";
 }
 
 export function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
@@ -682,6 +700,10 @@ export function querySQLReturnRender(p_message, p_context) {
 						}
 
 						var container = v_div_result;
+						if (p_context.tab_tag.filter_input) {
+							p_context.tab_tag.filter_input.value = "";
+							p_context.tab_tag.filter_count.textContent = "";
+						}
 						p_context.tab_tag.ht = new Handsontable(container, {
 							licenseKey: "non-commercial-and-evaluation",
 							data: v_data.v_data,
@@ -744,7 +766,7 @@ export function querySQLReturnRender(p_message, p_context) {
 											true,
 										);
 									} else if (key === "column_stats") {
-										var v_stats = columnStats(this.getSourceData(), options[0].start.col);
+										var v_stats = columnStats(this.getVisibleData(), options[0].start.col);
 										var v_stats_lines = [
 											v_data.v_col_names[options[0].start.col],
 											t("query.column_stats_counts", { count: v_stats.count, nulls: v_stats.nulls, distinct: v_stats.distinct }),
@@ -809,6 +831,7 @@ export function querySQLReturnRender(p_message, p_context) {
 						v_new_data.push(v_data.v_data[i]);
 					}
 					p_context.tab_tag.ht.loadData(v_new_data);
+					applyResultFilter(p_context.tab_tag);
 					v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollTop =
 						v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollHeight;
 				}

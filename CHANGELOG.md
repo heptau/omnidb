@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Query editor: a filter box next to the export button narrows the result grid to the rows containing every typed word
+  (case-insensitive, in any cell; `null` matches NULL cells) and shows "N of M". It only looks at the rows already
+  fetched, so "Fetch more/all" keep working while it is active, "Column statistics" count just the rows that are
+  shown, and a new run clears it.
 - Edit Data grid: right-click a cell of a foreign key column and choose "Go to referenced row" to open the referenced
   table in Edit Data, already filtered to the row the value points at (composite keys supported; a NULL key says
   there is nothing to jump to). Works on every supported engine; PostgreSQL honours a referenced table in another

@@ -799,6 +799,8 @@
   "query.params_mode_text": "Texto",
   "query.params_mode_sql": "SQL",
   "query.params_run": "Ejecutar",
+  "query.filter_placeholder": "Filtrar filas",
+  "query.filter_count": "{shown} de {total}",
   "query.rows_word.one": "fila",
   "query.rows_word.few": "filas",
   "query.rows_word.other": "filas",
