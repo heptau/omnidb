@@ -788,6 +788,7 @@
   "query.column_stats": "열 통계",
   "query.column_stats_counts": "값: {count}, NULL/빈 값: {nulls}, 고유: {distinct}",
   "query.column_stats_numeric": "숫자 값: {numeric}",
+  "query.record_view": "레코드 보기",
   "query.rows_word.one": "행",
   "query.rows_word.other": "행",
   "tutorial.title.navigation_rail": "내비게이션 레일",

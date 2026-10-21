@@ -793,6 +793,7 @@
   "query.column_stats": "Column statistics",
   "query.column_stats_counts": "Values: {count}, NULL/empty: {nulls}, distinct: {distinct}",
   "query.column_stats_numeric": "Numeric values: {numeric}",
+  "query.record_view": "Record view",
   "query.rows_word.one": "row",
   "query.rows_word.few": "rows",
   "query.rows_word.other": "rows",

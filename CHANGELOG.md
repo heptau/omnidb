@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   multi-cursor editing. Applies to query and snippet editors.
 - Edit Data grid context menu: "Duplicate row" copies the row into a new pending insert (primary key columns are left
   empty so the database can generate them).
-- Result grid context menu: "Copy row as INSERT / JSON / Markdown / CSV" (values quoted per type, `NULL` kept; the INSERT targets the
+- Result grid context menu: "Record view" (the clicked row as a vertical column / value table, with column
+  types and NULLs marked), "Copy row as INSERT / JSON / Markdown / CSV" (values quoted per type, `NULL` kept; the INSERT targets the
   table of a plain single-table SELECT, `table_name` otherwise) and
   "Column statistics" (non-empty/NULL/distinct counts plus sum, avg, min, max over the numeric values of the
   column across the loaded rows).

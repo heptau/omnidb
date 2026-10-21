@@ -793,6 +793,7 @@
   "query.column_stats": "Statistiky sloupce",
   "query.column_stats_counts": "Hodnoty: {count}, NULL/prázdné: {nulls}, unikátní: {distinct}",
   "query.column_stats_numeric": "Číselné hodnoty: {numeric}",
+  "query.record_view": "Zobrazit řádek",
   "query.rows_word.one": "řádek",
   "query.rows_word.few": "řádky",
   "query.rows_word.other": "řádků",

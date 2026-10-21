@@ -428,7 +428,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 						name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Copy</div>',
 					},
 					duplicate_row: {
-						name: '<div style=\"position: absolute;\"><i class=\"fas fa-clone cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("edit_data.duplicate_row") + '</div>',
+						name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("edit_data.duplicate_row") + '</div>',
 					},
 					edit_data: {
 						name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Edit Content</div>',

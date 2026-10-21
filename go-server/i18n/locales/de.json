@@ -793,6 +793,7 @@
   "query.column_stats": "Spaltenstatistik",
   "query.column_stats_counts": "Werte: {count}, NULL/leer: {nulls}, verschieden: {distinct}",
   "query.column_stats_numeric": "Numerische Werte: {numeric}",
+  "query.record_view": "Datensatzansicht",
   "query.rows_word.one": "Zeile",
   "query.rows_word.few": "Zeilen",
   "query.rows_word.other": "Zeilen",

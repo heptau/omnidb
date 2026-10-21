@@ -793,6 +793,7 @@
   "query.column_stats": "Estadísticas de la columna",
   "query.column_stats_counts": "Valores: {count}, NULL/vacíos: {nulls}, distintos: {distinct}",
   "query.column_stats_numeric": "Valores numéricos: {numeric}",
+  "query.record_view": "Vista de registro",
   "query.rows_word.one": "fila",
   "query.rows_word.few": "filas",
   "query.rows_word.other": "filas",

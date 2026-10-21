@@ -793,6 +793,7 @@
   "query.column_stats": "Statistiques de la colonne",
   "query.column_stats_counts": "Valeurs : {count}, NULL/vides : {nulls}, distinctes : {distinct}",
   "query.column_stats_numeric": "Valeurs numériques : {numeric}",
+  "query.record_view": "Vue de l'enregistrement",
   "query.rows_word.one": "ligne",
   "query.rows_word.few": "lignes",
   "query.rows_word.other": "lignes",

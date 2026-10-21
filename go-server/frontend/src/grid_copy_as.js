@@ -173,3 +173,35 @@ export function guessSourceTable(sql) {
 	const match = TABLE_REF.exec(flat.replace(/\s+/g, " "));
 	return match ? match[1].replace(/\s*\.\s*/g, ".") : null;
 }
+
+/**
+ * @param {unknown} text
+ * @returns {string}
+ */
+function escapeHtmlText(text) {
+	return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+/**
+ * One row as a vertical column / value table (the "record view"), as HTML for
+ * the message modal. Everything user-controlled is escaped; NULL is shown as
+ * an italic marker so it can't be mistaken for the text "null". The markup
+ * contains no line breaks because the modal body renders them (pre-line).
+ *
+ * @param {string[]} columns
+ * @param {Array<string | null> | null} types per-column database type names
+ * @param {Array<unknown>} row
+ * @param {string} nullLabel
+ * @returns {string}
+ */
+export function recordViewHtml(columns, types, row, nullLabel) {
+	const rows = columns.map((name, i) => {
+		const value = row[i];
+		const type = types && types[i] ? ' <small class="text-muted">' + escapeHtmlText(types[i]) + "</small>" : "";
+		const cell = isNull(value)
+			? "<i>" + escapeHtmlText(nullLabel) + "</i>"
+			: '<span style="white-space:pre-wrap;word-break:break-word;">' + escapeHtmlText(value) + "</span>";
+		return '<tr><th style="vertical-align:top;white-space:nowrap;padding-right:1rem;color:inherit;">' + escapeHtmlText(name) + type + '</th><td style="color:inherit;">' + cell + "</td></tr>";
+	});
+	return '<table class="table table-sm mb-0" style="width:100%;text-align:left;--bs-table-bg:transparent;--bs-table-color:inherit;--bs-table-striped-bg:transparent;color:inherit;">' + rows.join("") + "</table>";
+}

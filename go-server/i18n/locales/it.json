@@ -793,6 +793,7 @@
   "query.column_stats": "Statistiche della colonna",
   "query.column_stats_counts": "Valori: {count}, NULL/vuoti: {nulls}, distinti: {distinct}",
   "query.column_stats_numeric": "Valori numerici: {numeric}",
+  "query.record_view": "Vista record",
   "query.rows_word.one": "riga",
   "query.rows_word.few": "righe",
   "query.rows_word.other": "righe",

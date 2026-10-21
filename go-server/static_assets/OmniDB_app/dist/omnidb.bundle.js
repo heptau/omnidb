@@ -966,6 +966,18 @@
       max: numeric ? max : null
     };
   }
+  function escapeHtmlText(text) {
+    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function recordViewHtml(columns, types, row, nullLabel) {
+    const rows = columns.map((name, i2) => {
+      const value = row[i2];
+      const type = types && types[i2] ? ' <small class="text-muted">' + escapeHtmlText(types[i2]) + "</small>" : "";
+      const cell = isNull(value) ? "<i>" + escapeHtmlText(nullLabel) + "</i>" : '<span style="white-space:pre-wrap;word-break:break-word;">' + escapeHtmlText(value) + "</span>";
+      return '<tr><th style="vertical-align:top;white-space:nowrap;padding-right:1rem;color:inherit;">' + escapeHtmlText(name) + type + '</th><td style="color:inherit;">' + cell + "</td></tr>";
+    });
+    return '<table class="table table-sm mb-0" style="width:100%;text-align:left;--bs-table-bg:transparent;--bs-table-color:inherit;--bs-table-striped-bg:transparent;color:inherit;">' + rows.join("") + "</table>";
+  }
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
   function el$2(id) {
     return (
@@ -2561,7 +2573,7 @@
               name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
             },
             duplicate_row: {
-              name: '<div style="position: absolute;"><i class="fas fa-clone cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.duplicate_row") + "</div>"
+              name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.duplicate_row") + "</div>"
             },
             edit_data: {
               name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Edit Content</div>'
@@ -41196,6 +41208,13 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                           v_data.v_col_types || null
                         )
                       );
+                    } else if (key === "record_view") {
+                      showAlert$1(
+                        recordViewHtml(v_data.v_col_names, v_data.v_col_types || null, this.getDataAtRow(options[0].start.row), "NULL"),
+                        null,
+                        true,
+                        true
+                      );
                     } else if (key === "column_stats") {
                       var v_stats = columnStats(this.getSourceData(), options[0].start.col);
                       var v_stats_lines = [
@@ -41226,6 +41245,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                     },
                     copy_csv: {
                       name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("query.copy_csv") + "</div>"
+                    },
+                    record_view: {
+                      name: '<div style="position: absolute;"><i class="fas fa-list-alt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("query.record_view") + "</div>"
                     },
                     column_stats: {
                       name: '<div style="position: absolute;"><i class="fas fa-chart-bar cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("query.column_stats") + "</div>"

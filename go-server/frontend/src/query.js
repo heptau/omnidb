@@ -32,7 +32,7 @@ SOFTWARE.
 /// Query state
 /// </summary>
 
-import { columnStats, formatRows, guessSourceTable } from "./grid_copy_as.js";
+import { columnStats, formatRows, guessSourceTable, recordViewHtml } from "./grid_copy_as.js";
 import { editCellData } from "./header_actions.js";
 import { SetAcked, createRequest, removeContext } from "./long_polling.js";
 import { showAlert, showConfirm } from "./notification_control.js";
@@ -722,6 +722,13 @@ export function querySQLReturnRender(p_message, p_context) {
 												v_data.v_col_types || null,
 											),
 										);
+									} else if (key === "record_view") {
+										showAlert(
+											recordViewHtml(v_data.v_col_names, v_data.v_col_types || null, this.getDataAtRow(options[0].start.row), "NULL"),
+											null,
+											true,
+											true,
+										);
 									} else if (key === "column_stats") {
 										var v_stats = columnStats(this.getSourceData(), options[0].start.col);
 										var v_stats_lines = [
@@ -752,6 +759,9 @@ export function querySQLReturnRender(p_message, p_context) {
 									},
 									copy_csv: {
 										name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("query.copy_csv") + '</div>',
+									},
+									record_view: {
+										name: '<div style=\"position: absolute;\"><i class=\"fas fa-list-alt cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("query.record_view") + '</div>',
 									},
 									column_stats: {
 										name: '<div style=\"position: absolute;\"><i class=\"fas fa-chart-bar cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("query.column_stats") + '</div>',
