@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Generate on a table's context menu (all engines): "SELECT with JOINs (foreign keys)" writes a SELECT of the table's
+  columns plus those of every table its foreign keys point at, each as a LEFT JOIN (composite keys supported, a joined
+  column whose name is taken is aliased `<table>_<column>`; PostgreSQL follows keys into other schemas), and "CRUD
+  script" writes INSERT / SELECT / UPDATE / DELETE for one row addressed by the primary key, written with `:named`
+  parameters so the editor asks for their values when a statement is run. Both open in a new query tab.
 - Local history of the query editor: what you type is saved as a version (after an 8-second pause in typing and when the
   editor loses focus; identical consecutive versions are skipped, blank text is never stored), up to 100 per connection and
   user, kept in the app database. The new history button in the query toolbar lists them, shows the lines that would

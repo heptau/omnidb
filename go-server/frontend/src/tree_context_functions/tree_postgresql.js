@@ -30,6 +30,7 @@ SOFTWARE.
 
 import { addBookmarkMenu } from "../bookmarks.js";
 import { addImportMenu } from "../import_data.js";
+import { addGenerateMenu } from "../generate_sql.js";
 import { t } from "../i18n.js";
 import { execAjax } from "../ajax_control_bridge.js";
 import { deliverExportFile } from "../export_file.js";
@@ -3128,6 +3129,7 @@ export function getTreePostgresql(p_div) {
 	};
 	addBookmarkMenu(context_menu);
 	addImportMenu(context_menu);
+	addGenerateMenu(context_menu);
 	var tree = createTree(p_div, "#fcfdfd", context_menu);
 	v_connTabControl.selectedTab.tag.tree = tree;
 	let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";

@@ -13546,6 +13546,53 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       action: startImport
     });
   }
+  function generate(p_kind, p_node) {
+    execAjax$2(
+      "/generate_sql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: p_node.tag && p_node.tag.schema || "",
+        p_table: p_node.text,
+        p_kind
+      }),
+      function(r2) {
+        tabSQLTemplate(t$1(p_kind === "crud" ? "generate.tab_crud" : "generate.tab_select_joins", { table: p_node.text }), r2.v_data);
+      },
+      function(r2) {
+        var v_data = r2.v_data;
+        showAlert$1(typeof v_data === "string" ? v_data : v_data && v_data.message || t$1("errors.request_error"));
+      },
+      "box",
+      false
+    );
+  }
+  function addGenerateMenu(p_context_menu) {
+    var v_menu = p_context_menu.cm_table;
+    if (!v_menu || !v_menu.elements) return;
+    v_menu.elements.push({
+      text: t$1("generate.menu"),
+      icon: "fas cm-all fa-magic",
+      submenu: {
+        elements: [
+          {
+            text: t$1("generate.select_joins"),
+            icon: "fas cm-all fa-search",
+            action: function(node) {
+              generate("select_joins", node);
+            }
+          },
+          {
+            text: t$1("generate.crud"),
+            icon: "fas cm-all fa-list-alt",
+            action: function(node) {
+              generate("crud", node);
+            }
+          }
+        ]
+      }
+    });
+  }
   var v_grid_col, v_grid_row;
   function legereEscapeHtml(p_text) {
     var v_div = document.createElement("div");
@@ -17306,6 +17353,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     addBookmarkMenu(context_menu);
     addImportMenu(context_menu);
+    addGenerateMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -24796,6 +24844,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     addBookmarkMenu(context_menu);
     addImportMenu(context_menu);
+    addGenerateMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -27338,6 +27387,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     addBookmarkMenu(context_menu);
     addImportMenu(context_menu);
+    addGenerateMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -29571,6 +29621,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     addBookmarkMenu(context_menu);
     addImportMenu(context_menu);
+    addGenerateMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -31454,6 +31505,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     addBookmarkMenu(context_menu);
     addImportMenu(context_menu);
+    addGenerateMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -33604,6 +33656,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     addBookmarkMenu(context_menu);
     addImportMenu(context_menu);
+    addGenerateMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -35603,6 +35656,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     addBookmarkMenu(context_menu);
     addImportMenu(context_menu);
+    addGenerateMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
