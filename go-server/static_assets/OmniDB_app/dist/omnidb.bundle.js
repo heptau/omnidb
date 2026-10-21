@@ -881,103 +881,6 @@
     customMenuRecursive,
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
-  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/i;
-  const BOOL_TYPE = /^(BOOL|BOOLEAN)$/i;
-  function isNull(value) {
-    return value === null || value === void 0;
-  }
-  function sqlLiteral(value, type) {
-    if (isNull(value)) return "NULL";
-    const text = String(value);
-    if (type && NUMERIC_TYPE.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text)) return text;
-    if (type && BOOL_TYPE.test(type) && /^(true|false)$/i.test(text)) return text.toUpperCase();
-    return "'" + text.replace(/'/g, "''") + "'";
-  }
-  function quoteIdentifier(name) {
-    return /^[a-z_][a-z0-9_]*$/.test(name) ? name : '"' + name.replace(/"/g, '""') + '"';
-  }
-  function csvCell(value, delimiter) {
-    if (isNull(value)) return "";
-    const text = String(value);
-    return text.includes(delimiter) || /["\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
-  }
-  function markdownCell(value) {
-    if (isNull(value)) return "";
-    return String(value).replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\r?\n/g, "<br>");
-  }
-  function formatRows(format, columns, rows, types = null, tableName = null) {
-    const typeAt = (i2) => types && types[i2] || null;
-    switch (format) {
-      case "insert": {
-        const cols = columns.map(quoteIdentifier).join(", ");
-        return rows.map((row) => "INSERT INTO " + (tableName || "table_name") + " (" + cols + ") VALUES (" + row.map((v2, i2) => sqlLiteral(v2, typeAt(i2))).join(", ") + ");").join("\n");
-      }
-      case "json":
-        return JSON.stringify(
-          rows.map((row) => Object.fromEntries(columns.map((c2, i2) => [c2, isNull(row[i2]) ? null : row[i2]]))),
-          null,
-          2
-        );
-      case "markdown": {
-        const header = "| " + columns.map(markdownCell).join(" | ") + " |";
-        const sep = "| " + columns.map(() => "---").join(" | ") + " |";
-        const body = rows.map((row) => "| " + columns.map((_2, i2) => markdownCell(row[i2])).join(" | ") + " |");
-        return [header, sep, ...body].join("\n");
-      }
-      case "csv": {
-        const header = columns.map((c2) => csvCell(c2, ",")).join(",");
-        const body = rows.map((row) => columns.map((_2, i2) => csvCell(row[i2], ",")).join(","));
-        return [header, ...body].join("\n");
-      }
-      default:
-        throw new Error("Unknown copy format: " + format);
-    }
-  }
-  function columnStats(rows, colIndex) {
-    let nulls = 0;
-    let numeric = 0;
-    let sum = 0;
-    let min = Infinity;
-    let max = -Infinity;
-    const distinct = /* @__PURE__ */ new Set();
-    for (const row of rows) {
-      const value = row[colIndex];
-      if (isNull(value) || value === "") {
-        nulls++;
-        continue;
-      }
-      distinct.add(String(value));
-      const n2 = typeof value === "number" ? value : /^\s*-?\d+(\.\d+)?([eE][-+]?\d+)?\s*$/.test(String(value)) ? Number(value) : NaN;
-      if (Number.isFinite(n2)) {
-        numeric++;
-        sum += n2;
-        if (n2 < min) min = n2;
-        if (n2 > max) max = n2;
-      }
-    }
-    return {
-      count: rows.length - nulls,
-      nulls,
-      distinct: distinct.size,
-      numeric,
-      sum: numeric ? sum : null,
-      avg: numeric ? sum / numeric : null,
-      min: numeric ? min : null,
-      max: numeric ? max : null
-    };
-  }
-  function escapeHtmlText(text) {
-    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-  }
-  function recordViewHtml(columns, types, row, nullLabel) {
-    const rows = columns.map((name, i2) => {
-      const value = row[i2];
-      const type = types && types[i2] ? ' <small class="text-muted">' + escapeHtmlText(types[i2]) + "</small>" : "";
-      const cell = isNull(value) ? "<i>" + escapeHtmlText(nullLabel) + "</i>" : '<span style="white-space:pre-wrap;word-break:break-word;">' + escapeHtmlText(value) + "</span>";
-      return '<tr><th style="vertical-align:top;white-space:nowrap;padding-right:1rem;color:inherit;">' + escapeHtmlText(name) + type + '</th><td style="color:inherit;">' + cell + "</td></tr>";
-    });
-    return '<table class="table table-sm mb-0" style="width:100%;text-align:left;--bs-table-bg:transparent;--bs-table-color:inherit;--bs-table-striped-bg:transparent;color:inherit;">' + rows.join("") + "</table>";
-  }
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
   function el$2(id) {
     return (
@@ -1174,6 +1077,256 @@
     showError,
     showMessageModal
   }, Symbol.toStringTag, { value: "Module" }));
+  function findParamOccurrences(sql) {
+    const found = [];
+    let state = "normal";
+    let dollarTag = "";
+    for (let i2 = 0; i2 < sql.length; i2++) {
+      const ch = sql[i2];
+      const next = sql[i2 + 1];
+      if (state === "normal") {
+        if (ch === "'") state = "single";
+        else if (ch === '"') state = "double";
+        else if (ch === "`") state = "backtick";
+        else if (ch === "-" && next === "-") state = "line_comment";
+        else if (ch === "/" && next === "*") {
+          state = "block_comment";
+          i2++;
+        } else if (ch === "$") {
+          const m2 = /^\$([A-Za-z_]\w*)?\$/.exec(sql.slice(i2));
+          if (m2 && !/[\w$]/.test(sql[i2 - 1] || "")) {
+            state = "dollar";
+            dollarTag = m2[0];
+            i2 += m2[0].length - 1;
+          }
+        } else if (ch === ":" && next !== ":" && /[A-Za-z_]/.test(next || "") && !/[\w\])":]/.test(sql[i2 - 1] || "")) {
+          const m2 = /^[A-Za-z_]\w*/.exec(sql.slice(i2 + 1));
+          if (m2) {
+            found.push({ name: m2[0], start: i2, end: i2 + 1 + m2[0].length });
+            i2 += m2[0].length;
+          }
+        }
+      } else if (state === "single") {
+        if (ch === "'") state = "normal";
+      } else if (state === "double") {
+        if (ch === '"') state = "normal";
+      } else if (state === "backtick") {
+        if (ch === "`") state = "normal";
+      } else if (state === "line_comment") {
+        if (ch === "\n") state = "normal";
+      } else if (state === "block_comment") {
+        if (ch === "*" && next === "/") {
+          state = "normal";
+          i2++;
+        }
+      } else if (state === "dollar") {
+        if (sql.startsWith(dollarTag, i2)) {
+          state = "normal";
+          i2 += dollarTag.length - 1;
+        }
+      }
+    }
+    return found;
+  }
+  function findQueryParams(sql) {
+    return [...new Set(findParamOccurrences(sql).map((o2) => o2.name))];
+  }
+  function paramLiteral(param, technology) {
+    const value = param.value;
+    if (param.mode === "sql") return value;
+    if (param.mode === "auto") {
+      if (/^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(value.trim())) return value.trim();
+      if (/^(null|true|false)$/i.test(value.trim())) return value.trim().toUpperCase();
+    }
+    let text = value;
+    if (technology === "mysql" || technology === "mariadb") text = text.replace(/\\/g, "\\\\");
+    return "'" + text.replace(/'/g, "''") + "'";
+  }
+  function applyQueryParams(sql, values, technology) {
+    let out = "";
+    let last = 0;
+    for (const occ of findParamOccurrences(sql)) {
+      const param = values[occ.name];
+      if (!param) continue;
+      out += sql.slice(last, occ.start) + paramLiteral(param, technology);
+      last = occ.end;
+    }
+    return out + sql.slice(last);
+  }
+  const rememberedValues = {};
+  function promptQueryParams(names, onValues) {
+    const fields = {};
+    const confirm = () => {
+      const values = {};
+      for (const name of names) {
+        const f2 = fields[name];
+        if (!f2) continue;
+        values[name] = { value: f2.input.value, mode: (
+          /** @type {ParamMode} */
+          f2.mode.value
+        ) };
+        rememberedValues[name] = values[name];
+      }
+      onValues(values);
+    };
+    showConfirm(
+      "",
+      confirm,
+      null,
+      function() {
+        setMessageModalTitle(t$1("query.params_title"), "fas node-all fa-list-alt");
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        names.forEach((name, i2) => {
+          const remembered = rememberedValues[name];
+          const row = document.createElement("div");
+          row.className = "mb-2";
+          const label = document.createElement("label");
+          label.className = "form-label mb-1";
+          label.textContent = ":" + name;
+          const group = document.createElement("div");
+          group.className = "input-group";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.className = "form-control";
+          input.value = remembered ? remembered.value : "";
+          input.setAttribute("aria-label", ":" + name);
+          input.addEventListener("keydown", (e2) => {
+            if (e2.key === "Enter") {
+              e2.preventDefault();
+              document.getElementById("modal_message_ok")?.click();
+            }
+          });
+          const mode = document.createElement("select");
+          mode.className = "form-select";
+          mode.style.maxWidth = "7.5rem";
+          for (
+            const [value, key] of
+            /** @type {Array<[ParamMode, string]>} */
+            [
+              ["auto", "query.params_mode_auto"],
+              ["text", "query.params_mode_text"],
+              ["sql", "query.params_mode_sql"]
+            ]
+          ) {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = t$1(key);
+            mode.appendChild(option);
+          }
+          mode.value = remembered ? remembered.mode : "auto";
+          group.append(input, mode);
+          row.append(label, group);
+          content.appendChild(row);
+          fields[name] = { input, mode };
+          if (i2 === 0) input.focus();
+        });
+      },
+      "form",
+      t$1("query.params_run")
+    );
+  }
+  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/i;
+  const BOOL_TYPE = /^(BOOL|BOOLEAN)$/i;
+  function isNull(value) {
+    return value === null || value === void 0;
+  }
+  function sqlLiteral(value, type) {
+    if (isNull(value)) return "NULL";
+    const text = String(value);
+    if (type && NUMERIC_TYPE.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text)) return text;
+    if (type && BOOL_TYPE.test(type) && /^(true|false)$/i.test(text)) return text.toUpperCase();
+    return "'" + text.replace(/'/g, "''") + "'";
+  }
+  function quoteIdentifier(name) {
+    return /^[a-z_][a-z0-9_]*$/.test(name) ? name : '"' + name.replace(/"/g, '""') + '"';
+  }
+  function csvCell(value, delimiter) {
+    if (isNull(value)) return "";
+    const text = String(value);
+    return text.includes(delimiter) || /["\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+  }
+  function markdownCell(value) {
+    if (isNull(value)) return "";
+    return String(value).replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\r?\n/g, "<br>");
+  }
+  function formatRows(format, columns, rows, types = null, tableName = null) {
+    const typeAt = (i2) => types && types[i2] || null;
+    switch (format) {
+      case "insert": {
+        const cols = columns.map(quoteIdentifier).join(", ");
+        return rows.map((row) => "INSERT INTO " + (tableName || "table_name") + " (" + cols + ") VALUES (" + row.map((v2, i2) => sqlLiteral(v2, typeAt(i2))).join(", ") + ");").join("\n");
+      }
+      case "json":
+        return JSON.stringify(
+          rows.map((row) => Object.fromEntries(columns.map((c2, i2) => [c2, isNull(row[i2]) ? null : row[i2]]))),
+          null,
+          2
+        );
+      case "markdown": {
+        const header = "| " + columns.map(markdownCell).join(" | ") + " |";
+        const sep = "| " + columns.map(() => "---").join(" | ") + " |";
+        const body = rows.map((row) => "| " + columns.map((_2, i2) => markdownCell(row[i2])).join(" | ") + " |");
+        return [header, sep, ...body].join("\n");
+      }
+      case "csv": {
+        const header = columns.map((c2) => csvCell(c2, ",")).join(",");
+        const body = rows.map((row) => columns.map((_2, i2) => csvCell(row[i2], ",")).join(","));
+        return [header, ...body].join("\n");
+      }
+      default:
+        throw new Error("Unknown copy format: " + format);
+    }
+  }
+  function columnStats(rows, colIndex) {
+    let nulls = 0;
+    let numeric = 0;
+    let sum = 0;
+    let min = Infinity;
+    let max = -Infinity;
+    const distinct = /* @__PURE__ */ new Set();
+    for (const row of rows) {
+      const value = row[colIndex];
+      if (isNull(value) || value === "") {
+        nulls++;
+        continue;
+      }
+      distinct.add(String(value));
+      const n2 = typeof value === "number" ? value : /^\s*-?\d+(\.\d+)?([eE][-+]?\d+)?\s*$/.test(String(value)) ? Number(value) : NaN;
+      if (Number.isFinite(n2)) {
+        numeric++;
+        sum += n2;
+        if (n2 < min) min = n2;
+        if (n2 > max) max = n2;
+      }
+    }
+    return {
+      count: rows.length - nulls,
+      nulls,
+      distinct: distinct.size,
+      numeric,
+      sum: numeric ? sum : null,
+      avg: numeric ? sum / numeric : null,
+      min: numeric ? min : null,
+      max: numeric ? max : null
+    };
+  }
+  function escapeHtmlText(text) {
+    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function recordViewHtml(columns, types, row, nullLabel) {
+    const rows = columns.map((name, i2) => {
+      const value = row[i2];
+      const type = types && types[i2] ? ' <small class="text-muted">' + escapeHtmlText(types[i2]) + "</small>" : "";
+      const cell = isNull(value) ? "<i>" + escapeHtmlText(nullLabel) + "</i>" : '<span style="white-space:pre-wrap;word-break:break-word;">' + escapeHtmlText(value) + "</span>";
+      return '<tr><th style="vertical-align:top;white-space:nowrap;padding-right:1rem;color:inherit;">' + escapeHtmlText(name) + type + '</th><td style="color:inherit;">' + cell + "</td></tr>";
+    });
+    return '<table class="table table-sm mb-0" style="width:100%;text-align:left;--bs-table-bg:transparent;--bs-table-color:inherit;--bs-table-striped-bg:transparent;color:inherit;">' + rows.join("") + "</table>";
+  }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   var v_pgpass_lookup_info = null;
   function el$1(id) {
@@ -40908,14 +41061,24 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     return null;
   }
   function querySQL(p_mode, p_all_data = false, p_query = getQueryEditorValue(), p_callback = null, p_log_query = true, p_save_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue(), p_cmd_type = null, p_clear_data = false, p_tab_title = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_title_span.textContent) {
-    var v_run = function() {
-      executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title);
+    var v_start = function(p_sql) {
+      var v_run = function() {
+        executeQuerySQL(p_mode, p_all_data, p_sql, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title);
+      };
+      var v_warning = p_mode == 0 ? destructiveSQLWarning(p_sql) : null;
+      if (v_warning) {
+        showConfirm(v_warning, v_run);
+      } else {
+        v_run();
+      }
     };
-    var v_warning = p_mode == 0 ? destructiveSQLWarning(p_query) : null;
-    if (v_warning) {
-      showConfirm(v_warning, v_run);
+    var v_params = p_mode == 0 ? findQueryParams(p_query) : [];
+    if (v_params.length > 0) {
+      promptQueryParams(v_params, function(p_values) {
+        v_start(applyQueryParams(p_query, p_values, v_connTabControl.selectedTab.tag.selectedDBMS));
+      });
     } else {
-      v_run();
+      v_start(p_query);
     }
   }
   function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {

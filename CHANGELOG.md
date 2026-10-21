@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Query editor: named parameters. A statement containing `:name` placeholders asks for a value per parameter before it
+  runs (Enter confirms), each either guessed (numbers, `NULL`, `TRUE`/`FALSE` stay bare, anything else becomes a quoted
+  string), forced to text, or pasted as raw SQL. Placeholders inside strings, quoted identifiers, comments and
+  `$$` bodies, `::casts` and `arr[a:b]` slices are left alone, and values are remembered until the page reloads.
 - Query editor export: a new "SQL" format writes the result as `INSERT INTO <table> (...) VALUES (...);` statements,
   one per row, with identifiers and literals quoted for the connection's engine (binary values as hex, backslashes
   doubled for MySQL/MariaDB, booleans as 1/0 on SQL Server and Oracle). The table is taken from a plain

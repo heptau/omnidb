@@ -32,6 +32,7 @@ SOFTWARE.
 /// Query state
 /// </summary>
 
+import { applyQueryParams, findQueryParams, promptQueryParams } from "./query_params.js";
 import { columnStats, formatRows, guessSourceTable, recordViewHtml } from "./grid_copy_as.js";
 import { editCellData } from "./header_actions.js";
 import { SetAcked, createRequest, removeContext } from "./long_polling.js";
@@ -305,14 +306,27 @@ export function querySQL(
 	// Only the actual "Run" action (mode 0) gets the confirmation — modes
 	// 1-4 (fetch more/fetch all/commit/rollback) re-invoke querySQL for a
 	// statement the user already committed to running, not a fresh decision.
-	var v_run = function () {
-		executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title);
+	var v_start = function (p_sql) {
+		var v_run = function () {
+			executeQuerySQL(p_mode, p_all_data, p_sql, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title);
+		};
+		var v_warning = p_mode == 0 ? destructiveSQLWarning(p_sql) : null;
+		if (v_warning) {
+			showConfirm(v_warning, v_run);
+		} else {
+			v_run();
+		}
 	};
-	var v_warning = p_mode == 0 ? destructiveSQLWarning(p_query) : null;
-	if (v_warning) {
-		showConfirm(v_warning, v_run);
+
+	// Named parameters (:name) are filled in before anything else, so the
+	// destructive-statement check below sees the statement that will really run.
+	var v_params = p_mode == 0 ? findQueryParams(p_query) : [];
+	if (v_params.length > 0) {
+		promptQueryParams(v_params, function (p_values) {
+			v_start(applyQueryParams(p_query, p_values, v_connTabControl.selectedTab.tag.selectedDBMS));
+		});
 	} else {
-		v_run();
+		v_start(p_query);
 	}
 }
 
