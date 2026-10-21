@@ -889,6 +889,8 @@
   "edit_data.response_time": "Antwortzeit: {seconds} Sekunden",
   "edit_data.save_time": "Speicherzeit: {seconds} Sekunden",
   "edit_data.duplicate_row": "Zeile duplizieren",
+  "edit_data.go_to_referenced": "Zur referenzierten Zeile springen",
+  "edit_data.fk_null": "Der Fremdschlüsselwert ist NULL, daher gibt es keine referenzierte Zeile.",
   "editor.default_column_title": "Spalte {number}",
   "errors.session_not_found_reload": "Sitzung nicht gefunden, bitte laden Sie die Seite neu.",
   "monitoring.confirm_delete_unit": "Möchten Sie diese Überwachungseinheit wirklich löschen?",

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Edit Data grid: right-click a cell of a foreign key column and choose "Go to referenced row" to open the referenced
+  table in Edit Data, already filtered to the row the value points at (composite keys supported; a NULL key says
+  there is nothing to jump to). Works on every supported engine; PostgreSQL honours a referenced table in another
+  schema.
 - Query editor: named parameters. A statement containing `:name` placeholders asks for a value per parameter before it
   runs (Enter confirms), each either guessed (numbers, `NULL`, `TRUE`/`FALSE` stay bare, anything else becomes a quoted
   string), forced to text, or pasted as raw SQL. Placeholders inside strings, quoted identifiers, comments and

@@ -889,6 +889,8 @@
   "edit_data.response_time": "Tiempo de respuesta: {seconds} segundos",
   "edit_data.save_time": "Tiempo de guardado: {seconds} segundos",
   "edit_data.duplicate_row": "Duplicar fila",
+  "edit_data.go_to_referenced": "Ir a la fila referenciada",
+  "edit_data.fk_null": "El valor de la clave foránea es NULL, así que no hay fila referenciada.",
   "editor.default_column_title": "Columna {number}",
   "errors.session_not_found_reload": "Sesión no encontrada, recarga la página.",
   "monitoring.confirm_delete_unit": "¿Seguro que quieres eliminar esta unidad de monitorización?",

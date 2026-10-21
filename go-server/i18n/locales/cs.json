@@ -890,6 +890,8 @@
   "edit_data.response_time": "Doba odezvy: {seconds} s",
   "edit_data.save_time": "Doba uložení: {seconds} s",
   "edit_data.duplicate_row": "Duplikovat řádek",
+  "edit_data.go_to_referenced": "Přejít na odkazovaný řádek",
+  "edit_data.fk_null": "Hodnota cizího klíče je NULL, takže neexistuje žádný odkazovaný řádek.",
   "editor.default_column_title": "Sloupec {number}",
   "errors.session_not_found_reload": "Relace nebyla nalezena, obnovte prosím stránku.",
   "monitoring.confirm_delete_unit": "Opravdu chcete smazat tuto monitorovací jednotku?",

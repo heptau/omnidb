@@ -883,6 +883,8 @@
   "edit_data.response_time": "応答時間: {seconds} 秒",
   "edit_data.save_time": "保存時間: {seconds} 秒",
   "edit_data.duplicate_row": "行を複製",
+  "edit_data.go_to_referenced": "参照先の行へ移動",
+  "edit_data.fk_null": "外部キーの値が NULL のため、参照先の行はありません。",
   "editor.default_column_title": "列 {number}",
   "errors.session_not_found_reload": "セッションが見つかりません。ページを再読み込みしてください。",
   "monitoring.confirm_delete_unit": "この監視ユニットを削除してもよろしいですか?",

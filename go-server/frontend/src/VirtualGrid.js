@@ -756,6 +756,8 @@ export class VirtualGrid {
 
 		for (const key in items) {
 			const item = items[key];
+			// Handsontable-style: an item may hide itself for the clicked cell.
+			if (typeof item.hidden === "function" && item.hidden.call(this, display, colIndex)) continue;
 			const div = document.createElement("div");
 			div.innerHTML = item.name; // trusted internal HTML (icons), not user input
 

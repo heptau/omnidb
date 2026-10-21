@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -109,9 +110,27 @@ func handleStartEditData(upstream *url.URL, fallback http.Handler) http.HandlerF
 			orderBy = "ORDER BY " + strings.Join(parts, ", ")
 		}
 
+		// Foreign keys only power the "go to referenced row" shortcut, so a
+		// failure to read them must not stop the table from opening.
+		vFKs := make([]map[string]any, 0)
+		if fks, fkErr := editDataForeignKeys(info.Technology, db, schema, table); fkErr != nil {
+			log.Printf("start_edit_data: foreign keys of %s: %v", table, fkErr)
+		} else {
+			for _, fk := range fks {
+				vFKs = append(vFKs, map[string]any{
+					"columns":       fk.Columns,
+					"r_schema":      fk.RSchema,
+					"r_table":       fk.RTable,
+					"r_columns":     fk.RColumns,
+					"r_columns_sql": fk.RColumnSQL,
+				})
+			}
+		}
+
 		writeEnvelope(w, map[string]any{
 			"v_pk":          vPK,
 			"v_cols":        vCols,
+			"v_fks":         vFKs,
 			"v_ini_orderby": orderBy,
 		}, false, -1)
 	}

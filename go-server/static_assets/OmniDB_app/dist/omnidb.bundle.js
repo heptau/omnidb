@@ -1230,7 +1230,7 @@
       t$1("query.params_run")
     );
   }
-  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/i;
+  const NUMERIC_TYPE$1 = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/i;
   const BOOL_TYPE = /^(BOOL|BOOLEAN)$/i;
   function isNull(value) {
     return value === null || value === void 0;
@@ -1238,7 +1238,7 @@
   function sqlLiteral(value, type) {
     if (isNull(value)) return "NULL";
     const text = String(value);
-    if (type && NUMERIC_TYPE.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text)) return text;
+    if (type && NUMERIC_TYPE$1.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text)) return text;
     if (type && BOOL_TYPE.test(type) && /^(true|false)$/i.test(text)) return text.toUpperCase();
     return "'" + text.replace(/'/g, "''") + "'";
   }
@@ -2253,6 +2253,29 @@
     terminalRun,
     v_terminalState
   }, Symbol.toStringTag, { value: "Module" }));
+  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)\b/i;
+  const NULL_CELL = "[null]";
+  function findForeignKey(fks, columnName) {
+    return (fks || []).find((fk) => fk.columns.includes(columnName)) || null;
+  }
+  function literal(value, type, technology) {
+    const text = String(value);
+    if (type && NUMERIC_TYPE.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text.trim())) return text.trim();
+    let escaped = text;
+    if (technology === "mysql" || technology === "mariadb") escaped = escaped.replace(/\\/g, "\\\\");
+    return "'" + escaped.replace(/'/g, "''") + "'";
+  }
+  function buildReferencedFilter(fk, columns, row, technology) {
+    const conditions = [];
+    for (let i2 = 0; i2 < fk.columns.length; i2++) {
+      const index = columns.findIndex((c2) => c2.v_column === fk.columns[i2]);
+      if (index < 0) return null;
+      const value = row[index + 1];
+      if (value === null || value === void 0 || value === NULL_CELL) return null;
+      conditions.push("t." + fk.r_columns_sql[i2] + " = " + literal(value, columns[index].v_type, technology));
+    }
+    return "WHERE " + conditions.join(" AND ");
+  }
   function blueHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
       Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -2441,7 +2464,7 @@
     Saving: 3,
     SaveReady: 4
   };
-  function v_startEditData(p_table, p_schema) {
+  function v_startEditData(p_table, p_schema, p_filter = "") {
     var input = JSON.stringify({
       p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
       p_tab_id: v_connTabControl.selectedTab.id,
@@ -2460,7 +2483,7 @@
             v_currTabTag.editor.destroy();
           }
         }
-        v_currTabTag.editor.setValue(p_return.v_data.v_ini_orderby);
+        v_currTabTag.editor.setValue(p_filter || p_return.v_data.v_ini_orderby);
         v_currTabTag.editor.clearSelection();
         v_currTabTag.editDataObject = new Object();
         v_currTabTag.editDataObject.editor = v_currTabTag.editor;
@@ -2469,6 +2492,7 @@
         v_currTabTag.editDataObject.firstRender = true;
         v_currTabTag.editDataObject.pk = p_return.v_data.v_pk;
         v_currTabTag.editDataObject.columns = p_return.v_data.v_cols;
+        v_currTabTag.editDataObject.fks = p_return.v_data.v_fks || [];
         queryEditData();
       },
       function(p_return) {
@@ -2476,7 +2500,7 @@
           showPasswordPrompt(
             v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
             function() {
-              v_startEditData(p_table, p_schema);
+              v_startEditData(p_table, p_schema, p_filter);
             },
             null,
             p_return.v_data.message
@@ -2706,6 +2730,22 @@
                   false,
                   v_col_type
                 );
+            } else if (key === "go_to_referenced") {
+              var v_fk_object = v_currTabTag.editDataObject;
+              var v_fk_column = v_fk_object.columns[options[0].start.col - 1];
+              var v_fk = v_fk_column ? findForeignKey(v_fk_object.fks, v_fk_column.v_column) : null;
+              if (!v_fk) return;
+              var v_fk_filter = buildReferencedFilter(
+                v_fk,
+                v_fk_object.columns,
+                this.getDataAtRow(options[0].start.row),
+                v_connTabControl.selectedTab.tag.selectedDBMS
+              );
+              if (v_fk_filter === null) {
+                showAlert$1(t$1("edit_data.fk_null"));
+                return;
+              }
+              v_startEditData(v_fk.r_table, v_fk.r_schema || v_fk_object.schema, v_fk_filter);
             } else if (key === "duplicate_row") {
               var v_src_row = options[0].start.row;
               var v_edit_object = v_currTabTag.editDataObject;
@@ -2724,6 +2764,14 @@
           items: {
             copy: {
               name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
+            },
+            go_to_referenced: {
+              name: '<div style="position: absolute;"><i class="fas fa-link cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.go_to_referenced") + "</div>",
+              hidden: function(display, col2) {
+                var v_object2 = v_currTabTag.editDataObject;
+                var v_column = v_object2.columns[col2 - 1];
+                return !v_column || !findForeignKey(v_object2.fks, v_column.v_column);
+              }
             },
             duplicate_row: {
               name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.duplicate_row") + "</div>"
@@ -43073,6 +43121,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       const callback = this.options.contextMenu.callback;
       for (const key in items) {
         const item = items[key];
+        if (typeof item.hidden === "function" && item.hidden.call(this, display, colIndex)) continue;
         const div = document.createElement("div");
         div.innerHTML = item.name;
         div.onclick = () => {

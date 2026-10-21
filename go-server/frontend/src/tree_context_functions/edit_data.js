@@ -33,6 +33,7 @@ SOFTWARE.
 /// </summary>
 
 import { execAjax } from "../ajax_control_bridge.js";
+import { buildReferencedFilter, findForeignKey } from "../fk_navigation.js";
 import { editCellData } from "../header_actions.js";
 import { t } from "../i18n.js";
 import { SetAcked, createRequest, removeContext } from "../long_polling.js";
@@ -54,7 +55,8 @@ export var v_editDataState = {
 /// </summary>
 /// <param name="p_table">Table name.</param>
 /// <param name="p_schema">Schema name.</param>
-export function v_startEditData(p_table, p_schema) {
+/// <param name="p_filter">Optional WHERE/ORDER BY text to open the table with, instead of the default ordering.</param>
+export function v_startEditData(p_table, p_schema, p_filter = "") {
 	var input = JSON.stringify({
 		p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 		p_tab_id: v_connTabControl.selectedTab.id,
@@ -76,7 +78,7 @@ export function v_startEditData(p_table, p_schema) {
 					v_currTabTag.editor.destroy();
 				}
 
-			v_currTabTag.editor.setValue(p_return.v_data.v_ini_orderby);
+			v_currTabTag.editor.setValue(p_filter || p_return.v_data.v_ini_orderby);
 			v_currTabTag.editor.clearSelection();
 
 			v_currTabTag.editDataObject = new Object();
@@ -86,6 +88,7 @@ export function v_startEditData(p_table, p_schema) {
 			v_currTabTag.editDataObject.firstRender = true;
 			v_currTabTag.editDataObject.pk = p_return.v_data.v_pk;
 			v_currTabTag.editDataObject.columns = p_return.v_data.v_cols;
+			v_currTabTag.editDataObject.fks = p_return.v_data.v_fks || [];
 
 			queryEditData();
 		},
@@ -94,7 +97,7 @@ export function v_startEditData(p_table, p_schema) {
 				showPasswordPrompt(
 					v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 					function () {
-						v_startEditData(p_table, p_schema);
+						v_startEditData(p_table, p_schema, p_filter);
 					},
 					null,
 					p_return.v_data.message,
@@ -405,6 +408,23 @@ export function queryEditDataReturnRender(p_message, p_context) {
 								false,
 								v_col_type,
 							);
+					} else if (key === "go_to_referenced") {
+						var v_fk_object = v_currTabTag.editDataObject;
+						var v_fk_column = v_fk_object.columns[options[0].start.col - 1];
+						var v_fk = v_fk_column ? findForeignKey(v_fk_object.fks, v_fk_column.v_column) : null;
+						if (!v_fk) return;
+						var v_fk_filter = buildReferencedFilter(
+							v_fk,
+							v_fk_object.columns,
+							this.getDataAtRow(options[0].start.row),
+							v_connTabControl.selectedTab.tag.selectedDBMS,
+						);
+						if (v_fk_filter === null) {
+							showAlert(t("edit_data.fk_null"));
+							return;
+						}
+						// Engines without schemas report an empty one; the rest keep the table's own.
+						v_startEditData(v_fk.r_table, v_fk.r_schema || v_fk_object.schema, v_fk_filter);
 					} else if (key === "duplicate_row") {
 						var v_src_row = options[0].start.row;
 						var v_edit_object = v_currTabTag.editDataObject;
@@ -426,6 +446,14 @@ export function queryEditDataReturnRender(p_message, p_context) {
 				items: {
 					copy: {
 						name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Copy</div>',
+					},
+					go_to_referenced: {
+						name: '<div style=\"position: absolute;\"><i class=\"fas fa-link cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("edit_data.go_to_referenced") + '</div>',
+						hidden: function (display, col) {
+							var v_object = v_currTabTag.editDataObject;
+							var v_column = v_object.columns[col - 1];
+							return !v_column || !findForeignKey(v_object.fks, v_column.v_column);
+						},
 					},
 					duplicate_row: {
 						name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("edit_data.duplicate_row") + '</div>',

@@ -889,6 +889,8 @@
   "edit_data.response_time": "Temps de réponse : {seconds} secondes",
   "edit_data.save_time": "Temps d'enregistrement : {seconds} secondes",
   "edit_data.duplicate_row": "Dupliquer la ligne",
+  "edit_data.go_to_referenced": "Aller à la ligne référencée",
+  "edit_data.fk_null": "La valeur de la clé étrangère est NULL, il n'y a donc pas de ligne référencée.",
   "editor.default_column_title": "Colonne {number}",
   "errors.session_not_found_reload": "Session introuvable, veuillez recharger la page.",
   "monitoring.confirm_delete_unit": "Voulez-vous vraiment supprimer cette unité de supervision ?",
