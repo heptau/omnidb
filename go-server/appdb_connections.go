@@ -498,6 +498,7 @@ func cascadeDeleteConnection(db *sql.DB, connID int64) error {
 		`delete from OmniDB_app_monunitsconnections where connection_id = ?`,
 		`delete from OmniDB_app_groupconnection where connection_id = ?`,
 		`delete from OmniDB_app_connectionorder where connection_id = ?`,
+		`delete from OmniDB_app_bookmark where connection_id = ?`,
 	} {
 		if _, err := db.Exec(stmt, connID); err != nil {
 			return err

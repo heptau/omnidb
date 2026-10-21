@@ -32,6 +32,7 @@ SOFTWARE.
 /// Retrieving tree.
 /// </summary>
 
+import { addBookmarkMenu } from "../bookmarks.js";
 import { t } from "../i18n.js";
 import { execAjax } from "../ajax_control_bridge.js";
 import { showConfirm, showError } from "../notification_control.js";
@@ -1215,6 +1216,7 @@ export function getTreeOracle(p_div) {
 			],
 		},
 	};
+	addBookmarkMenu(context_menu);
 	var tree = createTree(p_div, "#fcfdfd", context_menu);
 	v_connTabControl.selectedTab.tag.tree = tree;
 	let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";

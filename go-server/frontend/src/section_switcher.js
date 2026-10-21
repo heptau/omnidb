@@ -47,6 +47,7 @@ import { refreshNotifyPane } from "./panel_functions/outer_notify_panel.js";
 import { refreshConnectedUsersPane } from "./panel_functions/outer_connected_users_panel.js";
 import { refreshPermissionsPane } from "./panel_functions/outer_permissions_panel.js";
 import { refreshMonitoringPane } from "./panel_functions/outer_monitoring_panel.js";
+import { refreshBookmarksPane } from "./panel_functions/outer_bookmarks_panel.js";
 import { toggleSnippetPanel } from "./panel_functions/outer_snippet_panel.js";
 import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
@@ -54,7 +55,7 @@ import { refreshHeights } from "./workspace.js";
 import { t } from "./i18n.js";
 import { jsonPostHeaders } from "./ajax_control_bridge.js";
 
-const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "snippets", "settings"];
+const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "bookmarks", "snippets", "settings"];
 
 // The i18n key for each section's display name -- reused from the rail's own
 // tooltips (see initSectionSwitcher below) so the window title and the
@@ -67,6 +68,7 @@ const SECTION_TITLE_KEYS = {
 	notify: "nav.notify",
 	permissions: "nav.permissions",
 	connected_users: "nav.connected_users",
+	bookmarks: "nav.bookmarks",
 	snippets: "tree.snippets_section",
 	settings: "nav.settings",
 };
@@ -156,6 +158,8 @@ export function switchSection(p_name) {
 		refreshPermissionsPane();
 	} else if (p_name === "connected_users") {
 		refreshConnectedUsersPane();
+	} else if (p_name === "bookmarks") {
+		refreshBookmarksPane();
 	} else if (p_name === "database") {
 		// Forces a fresh layout pass for the now-visible connection tab --
 		// refreshHeights's own DB-specific sizing skips itself entirely
@@ -272,6 +276,16 @@ export function initSectionSwitcher() {
 			switchSection("connected_users");
 		},
 		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.connected_users")) + "</h5>",
+	});
+
+	v_sectionNavTabs.bookmarks = v_sectionNav.createTab({
+		p_icon: '<i class="fas fa-star"></i>',
+		p_close: false,
+		p_isDraggable: false,
+		p_selectFunction: function () {
+			switchSection("bookmarks");
+		},
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.bookmarks")) + "</h5>",
 	});
 
 	v_sectionNavTabs.snippets = v_sectionNav.createTab({

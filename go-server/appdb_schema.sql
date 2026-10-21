@@ -214,3 +214,15 @@ CREATE TABLE IF NOT EXISTS "OmniDB_app_connectionorder" (
 );
 CREATE INDEX IF NOT EXISTS "OmniDB_app_connectionorder_user_id" ON "OmniDB_app_connectionorder" ("user_id");
 CREATE INDEX IF NOT EXISTS "OmniDB_app_connectionorder_connection_id" ON "OmniDB_app_connectionorder" ("connection_id");
+
+CREATE TABLE IF NOT EXISTS "OmniDB_app_bookmark" (
+	"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+	"user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+	"connection_id" integer NOT NULL REFERENCES "OmniDB_app_connection" ("id") DEFERRABLE INITIALLY DEFERRED,
+	"kind" varchar(20) NOT NULL,
+	"schema_name" varchar(200) NOT NULL DEFAULT '',
+	"name" varchar(500) NOT NULL,
+	"create_date" datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT "unique_bookmark" UNIQUE ("user_id", "connection_id", "kind", "schema_name", "name")
+);
+CREATE INDEX IF NOT EXISTS "OmniDB_app_bookmark_user_id" ON "OmniDB_app_bookmark" ("user_id");

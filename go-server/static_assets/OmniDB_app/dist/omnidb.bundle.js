@@ -12605,6 +12605,32 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     editor.commands.bindKey("Alt-J", "selectMoreAfter");
     editor.commands.bindKey("Alt-Shift-J", "selectMoreBefore");
   }
+  function addBookmarkFromNode(p_node) {
+    execAjax$2(
+      "/add_bookmark/",
+      JSON.stringify({
+        p_conn_id: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_kind: "table",
+        p_schema: p_node.tag && p_node.tag.schema || "",
+        p_name: p_node.text
+      }),
+      function() {
+        showAlert$1(t$1("bookmarks.added", { name: p_node.text }));
+      },
+      null,
+      "box",
+      false
+    );
+  }
+  function addBookmarkMenu(p_context_menu) {
+    var v_menu = p_context_menu.cm_table;
+    if (!v_menu || !v_menu.elements) return;
+    v_menu.elements.push({
+      text: t$1("bookmarks.add"),
+      icon: "fas cm-all fa-star",
+      action: addBookmarkFromNode
+    });
+  }
   var v_grid_col, v_grid_row;
   function legereEscapeHtml(p_text) {
     var v_div = document.createElement("div");
@@ -16363,6 +16389,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         ]
       }
     };
+    addBookmarkMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -23842,6 +23869,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         ]
       }
     };
+    addBookmarkMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -26382,6 +26410,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         ]
       }
     };
+    addBookmarkMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -28613,6 +28642,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         ]
       }
     };
+    addBookmarkMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -30494,6 +30524,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         ]
       }
     };
+    addBookmarkMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -32642,6 +32673,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         ]
       }
     };
+    addBookmarkMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -34639,6 +34671,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         ]
       }
     };
+    addBookmarkMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -39479,7 +39512,94 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     __proto__: null,
     startTutorial
   }, Symbol.toStringTag, { value: "Module" }));
-  const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "snippets", "settings"];
+  const CONTENT_ID = "omnidb__section_bookmarks";
+  function openBookmark(p_bookmark) {
+    var v_tab = v_connTabControl.tabList.find(function(p_tab) {
+      return p_tab.tag && p_tab.tag.selectedDatabaseIndex === p_bookmark.conn_id;
+    });
+    switchSection("database");
+    if (v_tab) {
+      v_connTabControl.selectTab(v_tab);
+    } else {
+      v_connTabControl.tag.createConnTab(p_bookmark.conn_id);
+    }
+    v_startEditData(p_bookmark.name, p_bookmark.schema);
+  }
+  function removeBookmark(p_id) {
+    execAjax$2("/delete_bookmark/", JSON.stringify({ p_id }), refreshBookmarksPane, null, "box", false);
+  }
+  function refreshBookmarksPane() {
+    var v_found = document.getElementById(CONTENT_ID);
+    if (!v_found) return;
+    var v_root = v_found;
+    execAjax$2(
+      "/get_bookmarks/",
+      JSON.stringify({}),
+      function(p_return) {
+        var p_list = p_return.v_data;
+        v_root.innerHTML = "";
+        var v_wrap = document.createElement("div");
+        v_wrap.className = "omnidb__bookmarks p-3";
+        var v_title = document.createElement("h5");
+        v_title.className = "mb-3";
+        v_title.textContent = t$1("nav.bookmarks");
+        v_wrap.appendChild(v_title);
+        if (p_list.length === 0) {
+          var v_empty = document.createElement("p");
+          v_empty.className = "text-muted";
+          v_empty.textContent = t$1("bookmarks.empty");
+          v_wrap.appendChild(v_empty);
+        }
+        var v_group = "";
+        var v_ul = null;
+        p_list.forEach(function(p_bookmark) {
+          if (p_bookmark.alias !== v_group || v_ul === null) {
+            v_group = p_bookmark.alias;
+            var v_heading = document.createElement("div");
+            v_heading.className = "fw-bold mt-3 mb-1";
+            v_heading.textContent = p_bookmark.alias;
+            v_wrap.appendChild(v_heading);
+            v_ul = document.createElement("div");
+            v_ul.className = "list-group";
+            v_wrap.appendChild(v_ul);
+          }
+          var v_list2 = (
+            /** @type {HTMLElement} */
+            v_ul
+          );
+          var v_row = document.createElement("div");
+          v_row.className = "list-group-item d-flex align-items-center";
+          var v_open = document.createElement("button");
+          v_open.type = "button";
+          v_open.className = "btn btn-link text-start flex-grow-1 p-0";
+          var v_icon = document.createElement("i");
+          v_icon.className = "fas fa-table me-2";
+          v_open.append(v_icon, document.createTextNode((p_bookmark.schema ? p_bookmark.schema + "." : "") + p_bookmark.name));
+          v_open.addEventListener("click", function() {
+            openBookmark(p_bookmark);
+          });
+          var v_remove = document.createElement("button");
+          v_remove.type = "button";
+          v_remove.className = "btn btn-sm btn-link text-danger";
+          v_remove.title = t$1("bookmarks.remove");
+          v_remove.setAttribute("aria-label", t$1("bookmarks.remove"));
+          var v_remove_icon = document.createElement("i");
+          v_remove_icon.className = "fas fa-times";
+          v_remove.appendChild(v_remove_icon);
+          v_remove.addEventListener("click", function() {
+            removeBookmark(p_bookmark.id);
+          });
+          v_row.append(v_open, v_remove);
+          v_list2.appendChild(v_row);
+        });
+        v_root.appendChild(v_wrap);
+      },
+      null,
+      "box",
+      false
+    );
+  }
+  const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "bookmarks", "snippets", "settings"];
   const SECTION_TITLE_KEYS = {
     welcome: "nav.welcome",
     connections: "nav.connections",
@@ -39488,6 +39608,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     notify: "nav.notify",
     permissions: "nav.permissions",
     connected_users: "nav.connected_users",
+    bookmarks: "nav.bookmarks",
     snippets: "tree.snippets_section",
     settings: "nav.settings"
   };
@@ -39533,6 +39654,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       refreshPermissionsPane();
     } else if (p_name === "connected_users") {
       refreshConnectedUsersPane();
+    } else if (p_name === "bookmarks") {
+      refreshBookmarksPane();
     } else if (p_name === "database") {
       refreshHeights();
     }
@@ -39615,6 +39738,15 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         switchSection("connected_users");
       },
       p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.connected_users")) + "</h5>"
+    });
+    v_sectionNavTabs.bookmarks = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-star"></i>',
+      p_close: false,
+      p_isDraggable: false,
+      p_selectFunction: function() {
+        switchSection("bookmarks");
+      },
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.bookmarks")) + "</h5>"
     });
     v_sectionNavTabs.snippets = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-scroll"></i>',

@@ -191,6 +191,11 @@ func migrateAppDB(db *sql.DB) error {
 		}
 	}
 
+	// Bookmarks table (v5.5.0+) -- see appdb_bookmarks.go.
+	if _, err := db.Exec(bookmarkTableDDL); err != nil {
+		return fmt.Errorf("create OmniDB_app_bookmark: %w", err)
+	}
+
 	// Add the read_only flag to OmniDB_app_connection if missing (v5.5.0+) --
 	// see readonly.go.
 	var hasReadOnly string

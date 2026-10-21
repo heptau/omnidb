@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Bookmarks: right-click a table in the tree and choose "Add to bookmarks" (every supported engine). The new
+  Bookmarks section in the left rail lists the pinned tables per connection; clicking one opens the connection (if it
+  is not open yet) and the table in Edit Data, the cross removes it. Bookmarks are per user, kept in the app
+  database, and go away with their connection or user.
 - Cell content viewer ("View content" / "Edit content"): "Format JSON" and "Minify JSON" buttons appear while the text is
   valid JSON (numbers and strings are kept character for character, so a 20-digit id or `1.0` survives a save), plus
   a "Wrap lines" toggle and a "Copy" button for the whole value.
