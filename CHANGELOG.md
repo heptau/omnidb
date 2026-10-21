@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Cell content viewer ("View content" / "Edit content"): "Format JSON" and "Minify JSON" buttons appear while the text is
+  valid JSON (numbers and strings are kept character for character, so a 20-digit id or `1.0` survives a save), plus
+  a "Wrap lines" toggle and a "Copy" button for the whole value.
 - Query editor: a filter box next to the export button narrows the result grid to the rows containing every typed word
   (case-insensitive, in any cell; `null` matches NULL cells) and shows "N of M". It only looks at the rows already
   fetched, so "Fetch more/all" keep working while it is active, "Column statistics" count just the rows that are

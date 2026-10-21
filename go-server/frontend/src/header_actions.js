@@ -36,7 +36,8 @@ import { execAjax } from "./ajax_control_bridge.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { switchSection } from "./section_switcher.js";
 import { shortcutsToPersist, v_current_os } from "./shortcuts.js";
-import { refreshHeights } from "./workspace.js";
+import { refreshHeights, uiCopyTextToClipboard } from "./workspace.js";
+import { isJSONText, reformatJSON } from "./json_format.js";
 import { escapeHtml, escapeHtmlAttribute } from "./query.js";
 import { t } from "./i18n.js";
 
@@ -703,6 +704,12 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_
 		"</div>" +
 		"</div>" +
 		'<div class="modal-footer">' +
+		'<div class="me-auto d-flex gap-2">' +
+		'<button id="bt_edit_content_format" type="button" class="btn btn-sm omnidb__theme__btn--secondary" style="display:none;">' + escapeHtml(t("edit_data.format_json")) + "</button>" +
+		'<button id="bt_edit_content_minify" type="button" class="btn btn-sm omnidb__theme__btn--secondary" style="display:none;">' + escapeHtml(t("edit_data.minify_json")) + "</button>" +
+		'<button id="bt_edit_content_wrap" type="button" class="btn btn-sm omnidb__theme__btn--secondary" aria-pressed="false">' + escapeHtml(t("edit_data.wrap_lines")) + "</button>" +
+		'<button id="bt_edit_content_copy" type="button" class="btn btn-sm omnidb__theme__btn--secondary">' + escapeHtml(t("common.copy")) + "</button>" +
+		"</div>" +
 		"<button " +
 		v_save_btn_attr +
 		' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">' + escapeHtml(t("common.save")) + "</button>" +
@@ -752,6 +759,36 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_
 	else v_editor.setValue("");
 
 	v_editor.clearSelection();
+
+	// Viewer helpers: JSON re-formatting (offered only while the text is JSON),
+	// soft wrapping and copying the whole value.
+	var v_format_btn = /** @type {HTMLElement} */ (document.getElementById("bt_edit_content_format"));
+	var v_minify_btn = /** @type {HTMLElement} */ (document.getElementById("bt_edit_content_minify"));
+	var v_wrap_btn = /** @type {HTMLElement} */ (document.getElementById("bt_edit_content_wrap"));
+	var v_refresh_json_buttons = function () {
+		var v_show = isJSONText(v_editor.getValue()) ? "" : "none";
+		v_format_btn.style.display = v_show;
+		v_minify_btn.style.display = v_show;
+	};
+	v_editor.on("change", v_refresh_json_buttons);
+	v_refresh_json_buttons();
+	var v_reformat = function (p_indent) {
+		var v_text = reformatJSON(v_editor.getValue(), p_indent);
+		if (v_text === null) return;
+		// Read-only viewers still get re-formatted text to read; it just can't be saved.
+		v_editor.setValue(v_text, -1);
+	};
+	v_format_btn.addEventListener("click", () => v_reformat(2));
+	v_minify_btn.addEventListener("click", () => v_reformat(0));
+	v_wrap_btn.addEventListener("click", function () {
+		var v_wrapped = !v_editor.session.getUseWrapMode();
+		v_editor.session.setUseWrapMode(v_wrapped);
+		v_wrap_btn.setAttribute("aria-pressed", String(v_wrapped));
+		v_wrap_btn.classList.toggle("active", v_wrapped);
+	});
+	/** @type {HTMLElement} */ (document.getElementById("bt_edit_content_copy")).addEventListener("click", () =>
+		uiCopyTextToClipboard(v_editor.getValue()),
+	);
 
 	if (p_can_alter) v_editor.setReadOnly(false);
 	else v_editor.setReadOnly(true);

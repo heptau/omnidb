@@ -40337,6 +40337,54 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     v_default_shortcuts,
     v_keyBoardShortcuts
   }, Symbol.toStringTag, { value: "Module" }));
+  function isJSONText(text) {
+    if (!text || !text.trim()) return false;
+    try {
+      JSON.parse(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  function reformatJSON(text, indent) {
+    if (!isJSONText(text)) return null;
+    const pad2 = (depth2) => indent > 0 ? "\n" + " ".repeat(indent * depth2) : "";
+    let out = "";
+    let depth = 0;
+    for (let i2 = 0; i2 < text.length; i2++) {
+      const ch = text[i2];
+      if (/\s/.test(ch)) continue;
+      if (ch === '"') {
+        let j2 = i2 + 1;
+        while (j2 < text.length && text[j2] !== '"') j2 += text[j2] === "\\" ? 2 : 1;
+        out += text.slice(i2, j2 + 1);
+        i2 = j2;
+      } else if (ch === "{" || ch === "[") {
+        let k2 = i2 + 1;
+        while (k2 < text.length && /\s/.test(text[k2])) k2++;
+        if (text[k2] === (ch === "{" ? "}" : "]")) {
+          out += ch + text[k2];
+          i2 = k2;
+        } else {
+          depth++;
+          out += ch + pad2(depth);
+        }
+      } else if (ch === "}" || ch === "]") {
+        depth--;
+        out += pad2(depth) + ch;
+      } else if (ch === ",") {
+        out += "," + pad2(depth);
+      } else if (ch === ":") {
+        out += indent > 0 ? ": " : ":";
+      } else {
+        let j2 = i2;
+        while (j2 < text.length && !/[\s,:\]}]/.test(text[j2])) j2++;
+        out += text.slice(i2, j2);
+        i2 = j2 - 1;
+      }
+    }
+    return out;
+  }
   function showAbout() {
     var v_version_line = document.getElementById("about_version_line");
     if (v_version_line) v_version_line.textContent = t$1("modals.about.version_line", { version: v_version });
@@ -40852,7 +40900,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     if (!v_canEditContent) {
       v_save_btn_attr = ' disabled title="' + escapeHtmlAttribute(t$1("edit_data.no_primary_key")) + '" ';
     }
-    v_edit_modal.innerHTML = '<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;"><div class="modal-content"><div class="modal-header"><h4 class="mb-0">' + escapeHtml(t$1("connections.edit_data")) + '</h4><button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="' + escapeHtmlAttribute(t$1("common.close")) + '"><span aria-hidden="true">&times;</span></button></div><div id="modal_message_content" class="modal-body" style="white-space: pre-line;"><div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);"></div></div><div class="modal-footer"><button ' + v_save_btn_attr + ' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">' + escapeHtml(t$1("common.save")) + '</button><button id="bt_edit_content_cancel" type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal">' + escapeHtml(t$1("common.cancel")) + "</button></div></div></div>";
+    v_edit_modal.innerHTML = '<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;"><div class="modal-content"><div class="modal-header"><h4 class="mb-0">' + escapeHtml(t$1("connections.edit_data")) + '</h4><button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="' + escapeHtmlAttribute(t$1("common.close")) + '"><span aria-hidden="true">&times;</span></button></div><div id="modal_message_content" class="modal-body" style="white-space: pre-line;"><div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);"></div></div><div class="modal-footer"><div class="me-auto d-flex gap-2"><button id="bt_edit_content_format" type="button" class="btn btn-sm omnidb__theme__btn--secondary" style="display:none;">' + escapeHtml(t$1("edit_data.format_json")) + '</button><button id="bt_edit_content_minify" type="button" class="btn btn-sm omnidb__theme__btn--secondary" style="display:none;">' + escapeHtml(t$1("edit_data.minify_json")) + '</button><button id="bt_edit_content_wrap" type="button" class="btn btn-sm omnidb__theme__btn--secondary" aria-pressed="false">' + escapeHtml(t$1("edit_data.wrap_lines")) + '</button><button id="bt_edit_content_copy" type="button" class="btn btn-sm omnidb__theme__btn--secondary">' + escapeHtml(t$1("common.copy")) + "</button></div><button " + v_save_btn_attr + ' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">' + escapeHtml(t$1("common.save")) + '</button><button id="bt_edit_content_cancel" type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal">' + escapeHtml(t$1("common.cancel")) + "</button></div></div></div>";
     document.getElementById("bt_edit_content_close").addEventListener(
       "click",
       () => cancelEditContent()
@@ -40887,6 +40935,42 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     if (p_content != null) v_editor.setValue(String(p_content));
     else v_editor.setValue("");
     v_editor.clearSelection();
+    var v_format_btn = (
+      /** @type {HTMLElement} */
+      document.getElementById("bt_edit_content_format")
+    );
+    var v_minify_btn = (
+      /** @type {HTMLElement} */
+      document.getElementById("bt_edit_content_minify")
+    );
+    var v_wrap_btn = (
+      /** @type {HTMLElement} */
+      document.getElementById("bt_edit_content_wrap")
+    );
+    var v_refresh_json_buttons = function() {
+      var v_show = isJSONText(v_editor.getValue()) ? "" : "none";
+      v_format_btn.style.display = v_show;
+      v_minify_btn.style.display = v_show;
+    };
+    v_editor.on("change", v_refresh_json_buttons);
+    v_refresh_json_buttons();
+    var v_reformat = function(p_indent) {
+      var v_text = reformatJSON(v_editor.getValue(), p_indent);
+      if (v_text === null) return;
+      v_editor.setValue(v_text, -1);
+    };
+    v_format_btn.addEventListener("click", () => v_reformat(2));
+    v_minify_btn.addEventListener("click", () => v_reformat(0));
+    v_wrap_btn.addEventListener("click", function() {
+      var v_wrapped = !v_editor.session.getUseWrapMode();
+      v_editor.session.setUseWrapMode(v_wrapped);
+      v_wrap_btn.setAttribute("aria-pressed", String(v_wrapped));
+      v_wrap_btn.classList.toggle("active", v_wrapped);
+    });
+    document.getElementById("bt_edit_content_copy").addEventListener(
+      "click",
+      () => uiCopyTextToClipboard(v_editor.getValue())
+    );
     if (p_can_alter) v_editor.setReadOnly(false);
     else v_editor.setReadOnly(true);
     v_editor.commands.bindKey("Cmd-,", null);
