@@ -54,6 +54,7 @@ SOFTWARE.
 // match that depth rather than go further.
 
 import { addBookmarkMenu } from "../bookmarks.js";
+import { addImportMenu } from "../import_data.js";
 import { t } from "../i18n.js";
 import { execAjax } from "../ajax_control_bridge.js";
 import { showConfirm, showError } from "../notification_control.js";
@@ -626,6 +627,7 @@ export function getTreeFirebird(p_div) {
 		},
 	};
 	addBookmarkMenu(context_menu);
+	addImportMenu(context_menu);
 	var tree = createTree(p_div, "#fcfdfd", context_menu);
 	v_connTabControl.selectedTab.tag.tree = tree;
 	let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";

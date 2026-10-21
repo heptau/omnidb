@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$3 = document.getElementById("omnidb_bootstrap");
-  if (!el$3) {
+  const el$4 = document.getElementById("omnidb_bootstrap");
+  if (!el$4) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$3.textContent);
+  const cfg = JSON.parse(el$4.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -882,7 +882,7 @@
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$2(id) {
+  function el$3(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -904,7 +904,7 @@
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    var v_modal_message = el$2("modal_message");
+    var v_modal_message = el$3("modal_message");
     v_modal_message.addEventListener("hide.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
@@ -912,7 +912,7 @@
       v_message_modal_animating = true;
     });
     v_modal_message.addEventListener("hidden.bs.modal", function(e2) {
-      el$2("modal_message_content").innerHTML = "";
+      el$3("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -932,21 +932,21 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$2("modal_message_dialog");
+    var v_dialog = el$3("modal_message_dialog");
     var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
     if (v_old_title) v_old_title.remove();
     v_dialog.classList.toggle("modal-xl", p_large === true);
     v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$2("modal_message")).show();
+      bootstrap.Modal.getOrCreateInstance(el$3("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
   }
   function setMessageModalTitle(p_text, p_icon_class = null) {
-    var v_header = el$2("modal_message_dialog").querySelector(".modal-header");
+    var v_header = el$3("modal_message_dialog").querySelector(".modal-header");
     if (!v_header) return;
     var v_title = document.createElement("h5");
     v_title.className = "modal-title";
@@ -960,11 +960,11 @@
     v_header.insertBefore(v_title, v_header.firstChild);
   }
   function showError(p_message) {
-    var v_content_div = el$2("modal_message_content");
-    var v_button_yes = el$2("modal_message_yes");
-    var v_button_ok = el$2("modal_message_ok");
-    var v_button_no = el$2("modal_message_no");
-    var v_button_cancel = el$2("modal_message_cancel");
+    var v_content_div = el$3("modal_message_content");
+    var v_button_yes = el$3("modal_message_yes");
+    var v_button_ok = el$3("modal_message_ok");
+    var v_button_no = el$3("modal_message_no");
+    var v_button_cancel = el$3("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_ok.textContent = t$1("common.ok");
     v_button_yes.style.display = "none";
@@ -978,11 +978,11 @@
   }
   function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el$2("modal_message_content");
-      var v_button_yes = el$2("modal_message_yes");
-      var v_button_ok = el$2("modal_message_ok");
-      var v_button_no = el$2("modal_message_no");
-      var v_button_cancel = el$2("modal_message_cancel");
+      var v_content_div = el$3("modal_message_content");
+      var v_button_yes = el$3("modal_message_yes");
+      var v_button_ok = el$3("modal_message_ok");
+      var v_button_no = el$3("modal_message_no");
+      var v_button_cancel = el$3("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -1002,11 +1002,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$2("modal_message_content");
-      var v_button_yes = el$2("modal_message_yes");
-      var v_button_ok = el$2("modal_message_ok");
-      var v_button_no = el$2("modal_message_no");
-      var v_button_cancel = el$2("modal_message_cancel");
+      var v_content_div = el$3("modal_message_content");
+      var v_button_yes = el$3("modal_message_yes");
+      var v_button_ok = el$3("modal_message_ok");
+      var v_button_no = el$3("modal_message_no");
+      var v_button_cancel = el$3("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.textContent = p_yes_label || t$1("common.ok");
       v_button_ok.onclick = function() {
@@ -1023,11 +1023,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$2("modal_message_content");
-    var v_button_yes = el$2("modal_message_yes");
-    var v_button_ok = el$2("modal_message_ok");
-    var v_button_no = el$2("modal_message_no");
-    var v_button_cancel = el$2("modal_message_cancel");
+    var v_content_div = el$3("modal_message_content");
+    var v_button_yes = el$3("modal_message_yes");
+    var v_button_ok = el$3("modal_message_ok");
+    var v_button_no = el$3("modal_message_no");
+    var v_button_cancel = el$3("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1046,11 +1046,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$2("modal_message_content");
-    var v_button_yes = el$2("modal_message_yes");
-    var v_button_ok = el$2("modal_message_ok");
-    var v_button_no = el$2("modal_message_no");
-    var v_button_cancel = el$2("modal_message_cancel");
+    var v_content_div = el$3("modal_message_content");
+    var v_button_yes = el$3("modal_message_yes");
+    var v_button_ok = el$3("modal_message_ok");
+    var v_button_no = el$3("modal_message_no");
+    var v_button_cancel = el$3("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1337,7 +1337,7 @@
   }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   var v_pgpass_lookup_info = null;
-  function el$1(id) {
+  function el$2(id) {
     return document.getElementById(id);
   }
   function initPasswordModal() {
@@ -1368,15 +1368,15 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-    if (gv_desktopMode) el$1("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
-    el$1("modal_password_pgpass_button").addEventListener("click", function() {
+    if (gv_desktopMode) el$2("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
+    el$2("modal_password_pgpass_button").addEventListener("click", function() {
       if (gv_desktopMode) {
         grantPgpassAccess(v_pgpass_lookup_info);
       } else {
-        el$1("modal_password_pgpass_input").click();
+        el$2("modal_password_pgpass_input").click();
       }
     });
-    el$1("modal_password_pgpass_input").addEventListener("change", function(e2) {
+    el$2("modal_password_pgpass_input").addEventListener("change", function(e2) {
       var v_file = e2.target.files ? e2.target.files[0] : null;
       e2.target.value = "";
       if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
@@ -1417,12 +1417,12 @@
     return null;
   }
   function showPgpassError(p_message) {
-    var v_error_div = el$1("modal_password_pgpass_error");
+    var v_error_div = el$2("modal_password_pgpass_error");
     v_error_div.textContent = p_message;
     v_error_div.style.display = "block";
   }
   function hidePgpassError() {
-    el$1("modal_password_pgpass_error").style.display = "none";
+    el$2("modal_password_pgpass_error").style.display = "none";
   }
   function readPgpassFileViaInput(p_file, p_lookup_info) {
     var v_reader = new FileReader();
@@ -1562,7 +1562,7 @@
     v_modal_password_input = /** @type {HTMLInputElement} */
     document.getElementById("txt_password_prompt");
     v_pgpass_lookup_info = resolvePgpassLookupInfo(p_database_index);
-    el$1("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
+    el$2("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
     hidePgpassError();
     if (p_message) v_content_div.textContent = p_message;
     bootstrap.Modal.getOrCreateInstance(
@@ -12905,6 +12905,364 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       action: addBookmarkFromNode
     });
   }
+  function parseCSV(text, delimiter) {
+    if (text.charCodeAt(0) === 65279) text = text.slice(1);
+    const rows = [];
+    let row = [];
+    let field = "";
+    let inQuotes = false;
+    let fieldStarted = false;
+    const endField = () => {
+      row.push(field);
+      field = "";
+      fieldStarted = false;
+    };
+    const endRow = () => {
+      endField();
+      if (!(row.length === 1 && row[0] === "")) rows.push(row);
+      row = [];
+    };
+    for (let i2 = 0; i2 < text.length; i2++) {
+      const ch = text[i2];
+      if (inQuotes) {
+        if (ch === '"') {
+          if (text[i2 + 1] === '"') {
+            field += '"';
+            i2++;
+          } else {
+            inQuotes = false;
+          }
+        } else {
+          field += ch;
+        }
+      } else if (ch === '"' && !fieldStarted) {
+        inQuotes = true;
+        fieldStarted = true;
+      } else if (ch === delimiter) {
+        endField();
+      } else if (ch === "\r" || ch === "\n") {
+        if (ch === "\r" && text[i2 + 1] === "\n") i2++;
+        endRow();
+      } else {
+        field += ch;
+        fieldStarted = true;
+      }
+    }
+    if (field !== "" || fieldStarted || row.length > 0) endRow();
+    return rows;
+  }
+  function detectDelimiter(text) {
+    const counts = { ",": 0, ";": 0, "	": 0, "|": 0 };
+    let inQuotes = false;
+    for (const ch of text.charCodeAt(0) === 65279 ? text.slice(1) : text) {
+      if (ch === '"') inQuotes = !inQuotes;
+      else if (!inQuotes && (ch === "\n" || ch === "\r")) break;
+      else if (!inQuotes && ch in counts) counts[
+        /** @type {"," | ";" | "\t" | "|"} */
+        ch
+      ]++;
+    }
+    let best = ",";
+    let bestCount = 0;
+    for (const [delim, count] of Object.entries(counts)) {
+      if (count > bestCount) {
+        best = delim;
+        bestCount = count;
+      }
+    }
+    return best;
+  }
+  function jsonCell(value) {
+    if (value === null || value === void 0) return null;
+    if (typeof value === "object") return JSON.stringify(value);
+    return String(value);
+  }
+  function parseJSONRows(text) {
+    const data = JSON.parse(text.charCodeAt(0) === 65279 ? text.slice(1) : text);
+    if (!Array.isArray(data)) throw new Error("expected a JSON array");
+    if (data.length === 0) return { columns: null, rows: [] };
+    if (data.every((item) => Array.isArray(item))) {
+      return { columns: null, rows: data.map((item) => item.map(jsonCell)) };
+    }
+    if (data.every((item) => item && typeof item === "object" && !Array.isArray(item))) {
+      const columns = [];
+      for (const item of data) {
+        for (const key of Object.keys(item)) if (!columns.includes(key)) columns.push(key);
+      }
+      return { columns, rows: data.map((item) => columns.map((c2) => jsonCell(item[c2]))) };
+    }
+    throw new Error("expected an array of objects or of arrays");
+  }
+  function suggestMapping(fileColumns, width, tableColumns) {
+    const norm = (s2) => s2.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const taken = /* @__PURE__ */ new Set();
+    return Array.from({ length: width }, (_2, i2) => {
+      let target = "";
+      if (fileColumns) {
+        target = tableColumns.find((c2) => norm(c2) === norm(fileColumns[i2] || "") && norm(c2) !== "" && !taken.has(c2)) || "";
+      } else {
+        target = tableColumns[i2] && !taken.has(tableColumns[i2]) ? tableColumns[i2] : "";
+      }
+      if (target) taken.add(target);
+      return target;
+    });
+  }
+  function buildImportPayload(rows, mapping, emptyAsNull) {
+    const picked = mapping.map((target, index) => ({ target, index })).filter((m2) => m2.target !== "");
+    return {
+      columns: picked.map((m2) => m2.target),
+      rows: rows.map(
+        (row) => picked.map((m2) => {
+          const value = row[m2.index];
+          if (value === null || value === void 0) return null;
+          return emptyAsNull && value === "" ? null : value;
+        })
+      )
+    };
+  }
+  const PREVIEW_ROWS = 3;
+  function showRequestError(p_return) {
+    var v_data = p_return.v_data;
+    showAlert$1(typeof v_data === "string" ? v_data : v_data && v_data.message || t$1("errors.request_error"));
+  }
+  function parseFile(text, fileName, options) {
+    if (/\.json$/i.test(fileName) || /^\s*[[{]/.test(text)) {
+      const parsed = parseJSONRows(text);
+      const width2 = parsed.columns ? parsed.columns.length : Math.max(0, ...parsed.rows.map((r2) => r2.length));
+      return { fileColumns: parsed.columns, width: width2, rows: parsed.rows };
+    }
+    const delimiter = options.delimiter === "auto" ? detectDelimiter(text) : options.delimiter;
+    const all = parseCSV(text, delimiter);
+    const width = Math.max(0, ...all.map((r2) => r2.length));
+    const rows = options.header ? all.slice(1) : all;
+    return {
+      fileColumns: options.header && all.length > 0 ? all[0].concat(Array(width - all[0].length).fill("")) : null,
+      width,
+      rows: rows.map((r2) => r2.concat(Array(width - r2.length).fill("")))
+    };
+  }
+  function el$1(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  function openWizard(p_table, p_schema, p_columns) {
+    let parsed = null;
+    let mapping = [];
+    let fileText = "";
+    let fileName = "";
+    const getImport = () => parsed ? buildImportPayload(parsed.rows, mapping, emptyNull.checked) : null;
+    const run = () => {
+      const payload = getImport();
+      if (!payload || payload.columns.length === 0) {
+        showAlert$1(t$1("import.nothing"));
+        return;
+      }
+      execAjax$2(
+        "/import_rows/",
+        JSON.stringify({
+          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+          p_tab_id: v_connTabControl.selectedTab.id,
+          p_schema,
+          p_table,
+          p_columns: payload.columns,
+          p_rows: payload.rows
+        }),
+        function(r2) {
+          showAlert$1(t$1("import.done", { count: r2.v_data.v_inserted, table: p_table }));
+        },
+        showRequestError,
+        "box",
+        true
+      );
+    };
+    const fileInput = (
+      /** @type {HTMLInputElement} */
+      el$1("input", "form-control mb-2")
+    );
+    fileInput.type = "file";
+    fileInput.accept = ".csv,.tsv,.txt,.json,text/csv,application/json";
+    fileInput.setAttribute("aria-label", t$1("import.file"));
+    const delimiterSelect = (
+      /** @type {HTMLSelectElement} */
+      el$1("select", "form-select form-select-sm")
+    );
+    for (const [value, key] of [
+      ["auto", "import.delim_auto"],
+      [",", "import.delim_comma"],
+      [";", "import.delim_semicolon"],
+      ["	", "import.delim_tab"],
+      ["|", "import.delim_pipe"]
+    ]) {
+      const o2 = (
+        /** @type {HTMLOptionElement} */
+        el$1("option", void 0, t$1(key))
+      );
+      o2.value = value;
+      delimiterSelect.appendChild(o2);
+    }
+    const checkbox = (labelKey, checked) => {
+      const wrap = el$1("div", "form-check form-check-inline");
+      const input = (
+        /** @type {HTMLInputElement} */
+        el$1("input", "form-check-input")
+      );
+      input.type = "checkbox";
+      input.checked = checked;
+      input.id = "import_opt_" + labelKey.replace(/\W/g, "_");
+      const label = (
+        /** @type {HTMLLabelElement} */
+        el$1("label", "form-check-label", t$1(labelKey))
+      );
+      label.htmlFor = input.id;
+      wrap.append(input, label);
+      return { wrap, input };
+    };
+    const header = checkbox("import.header", true);
+    const emptyNullBox = checkbox("import.empty_null", true);
+    const emptyNull = emptyNullBox.input;
+    const status = el$1("div", "my-2");
+    const table = el$1("div", "mt-2");
+    table.style.maxHeight = "45vh";
+    table.style.overflow = "auto";
+    const render2 = () => {
+      table.innerHTML = "";
+      status.textContent = "";
+      status.classList.remove("text-danger");
+      if (!fileText) return;
+      try {
+        parsed = parseFile(fileText, fileName, { delimiter: delimiterSelect.value, header: header.input.checked });
+      } catch (e2) {
+        parsed = null;
+        status.classList.add("text-danger");
+        status.textContent = t$1("import.parse_error", { error: e2 instanceof Error ? e2.message : String(e2) });
+        return;
+      }
+      if (mapping.length !== parsed.width) mapping = suggestMapping(parsed.fileColumns, parsed.width, p_columns);
+      status.textContent = t$1("import.rows_found", { count: parsed.rows.length });
+      const grid = el$1("table", "table table-sm mb-0");
+      grid.style.setProperty("--bs-table-bg", "transparent");
+      grid.style.setProperty("--bs-table-color", "inherit");
+      const head = el$1("tr");
+      const sel = el$1("tr");
+      for (let i2 = 0; i2 < parsed.width; i2++) {
+        head.appendChild(el$1("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
+        const cell = el$1("td");
+        const select = (
+          /** @type {HTMLSelectElement} */
+          el$1("select", "form-select form-select-sm")
+        );
+        select.setAttribute("aria-label", t$1("import.col_target"));
+        const skip = (
+          /** @type {HTMLOptionElement} */
+          el$1("option", void 0, t$1("import.map_skip"))
+        );
+        skip.value = "";
+        select.appendChild(skip);
+        for (const c2 of p_columns) {
+          const o2 = (
+            /** @type {HTMLOptionElement} */
+            el$1("option", void 0, c2)
+          );
+          o2.value = c2;
+          select.appendChild(o2);
+        }
+        select.value = mapping[i2] || "";
+        select.addEventListener("change", () => {
+          mapping[i2] = select.value;
+        });
+        cell.appendChild(select);
+        sel.appendChild(cell);
+      }
+      const thead = el$1("thead");
+      thead.append(head, sel);
+      const tbody = el$1("tbody");
+      for (const row of parsed.rows.slice(0, PREVIEW_ROWS)) {
+        const tr = el$1("tr");
+        for (let i2 = 0; i2 < parsed.width; i2++) {
+          const v2 = row[i2];
+          const td = el$1("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
+          td.style.maxWidth = "14rem";
+          td.style.overflow = "hidden";
+          td.style.textOverflow = "ellipsis";
+          td.style.whiteSpace = "nowrap";
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+      grid.append(thead, tbody);
+      table.appendChild(grid);
+    };
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      fileName = file.name;
+      fileText = await file.text();
+      mapping = [];
+      render2();
+    });
+    delimiterSelect.addEventListener("change", () => {
+      mapping = [];
+      render2();
+    });
+    header.input.addEventListener("change", () => {
+      mapping = [];
+      render2();
+    });
+    showConfirm(
+      "",
+      run,
+      null,
+      function() {
+        setMessageModalTitle(t$1("import.title", { table: p_table }), "fas node-all fa-file-import");
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        const options = el$1("div", "d-flex flex-wrap align-items-center gap-2");
+        const delimiterLabel = el$1("label", "me-1", t$1("import.delimiter"));
+        options.append(delimiterLabel, delimiterSelect, header.wrap, emptyNullBox.wrap);
+        delimiterSelect.style.width = "auto";
+        content.append(fileInput, options, status, table);
+      },
+      "form",
+      t$1("import.run")
+    );
+  }
+  function startImport(p_node) {
+    const schema = p_node.tag && p_node.tag.schema || "";
+    execAjax$2(
+      "/start_edit_data/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: p_node.text,
+        p_schema: schema
+      }),
+      function(r2) {
+        openWizard(
+          p_node.text,
+          schema,
+          r2.v_data.v_cols.map((c2) => c2.v_column)
+        );
+      },
+      showRequestError,
+      "box",
+      false
+    );
+  }
+  function addImportMenu(p_context_menu) {
+    var v_menu = p_context_menu.cm_table;
+    if (!v_menu || !v_menu.elements) return;
+    v_menu.elements.push({
+      text: t$1("import.menu"),
+      icon: "fas cm-all fa-file-import",
+      action: startImport
+    });
+  }
   var v_grid_col, v_grid_row;
   function legereEscapeHtml(p_text) {
     var v_div = document.createElement("div");
@@ -16664,6 +17022,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     };
     addBookmarkMenu(context_menu);
+    addImportMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -24144,6 +24503,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     };
     addBookmarkMenu(context_menu);
+    addImportMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -26685,6 +27045,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     };
     addBookmarkMenu(context_menu);
+    addImportMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -28917,6 +29278,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     };
     addBookmarkMenu(context_menu);
+    addImportMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -30799,6 +31161,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     };
     addBookmarkMenu(context_menu);
+    addImportMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -32948,6 +33311,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     };
     addBookmarkMenu(context_menu);
+    addImportMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
@@ -34946,6 +35310,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     };
     addBookmarkMenu(context_menu);
+    addImportMenu(context_menu);
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";

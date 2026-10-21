@@ -445,6 +445,7 @@ func run() error {
 	mux.Handle("/delete_group/", handleDeleteGroup(upstream))
 	mux.Handle("/save_group_connections/", handleSaveGroupConnections(upstream))
 	mux.Handle("/search_tables/", handleSearchTables(upstream, proxy))
+	mux.Handle("/import_rows/", handleImportRows(upstream, proxy))
 	mux.Handle("/get_bookmarks/", handleGetBookmarks(upstream))
 	mux.Handle("/add_bookmark/", handleAddBookmark(upstream))
 	mux.Handle("/delete_bookmark/", handleDeleteBookmark(upstream))

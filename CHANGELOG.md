@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Import data into a table: right-click a table and choose "Import data…" to load a CSV, TSV or JSON file (an array of
+  objects or of arrays). The delimiter is detected (or picked), the first row can be the header, file columns are mapped
+  onto the table's columns (matched by name where possible, individually skippable) with a preview of the first rows,
+  and empty values can become NULL. The rows go to the server in one request and are inserted in a single transaction
+  through bind parameters, so a bad row (named in the error) leaves the table untouched; up to 200,000 rows at once, and
+  never on a read-only connection.
 - Search Everywhere: press Shift twice to open a palette that finds sections, connections, bookmarks, snippets and — for
   the selected connection — tables (from two typed characters, every user schema on PostgreSQL and SQL Server, the
   connection's own database/user elsewhere) in one box, ignoring case and diacritics. Arrow keys move, Enter opens the
