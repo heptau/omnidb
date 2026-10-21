@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Search Everywhere: press Shift twice to open a palette that finds sections, connections, bookmarks, snippets and — for
+  the selected connection — tables (from two typed characters, every user schema on PostgreSQL and SQL Server, the
+  connection's own database/user elsewhere) in one box, ignoring case and diacritics. Arrow keys move, Enter opens the
+  pick (a table opens in Edit Data), Esc closes.
 - Bookmarks: right-click a table in the tree and choose "Add to bookmarks" (every supported engine). The new
   Bookmarks section in the left rail lists the pinned tables per connection; clicking one opens the connection (if it
   is not open yet) and the table in Edit Data, the cross removes it. Bookmarks are per user, kept in the app

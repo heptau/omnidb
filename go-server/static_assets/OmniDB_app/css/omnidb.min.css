@@ -2125,6 +2125,63 @@ button.close {
   vertical-align: middle;
 }
 
+.omnidb__search-everywhere {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 12vh;
+}
+
+.omnidb__search-everywhere__box {
+  width: min(640px, 92vw);
+  background: var(--panel-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  padding: 10px;
+}
+
+.omnidb__search-everywhere__list {
+  max-height: 52vh;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.omnidb__search-everywhere__row,
+.omnidb__search-everywhere__empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.omnidb__search-everywhere__row {
+  cursor: pointer;
+}
+.omnidb__search-everywhere__row--selected, .omnidb__search-everywhere__row:hover {
+  background: var(--hover-bg);
+}
+
+.omnidb__search-everywhere__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.omnidb__search-everywhere__meta,
+.omnidb__search-everywhere__empty {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
 .omnidb__form-check .form-check-label {
   cursor: pointer;
   padding-left: 0.25rem;

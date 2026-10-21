@@ -1612,655 +1612,6 @@
     parsePgpassText,
     showPasswordPrompt
   }, Symbol.toStringTag, { value: "Module" }));
-  var NOTIFY_ICON_ACTIVE = "fas node-all fa-bell";
-  var NOTIFY_ICON_PAUSED = "fas node-all fa-bell-slash";
-  function getTreeNotifyChannels(p_tag) {
-    var context_menu = {
-      cm_notify_root: {
-        elements: [
-          {
-            text: t$1("notify.add_channel"),
-            icon: "fas cm-all fa-plus",
-            action: function(node) {
-              promptAddChannel(p_tag);
-            }
-          },
-          {
-            text: t$1("common.refresh"),
-            icon: "fas cm-all fa-sync-alt",
-            action: function(node) {
-              refreshNotifyChannels(p_tag);
-            }
-          }
-        ]
-      },
-      cm_notify_channel: {
-        // A function rather than a static array (Aimara.js's
-        // nodeContextMenu supports both): customMenu has no per-item
-        // "visible" predicate, so Pause/Resume has to be decided here,
-        // once per right-click, from the node's own state.
-        elements: function(p_node) {
-          var v_elements = [];
-          if (p_node.tag.active) {
-            v_elements.push({
-              text: t$1("notify.pause"),
-              icon: "fas cm-all fa-pause",
-              action: function(node) {
-                pauseChannel(p_tag, node);
-              }
-            });
-          } else {
-            v_elements.push({
-              text: t$1("notify.resume"),
-              icon: "fas cm-all fa-play",
-              action: function(node) {
-                resumeChannel(p_tag, node);
-              }
-            });
-          }
-          v_elements.push({
-            text: t$1("notify.clear_messages"),
-            icon: "fas cm-all fa-eraser",
-            action: function(node) {
-              clearNotifyChannelMessages(p_tag, node.tag.name);
-            }
-          });
-          v_elements.push({
-            text: t$1("common.delete"),
-            icon: "fas cm-all fa-times",
-            action: function(node) {
-              deleteChannel(p_tag, node);
-            }
-          });
-          return v_elements;
-        }
-      }
-    };
-    var tree = createTree(p_tag.divTree.id, "#fcfdfd", context_menu);
-    tree.tag = {};
-    var node1 = tree.createNode(
-      t$1("notify.channels_section"),
-      true,
-      NOTIFY_ICON_ACTIVE,
-      null,
-      // locked: true stops this root from being collapsed (see Aimara.js's
-      // collapseNode) -- the panel has nothing else to show in its place.
-      { type: "notify_root", locked: true },
-      "cm_notify_root"
-    );
-    tree.drawTree();
-    document.getElementById(p_tag.divTree.id).oncontextmenu = function(e2) {
-      e2.preventDefault();
-      tree.nodeContextMenu(e2, node1);
-    };
-    tree.clickNodeEvent = function(p_node) {
-      updateNotifySelectedChannel(p_tag, p_node.tag && p_node.tag.type === "notify_channel" ? p_node : null);
-    };
-    p_tag.tree = tree;
-    p_tag.treeRootNode = node1;
-    refreshNotifyChannels(p_tag);
-  }
-  function updateNotifySelectedChannel(p_tag, p_node) {
-    p_tag.selectedChannelNode = p_node;
-    if (p_tag.divDeleteChannelBtn == null) return;
-    if (p_node != null) p_tag.divDeleteChannelBtn.removeAttribute("disabled");
-    else p_tag.divDeleteChannelBtn.setAttribute("disabled", "disabled");
-  }
-  function notifyChannelsFromReturn(p_return) {
-    var v_data = p_return.v_data;
-    var v_list2 = Array.isArray(v_data) ? v_data : v_data && v_data.v_channels || [];
-    var v_channels = [];
-    for (var i2 = 0; i2 < v_list2.length; i2++) {
-      var v_row = v_list2[i2];
-      v_channels.push({
-        id: v_row.v_id,
-        name: v_row.v_channel_name,
-        // The paused/active flag is the one field of this row the wire
-        // format never spelled out -- read either spelling rather than
-        // silently showing every channel as active.
-        active: v_row.v_active !== void 0 ? !!v_row.v_active : !!v_row.active
-      });
-    }
-    return v_channels;
-  }
-  function refreshNotifyChannels(p_tag) {
-    execAjax$2(
-      "/get_notify_channels/",
-      JSON.stringify({ p_conn_id: p_tag.connID }),
-      function(p_return) {
-        p_tag.channels = notifyChannelsFromReturn(p_return);
-        renderNotifyChannelNodes(p_tag);
-        renderNotifyFilter(p_tag);
-        renderNotifyMessages(p_tag);
-      },
-      null,
-      "box",
-      false
-    );
-  }
-  function renderNotifyChannelNodes(p_tag) {
-    if (p_tag == null || p_tag.treeRootNode == null) return;
-    updateNotifySelectedChannel(p_tag, null);
-    p_tag.treeRootNode.removeChildNodes();
-    var v_channels = p_tag.channels || [];
-    for (var i2 = 0; i2 < v_channels.length; i2++) {
-      var v_active = v_channels[i2].active && !p_tag.sessionStopped;
-      p_tag.treeRootNode.createChildNode(
-        v_channels[i2].name,
-        false,
-        v_active ? NOTIFY_ICON_ACTIVE : NOTIFY_ICON_PAUSED,
-        {
-          type: "notify_channel",
-          id: v_channels[i2].id,
-          name: v_channels[i2].name,
-          active: v_channels[i2].active
-        },
-        "cm_notify_channel"
-      );
-    }
-  }
-  function promptAddChannel(p_tag) {
-    showConfirm(
-      "",
-      function() {
-        execAjax$2(
-          "/add_notify_channel/",
-          JSON.stringify({
-            p_conn_id: p_tag.connID,
-            p_channel_name: (
-              /** @type {HTMLInputElement} */
-              document.getElementById("element_name").value
-            ),
-            p_tab_id: p_tag.tab_id
-          }),
-          function(p_return) {
-            refreshNotifyChannels(p_tag);
-          },
-          null,
-          "box"
-        );
-      },
-      null,
-      function() {
-        var v_input = document.createElement("input");
-        v_input.id = "element_name";
-        v_input.className = "form-control";
-        v_input.placeholder = t$1("notify.channel_name_placeholder");
-        v_input.style.width = "100%";
-        document.getElementById("modal_message_content").appendChild(v_input);
-        v_input.onkeydown = function() {
-          if (
-            /** @type {any} */
-            event.keyCode == 13
-          )
-            document.getElementById("modal_message_ok").click();
-          else if (
-            /** @type {any} */
-            event.keyCode == 27
-          )
-            document.getElementById("modal_message_cancel").click();
-        };
-        v_input.focus();
-      }
-    );
-  }
-  function pauseChannel(p_tag, p_node) {
-    execAjax$2(
-      "/pause_notify_channel/",
-      JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
-      function(p_return) {
-        refreshNotifyChannels(p_tag);
-      },
-      null,
-      "box"
-    );
-  }
-  function resumeChannel(p_tag, p_node) {
-    execAjax$2(
-      "/resume_notify_channel/",
-      JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
-      function(p_return) {
-        refreshNotifyChannels(p_tag);
-      },
-      null,
-      "box"
-    );
-  }
-  function deleteChannel(p_tag, p_node) {
-    var v_channel_name = p_node.tag.name;
-    showConfirm(
-      t$1("notify.confirm_delete_channel"),
-      function() {
-        execAjax$2(
-          "/delete_notify_channel/",
-          JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
-          function(p_return) {
-            clearNotifyChannelMessages(p_tag, v_channel_name);
-            refreshNotifyChannels(p_tag);
-          },
-          null,
-          "box"
-        );
-      },
-      null,
-      function() {
-        var v_input = (
-          /** @type {HTMLElement} */
-          document.getElementById("modal_message_ok")
-        );
-        v_input.focus();
-      }
-    );
-  }
-  var NOTIFY_STRIP_SLOT_ID = "notify_panel_strip_slot";
-  var NOTIFY_CONTENT_ID = "notify_panel_content";
-  var NOTIFY_SUPPORTED_DB_TYPES = ["postgresql", "oracle", "firebird"];
-  var v_mounted_notify_tag = null;
-  function notifySupportedDbType(p_db_type) {
-    return NOTIFY_SUPPORTED_DB_TYPES.indexOf(p_db_type) !== -1;
-  }
-  var v_createNotifyPanelFunction = function() {
-    var v_html = "<div class='omnidb__notify'><div id='" + NOTIFY_STRIP_SLOT_ID + "' class='omnidb__tab-menu--container omnidb__tab-menu--container--primary omnidb__conn-strip-host'></div><div id='" + NOTIFY_CONTENT_ID + "' class='omnidb__notify__content'></div></div>";
-    var v_target = (
-      /** @type {HTMLElement} */
-      document.getElementById("omnidb__section_notify")
-    );
-    v_target.innerHTML = v_html;
-  };
-  function startNotifyForConnTab(p_conn_tab) {
-    var v_notify_tag = {
-      tab_id: p_conn_tab.id,
-      connID: p_conn_tab.tag.selectedDatabaseIndex,
-      dbType: p_conn_tab.tag.selectedDBMS,
-      /** @type {any[]} */
-      messages: [],
-      /** @type {any[]} */
-      channels: [],
-      // null = every channel, otherwise a Set of the channel names to show.
-      filterChannel: null,
-      context: null,
-      listening: false,
-      sessionStopped: false,
-      lastStopMessage: null,
-      tree: null,
-      treeRootNode: null,
-      divTab: null,
-      divLeft: null,
-      divTree: null,
-      divBanner: null,
-      divFilter: null,
-      divMessages: null
-    };
-    p_conn_tab.tag.notify = v_notify_tag;
-    if (notifySupportedDbType(v_notify_tag.dbType)) {
-      startNotifyListening(v_notify_tag);
-    }
-  }
-  function refreshNotifyPane() {
-    var v_content = document.getElementById(NOTIFY_CONTENT_ID);
-    if (v_content == null) return;
-    if (v_mounted_notify_tag != null) {
-      v_mounted_notify_tag.divTab = null;
-      v_mounted_notify_tag.divLeft = null;
-      v_mounted_notify_tag.divTree = null;
-      v_mounted_notify_tag.divBanner = null;
-      v_mounted_notify_tag.divFilter = null;
-      v_mounted_notify_tag.divMessages = null;
-      v_mounted_notify_tag = null;
-    }
-    v_content.innerHTML = "";
-    var v_conn_tab = typeof v_connTabControl !== "undefined" ? v_connTabControl.selectedTab : null;
-    if (v_conn_tab != null && v_connTabControl.tabList.indexOf(v_conn_tab) === -1) {
-      v_conn_tab = null;
-    }
-    if (v_conn_tab == null || v_conn_tab.tag == null || v_conn_tab.tag.notify == null) {
-      renderNotifyEmptyState(v_content);
-      return;
-    }
-    var v_notify_tag = v_conn_tab.tag.notify;
-    v_notify_tag.divTab = v_content;
-    v_mounted_notify_tag = v_notify_tag;
-    if (notifySupportedDbType(v_notify_tag.dbType)) {
-      buildNotifyTabLayout(v_notify_tag);
-      getTreeNotifyChannels(v_notify_tag);
-      if (v_notify_tag.sessionStopped) {
-        notifySessionStopped(v_notify_tag, v_notify_tag.lastStopMessage);
-      }
-    } else {
-      renderNotifyUnsupported(v_notify_tag, v_notify_tag.dbType);
-    }
-  }
-  function renderNotifyEmptyState(p_content) {
-    var v_wrapper = document.createElement("div");
-    v_wrapper.className = "omnidb__notify__unsupported";
-    var v_icon = document.createElement("i");
-    v_icon.className = "fas fa-bell-slash omnidb__notify__unsupported-icon";
-    v_wrapper.appendChild(v_icon);
-    var v_title = document.createElement("div");
-    v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t$1("notify.no_connection_open");
-    v_wrapper.appendChild(v_title);
-    var v_text = document.createElement("div");
-    v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t$1("notify.open_connection_hint");
-    v_wrapper.appendChild(v_text);
-    p_content.appendChild(v_wrapper);
-  }
-  function buildNotifyTabLayout(p_tag) {
-    var v_id = p_tag.tab_id;
-    p_tag.divTab.innerHTML = "<div class='omnidb__notify__tab'><div id='" + v_id + "_notify_div_left' class='omnidb__notify__div-left'><div id='" + v_id + "_notify_tree' class='omnidb__notify__tree'></div><div id='" + v_id + "_notify_footer' class='omnidb__list-footer'><div class='omnidb__addremove'><button id='" + v_id + "_notify_add_channel' type='button' title='" + t$1("notify.add_channel") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='" + v_id + "_notify_delete_channel' type='button' title='" + t$1("notify.delete_channel") + "' disabled><i class='fas fa-minus'></i></button></div></div><div id='" + v_id + "_notify_resize_line' class='resize_line_vertical omnidb__resize-line__container omnidb__notify__resize-line'></div></div><div id='" + v_id + "_notify_div_right' class='omnidb__notify__div-right'><div id='" + v_id + "_notify_banner' class='omnidb__notify__banner' style='display: none;'></div><div id='" + v_id + "_notify_filter' class='omnidb__notify__filter'></div><div id='" + v_id + "_notify_messages' class='omnidb__notify__messages'></div></div></div>";
-    p_tag.divLeft = /** @type {HTMLElement} */
-    document.getElementById(v_id + "_notify_div_left");
-    p_tag.divTree = /** @type {HTMLElement} */
-    document.getElementById(v_id + "_notify_tree");
-    p_tag.divBanner = /** @type {HTMLElement} */
-    document.getElementById(v_id + "_notify_banner");
-    p_tag.divFilter = /** @type {HTMLElement} */
-    document.getElementById(v_id + "_notify_filter");
-    p_tag.divMessages = /** @type {HTMLElement} */
-    document.getElementById(v_id + "_notify_messages");
-    p_tag.selectedChannelNode = null;
-    p_tag.divDeleteChannelBtn = /** @type {HTMLElement} */
-    document.getElementById(v_id + "_notify_delete_channel");
-    document.getElementById(v_id + "_notify_resize_line").addEventListener(
-      "mousedown",
-      function(event2) {
-        resizeNotifyHorizontal(event2, p_tag);
-      }
-    );
-    document.getElementById(v_id + "_notify_add_channel").addEventListener("click", function() {
-      promptAddChannel(p_tag);
-    });
-    document.getElementById(v_id + "_notify_delete_channel").addEventListener("click", function() {
-      if (p_tag.selectedChannelNode) deleteChannel(p_tag, p_tag.selectedChannelNode);
-    });
-    renderNotifyFilter(p_tag);
-    renderNotifyMessages(p_tag);
-  }
-  function resizeNotifyHorizontal(p_event, p_tag) {
-    p_event.preventDefault();
-    var v_move = function(e2) {
-      var v_width = e2.clientX - p_tag.divLeft.getBoundingClientRect().left;
-      if (v_width < 150) v_width = 150;
-      if (v_width > 600) v_width = 600;
-      p_tag.divLeft.style.width = v_width + "px";
-    };
-    var v_up = function() {
-      document.body.removeEventListener("mousemove", v_move);
-      document.body.removeEventListener("mouseup", v_up);
-    };
-    document.body.addEventListener("mousemove", v_move);
-    document.body.addEventListener("mouseup", v_up);
-  }
-  function renderNotifyUnsupported(p_tag, p_db_type) {
-    var v_div = p_tag.divTab;
-    v_div.innerHTML = "";
-    var v_wrapper = document.createElement("div");
-    v_wrapper.className = "omnidb__notify__unsupported";
-    var v_icon = document.createElement("i");
-    v_icon.className = "fas fa-bell-slash omnidb__notify__unsupported-icon";
-    v_wrapper.appendChild(v_icon);
-    var v_title = document.createElement("div");
-    v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t$1("notify.channels_not_supported", { technology: p_db_type });
-    v_wrapper.appendChild(v_title);
-    var v_text = document.createElement("div");
-    v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t$1("notify.supported_technologies_hint");
-    v_wrapper.appendChild(v_text);
-    v_div.appendChild(v_wrapper);
-  }
-  function startNotifyListening(p_tag) {
-    if (p_tag.context == null) {
-      p_tag.context = createContext({ tab_tag: p_tag, acked: false });
-    }
-    p_tag.sessionStopped = false;
-    p_tag.listening = true;
-    createRequest(
-      v_queryRequestCodes.NotifyListen,
-      { v_db_index: p_tag.connID, v_tab_id: p_tag.tab_id },
-      p_tag.context.code
-    );
-  }
-  function notifyMessageReceived(p_message, p_context) {
-    var v_tag = p_context.tab_tag;
-    if (v_tag == null) return;
-    v_tag.messages.push({
-      channel: p_message.v_data.v_channel,
-      payload: p_message.v_data.v_payload,
-      ts: p_message.v_data.v_timestamp
-    });
-    renderNotifyMessages(v_tag);
-  }
-  function notifySessionStopped(p_tag, p_message) {
-    if (p_tag == null) return;
-    p_tag.sessionStopped = true;
-    p_tag.listening = false;
-    p_tag.lastStopMessage = p_message;
-    renderNotifyChannelNodes(p_tag);
-    if (p_tag.divBanner == null) return;
-    p_tag.divBanner.innerHTML = "";
-    var v_text = document.createElement("span");
-    v_text.textContent = p_message ? String(p_message) : t$1("notify.listening_stopped");
-    p_tag.divBanner.appendChild(v_text);
-    var v_button = document.createElement("button");
-    v_button.type = "button";
-    v_button.className = "btn btn-sm omnidb__theme__btn--secondary ms-2";
-    v_button.textContent = t$1("notify.restart_listening");
-    v_button.addEventListener("click", function() {
-      restartNotifyListening(p_tag);
-    });
-    p_tag.divBanner.appendChild(v_button);
-    p_tag.divBanner.style.display = "";
-  }
-  function restartNotifyListening(p_tag) {
-    p_tag.divBanner.innerHTML = "";
-    p_tag.divBanner.style.display = "none";
-    startNotifyListening(p_tag);
-    refreshNotifyChannels(p_tag);
-  }
-  function renderNotifyFilter(p_tag) {
-    if (p_tag == null || p_tag.divFilter == null) return;
-    var v_div = p_tag.divFilter;
-    v_div.innerHTML = "";
-    var v_channels = p_tag.channels || [];
-    v_div.appendChild(
-      buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_all", t$1("notify.all_channels"), p_tag.filterChannel == null, function(p_checked) {
-        p_tag.filterChannel = p_checked ? null : /* @__PURE__ */ new Set();
-        renderNotifyFilter(p_tag);
-        renderNotifyMessages(p_tag);
-      })
-    );
-    for (var i2 = 0; i2 < v_channels.length; i2++)
-      (function(i3) {
-        var v_name = v_channels[i3].name;
-        var v_checked = p_tag.filterChannel == null || p_tag.filterChannel.has(v_name);
-        v_div.appendChild(
-          buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_" + i3, v_name, v_checked, function(p_checked) {
-            var v_set;
-            if (p_tag.filterChannel == null) {
-              v_set = /* @__PURE__ */ new Set();
-              for (var k2 = 0; k2 < v_channels.length; k2++) v_set.add(v_channels[k2].name);
-            } else {
-              v_set = new Set(p_tag.filterChannel);
-            }
-            if (p_checked) v_set.add(v_name);
-            else v_set.delete(v_name);
-            p_tag.filterChannel = v_set.size === v_channels.length ? null : v_set;
-            renderNotifyFilter(p_tag);
-            renderNotifyMessages(p_tag);
-          })
-        );
-      })(i2);
-    var v_clear_all = document.createElement("button");
-    v_clear_all.type = "button";
-    v_clear_all.className = "btn btn-sm omnidb__theme__btn--secondary omnidb__notify__filter-clear";
-    v_clear_all.textContent = t$1("notify.clear_all");
-    v_clear_all.addEventListener("click", function() {
-      clearAllNotifyMessages(p_tag);
-    });
-    v_div.appendChild(v_clear_all);
-  }
-  function buildNotifyFilterCheckbox(p_id, p_label, p_checked, p_change_function) {
-    var v_wrapper = document.createElement("label");
-    v_wrapper.className = "omnidb__notify__filter-item";
-    v_wrapper.htmlFor = p_id;
-    var v_input = document.createElement("input");
-    v_input.type = "checkbox";
-    v_input.id = p_id;
-    v_input.checked = p_checked;
-    v_input.addEventListener("change", function() {
-      p_change_function(v_input.checked);
-    });
-    v_wrapper.appendChild(v_input);
-    var v_text = document.createElement("span");
-    v_text.textContent = p_label;
-    v_wrapper.appendChild(v_text);
-    return v_wrapper;
-  }
-  function notifyFilteredMessages(p_tag) {
-    if (p_tag.filterChannel == null) return p_tag.messages;
-    var v_filter = p_tag.filterChannel;
-    return p_tag.messages.filter(function(p_message) {
-      return v_filter.has(p_message.channel);
-    });
-  }
-  function renderNotifyMessages(p_tag) {
-    if (p_tag == null || p_tag.divMessages == null) return;
-    var v_div = p_tag.divMessages;
-    v_div.innerHTML = "";
-    var v_messages = notifyFilteredMessages(p_tag);
-    if (v_messages.length === 0) {
-      var v_empty = document.createElement("div");
-      v_empty.className = "omnidb__notify__empty";
-      v_empty.textContent = p_tag.messages.length === 0 ? t$1("notify.no_messages_yet") : t$1("notify.no_messages_selected_channels");
-      v_div.appendChild(v_empty);
-      return;
-    }
-    var v_table = document.createElement("table");
-    v_table.className = "omnidb__notify__table";
-    var v_thead = document.createElement("thead");
-    var v_header_row = document.createElement("tr");
-    var v_columns = [t$1("notify.column_channel"), t$1("notify.column_time"), t$1("notify.column_payload")];
-    for (var c2 = 0; c2 < v_columns.length; c2++) {
-      var v_th = document.createElement("th");
-      v_th.textContent = v_columns[c2];
-      v_header_row.appendChild(v_th);
-    }
-    v_thead.appendChild(v_header_row);
-    v_table.appendChild(v_thead);
-    var v_tbody = document.createElement("tbody");
-    for (var i2 = 0; i2 < v_messages.length; i2++) {
-      var v_row = document.createElement("tr");
-      var v_cells = [v_messages[i2].channel, v_messages[i2].ts, v_messages[i2].payload];
-      for (var k2 = 0; k2 < v_cells.length; k2++) {
-        var v_td = document.createElement("td");
-        v_td.textContent = v_cells[k2] == null ? "" : String(v_cells[k2]);
-        v_row.appendChild(v_td);
-      }
-      v_tbody.appendChild(v_row);
-    }
-    v_table.appendChild(v_tbody);
-    v_div.appendChild(v_table);
-    v_div.scrollTop = v_div.scrollHeight;
-  }
-  function clearNotifyChannelMessages(p_tag, p_channel_name) {
-    p_tag.messages = p_tag.messages.filter(function(p_message) {
-      return p_message.channel !== p_channel_name;
-    });
-    renderNotifyMessages(p_tag);
-  }
-  function clearAllNotifyMessages(p_tag) {
-    p_tag.messages = [];
-    renderNotifyMessages(p_tag);
-  }
-  var v_terminalState = {
-    Idle: 0,
-    Executing: 1,
-    Ready: 2
-  };
-  function clearTerminal() {
-    var v_tag = v_connTabControl.selectedTab.tag;
-    v_tag.editor_console.clear();
-  }
-  function startTerminal(p_conn_id) {
-    var v_tag = v_connTabControl.selectedTab.tag;
-    var v_context = {
-      tab_tag: v_tag,
-      acked: false
-    };
-    v_tag.context = createContext(v_context);
-    v_tag.editor_console.focus();
-    v_tag.editor_console.write(t$1("terminal.starting"));
-    v_tag.clear_terminal = true;
-    terminalRun(true, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
-  }
-  function terminalKey(p_key) {
-    terminalRun(false, p_key);
-  }
-  function terminalContextMenu(e2, p_tab) {
-    var v_tab = p_tab ? p_tab : v_connTabControl.selectedTab;
-    var v_tag = v_tab.tag;
-    var v_option_list = [];
-    v_option_list.push({
-      text: t$1("terminal.adjust_dimensions"),
-      icon: "fas cm-all fa-window-maximize",
-      action: function() {
-        terminalRun(false, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
-        setTimeout(function() {
-          v_tag.editor_console.focus();
-        }, 10);
-      }
-    });
-    customMenu(
-      {
-        x: e2.clientX + 5,
-        y: e2.clientY + 5
-      },
-      v_option_list,
-      null
-    );
-  }
-  function terminalRun(p_spawn = false, p_query = "") {
-    var v_tag = v_connTabControl.selectedTab.tag;
-    v_tag.tempData = "";
-    var v_content = p_query;
-    v_tag.last_command = v_content;
-    var v_message_data = {
-      v_cmd: v_content,
-      v_tab_id: v_tag.tab_id,
-      v_db_index: null,
-      v_spawn: p_spawn,
-      v_ssh_id: v_tag.connId
-    };
-    var d2 = /* @__PURE__ */ new Date();
-    [(d2.getMonth() + 1).padLeft(), d2.getDate().padLeft(), d2.getFullYear()].join("/") + " " + [d2.getHours().padLeft(), d2.getMinutes().padLeft(), d2.getSeconds().padLeft()].join(":");
-    createRequest(v_queryRequestCodes.Terminal, v_message_data, v_tag.context.code);
-    v_tag.state = v_consoleState.Executing;
-  }
-  function terminalReturn(p_data, p_context) {
-    terminalReturnRender(p_data, p_context);
-  }
-  function terminalReturnRender(p_message, p_context) {
-    var v_tag = p_context.tab_tag;
-    if (p_context.tab_tag.clear_terminal == true) {
-      v_tag.editor_console.write("\x1B[H\x1B[2J");
-      p_context.tab_tag.clear_terminal = false;
-    }
-    p_context.tab_tag.state = v_consoleState.Idle;
-    v_tag.editor_console.write(p_message.v_data.v_data);
-  }
-  const terminal = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    clearTerminal,
-    startTerminal,
-    terminalContextMenu,
-    terminalKey,
-    terminalReturn,
-    terminalReturnRender,
-    terminalRun,
-    v_terminalState
-  }, Symbol.toStringTag, { value: "Module" }));
   const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)\b/i;
   const NULL_CELL = "[null]";
   function findForeignKey(fks, columnName) {
@@ -2464,829 +1815,6 @@
     whiteRightHtmlRenderer,
     yellowHtmlRenderer,
     yellowRenderer
-  }, Symbol.toStringTag, { value: "Module" }));
-  var v_editDataState = {
-    Idle: 0,
-    Querying: 1,
-    QueryReady: 2,
-    Saving: 3,
-    SaveReady: 4
-  };
-  function v_startEditData(p_table, p_schema, p_filter = "") {
-    var input = JSON.stringify({
-      p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-      p_tab_id: v_connTabControl.selectedTab.id,
-      p_table,
-      p_schema
-    });
-    execAjax$2(
-      "/start_edit_data/",
-      input,
-      function(p_return) {
-        if (p_schema) v_connTabControl.tag.createEditDataTab(p_schema + "." + p_table);
-        else v_connTabControl.tag.createEditDataTab(p_table);
-        var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-        if (v_currTabTag.editDataObject != null) {
-          if (v_currTabTag.editor != null) {
-            v_currTabTag.editor.destroy();
-          }
-        }
-        v_currTabTag.editor.setValue(p_filter || p_return.v_data.v_ini_orderby);
-        v_currTabTag.editor.clearSelection();
-        v_currTabTag.editDataObject = new Object();
-        v_currTabTag.editDataObject.editor = v_currTabTag.editor;
-        v_currTabTag.editDataObject.table = p_table;
-        v_currTabTag.editDataObject.schema = p_schema;
-        v_currTabTag.editDataObject.firstRender = true;
-        v_currTabTag.editDataObject.pk = p_return.v_data.v_pk;
-        v_currTabTag.editDataObject.columns = p_return.v_data.v_cols;
-        v_currTabTag.editDataObject.fks = p_return.v_data.v_fks || [];
-        queryEditData();
-      },
-      function(p_return) {
-        if (p_return.v_data.password_timeout) {
-          showPasswordPrompt(
-            v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-            function() {
-              v_startEditData(p_table, p_schema, p_filter);
-            },
-            null,
-            p_return.v_data.message
-          );
-        } else {
-          showError(p_return.v_data);
-        }
-      },
-      "box",
-      true
-    );
-  }
-  function deleteRowEditData() {
-    var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    var v_data = v_currTabTag.editDataObject.ht.getData();
-    var v_sel = v_currTabTag.editDataObject.ht.getSelected();
-    if (!v_sel || v_sel.length === 0) return;
-    var v_row = v_sel[0][0];
-    if (v_currTabTag.editDataObject.infoRows[v_row].mode == 2) {
-      v_currTabTag.editDataObject.infoRows.splice(v_row, 1);
-      v_data.splice(v_row, 1);
-      v_currTabTag.editDataObject.ht.loadData(v_data);
-    } else {
-      var v_mode = v_currTabTag.editDataObject.infoRows[v_row].mode;
-      v_currTabTag.editDataObject.infoRows[v_row].mode = v_currTabTag.editDataObject.infoRows[v_row].old_mode;
-      v_currTabTag.editDataObject.infoRows[v_row].old_mode = v_mode;
-      v_currTabTag.editDataObject.ht.render();
-    }
-    v_currTabTag.button_save.style.visibility = "visible";
-  }
-  function cancelEditData(p_tab_tag) {
-    var v_tab_tag;
-    if (p_tab_tag) v_tab_tag = p_tab_tag;
-    else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag.tab_id);
-    cancelEditDataTab();
-  }
-  function cancelEditDataTab(p_tab_tag) {
-    var v_tab_tag;
-    if (p_tab_tag) v_tab_tag = p_tab_tag;
-    else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    if (v_tab_tag.state == v_editDataState.Querying) v_tab_tag.div_result.innerHTML = t$1("common.canceled");
-    v_tab_tag.state = v_editDataState.Idle;
-    v_tab_tag.tab_loading_span.style.display = "none";
-    v_tab_tag.tab_check_span.style.display = "none";
-    v_tab_tag.bt_cancel.style.display = "none";
-    removeContext(v_tab_tag.context.v_context_code);
-    SetAcked(v_tab_tag.context);
-  }
-  function queryEditData() {
-    var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    var v_state = v_currTabTag.state;
-    if (v_state != 0) {
-      showAlert$1(t$1("common.tab_activity_in_progress"));
-    } else {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Querying;
-      v_currTabTag.button_save.style.visibility = "hidden";
-      var v_message_data = {
-        v_table: v_currTabTag.editDataObject.table,
-        v_schema: v_currTabTag.editDataObject.schema,
-        v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-        v_filter: v_currTabTag.editDataObject.editor.getValue(),
-        // parseInt because a <select>'s .value is a string, and v_count is
-        // a row limit. The backend tolerates either spelling now, but the
-        // string is what silently broke this whole feature once already.
-        v_count: parseInt(v_currTabTag.sel_filtered_data.value, 10),
-        v_pk_list: v_currTabTag.editDataObject.pk,
-        v_columns: v_currTabTag.editDataObject.columns,
-        v_conn_tab_id: v_connTabControl.selectedTab.id,
-        v_tab_id: v_currTabTag.tab_id
-      };
-      (/* @__PURE__ */ new Date()).getTime();
-      v_currTabTag.tab_loading_span.style.display = "";
-      v_currTabTag.bt_cancel.style.display = "";
-      var v_context = {
-        tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
-        start_time: (/* @__PURE__ */ new Date()).getTime(),
-        database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex
-      };
-      v_context.tab_tag.context = v_context;
-      if (v_context.tab_tag.editDataObject.ht != null) {
-        v_context.tab_tag.editDataObject.ht.destroy();
-        v_context.tab_tag.editDataObject.ht = null;
-      }
-      v_context.tab_tag.div_result.innerHTML = t$1("common.running");
-      v_context.tab_tag.query_info.innerHTML = "";
-      createRequest(v_queryRequestCodes.QueryEditData, v_message_data, v_context);
-      setTimeout(function() {
-        if (!v_context.acked) {
-          cancelEditDataTab(v_context.tab_tag);
-          showAlert$1(t$1("query.no_response_from_server"));
-        }
-      }, 1e4);
-    }
-  }
-  function checkEditDataStatus(p_tab) {
-    if (p_tab.tag.state == v_editDataState.QueryReady) {
-      queryEditDataReturnRender(p_tab.tag.data, p_tab.tag.context);
-    } else if (p_tab.tag.state == v_editDataState.SaveReady) {
-      saveEditDataReturnRender(p_tab.tag.data, p_tab.tag.context);
-    }
-  }
-  function queryEditDataReturn(p_data, p_context) {
-    if (p_context.tab_tag.state != v_editDataState.Idle) {
-      p_context.duration = (/* @__PURE__ */ new Date()).getTime() - p_context.start_time;
-      if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
-        queryEditDataReturnRender(p_data, p_context);
-      } else {
-        p_context.tab_tag.state = v_editDataState.QueryReady;
-        p_context.tab_tag.context = p_context;
-        p_context.tab_tag.data = p_data;
-        p_context.tab_tag.tab_loading_span.style.display = "none";
-        p_context.tab_tag.tab_check_span.style.display = "";
-      }
-    }
-  }
-  function queryEditDataReturnRender(p_message, p_context) {
-    p_context.tab_tag.state = v_editDataState.Idle;
-    p_context.tab_tag.context = null;
-    p_context.tab_tag.data = null;
-    var v_data = p_message.v_data;
-    var v_currTabTag = p_context.tab_tag;
-    var v_div_result = v_currTabTag.div_result;
-    var v_query_info = v_currTabTag.query_info;
-    if (v_currTabTag.editDataObject.ht != null) {
-      v_currTabTag.editDataObject.ht.destroy();
-      v_currTabTag.editDataObject.ht = null;
-    }
-    v_div_result.innerHTML = "";
-    var request_time = p_context.duration;
-    if (p_message.v_error) {
-      var v_err_div = document.createElement("div");
-      v_err_div.className = "error_text";
-      v_err_div.textContent = p_message.v_data;
-      v_div_result.appendChild(v_err_div);
-      v_query_info.innerHTML = t$1("edit_data.response_time", { seconds: request_time / 1e3 });
-    } else {
-      if (v_currTabTag.editDataObject.pk.length == 0) {
-        if (v_currTabTag.editDataObject.firstRender) showAlert$1(t$1("edit_data.no_pk_readonly_warning"));
-        v_currTabTag.editDataObject.firstRender = false;
-        v_currTabTag.editDataObject.hasPK = false;
-      } else v_currTabTag.editDataObject.hasPK = true;
-      window.scrollTo(0, 0);
-      v_query_info.innerHTML = "";
-      var v_qi_rows = document.createElement("span");
-      v_qi_rows.style.fontWeight = "900";
-      v_qi_rows.style.color = "#4a81d4";
-      v_qi_rows.textContent = v_data.v_query_info;
-      var v_qi_in = document.createElement("span");
-      v_qi_in.textContent = " rows in ";
-      var v_qi_time = document.createElement("span");
-      v_qi_time.style.fontWeight = "900";
-      v_qi_time.style.color = "#4a81d4";
-      v_qi_time.textContent = String(request_time / 1e3);
-      var v_qi_sec = document.createElement("span");
-      v_qi_sec.textContent = " seconds";
-      v_query_info.appendChild(v_qi_rows);
-      v_query_info.appendChild(v_qi_in);
-      v_query_info.appendChild(v_qi_time);
-      v_query_info.appendChild(v_qi_sec);
-      var columnProperties = [];
-      var col = {};
-      col.title = " ";
-      col.width = 40;
-      columnProperties.push(col);
-      for (var i2 = 0; i2 < v_currTabTag.editDataObject.columns.length; i2++) {
-        var col = {};
-        var v_tooltip_attr = 'title="Type ' + escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i2].v_type) + '"';
-        var v_tooltip_html = '<i class="ms-1 omnidb__theme-text--primary fas fa-info-circle" ' + v_tooltip_attr + "></i>";
-        var v_column_html = "<span>" + escapeHtml(v_currTabTag.editDataObject.columns[i2].v_column) + "</span>";
-        if (!v_currTabTag.editDataObject.columns[i2].v_is_pk) col.title = v_column_html + v_tooltip_html;
-        else col.title = '<i class="fas fa-key action-key text-secondary"></i> ' + v_column_html + v_tooltip_html;
-        col.titleHtml = true;
-        col.renderer = "text";
-        columnProperties.push(col);
-      }
-      var v_infoRows = [];
-      for (var i2 = 0; i2 < v_data.v_data.length; i2++) {
-        var v_object = {};
-        v_object.mode = 0;
-        v_object.old_mode = -1;
-        v_object.index = i2;
-        v_object.changed_cols = [];
-        v_object.pk = v_data.v_row_pk[i2];
-        v_infoRows.push(v_object);
-      }
-      var v_div_result = v_currTabTag.div_result;
-      if (v_div_result.innerHTML != "") {
-        v_currTabTag.editDataObject.ht.destroy();
-      }
-      v_currTabTag.editDataObject.infoRows = v_infoRows;
-      var container = v_div_result;
-      v_currTabTag.editDataObject.ht = new Handsontable(container, {
-        licenseKey: "non-commercial-and-evaluation",
-        // Turns on VirtualGrid's editable mode: per-cell renderers and
-        // readOnly flags from `cells`, the `beforeChange` hook, and
-        // `minSpareRows`. Opt-in because most other grids in the app pass a
-        // `cells` callback too but are meant to stay read-only — see
-        // VirtualGrid's constructor.
-        omnidbEditable: true,
-        columns: columnProperties,
-        data: v_data.v_data,
-        colHeaders: true,
-        rowHeaders: true,
-        manualColumnResize: true,
-        fixedColumnsLeft: 1,
-        minSpareRows: 1,
-        contextMenu: {
-          callback: function(key, options) {
-            if (key === "edit_data") {
-              var v_col_type = v_currTabTag.editDataObject.columns[options[0].start.col - 1] ? v_currTabTag.editDataObject.columns[options[0].start.col - 1].v_type : null;
-              if (v_currTabTag.editDataObject.hasPK)
-                editCellData(
-                  this,
-                  options[0].start.row,
-                  options[0].start.col,
-                  this.getDataAtCell(options[0].start.row, options[0].start.col),
-                  true,
-                  v_col_type
-                );
-              else
-                editCellData(
-                  this,
-                  options[0].start.row,
-                  options[0].start.col,
-                  this.getDataAtCell(options[0].start.row, options[0].start.col),
-                  false,
-                  v_col_type
-                );
-            } else if (key === "go_to_referenced") {
-              var v_fk_object = v_currTabTag.editDataObject;
-              var v_fk_column = v_fk_object.columns[options[0].start.col - 1];
-              var v_fk = v_fk_column ? findForeignKey(v_fk_object.fks, v_fk_column.v_column) : null;
-              if (!v_fk) return;
-              var v_fk_filter = buildReferencedFilter(
-                v_fk,
-                v_fk_object.columns,
-                this.getDataAtRow(options[0].start.row),
-                v_connTabControl.selectedTab.tag.selectedDBMS
-              );
-              if (v_fk_filter === null) {
-                showAlert$1(t$1("edit_data.fk_null"));
-                return;
-              }
-              v_startEditData(v_fk.r_table, v_fk.r_schema || v_fk_object.schema, v_fk_filter);
-            } else if (key === "duplicate_row") {
-              var v_src_row = options[0].start.row;
-              var v_edit_object = v_currTabTag.editDataObject;
-              if (v_src_row >= v_edit_object.infoRows.length) return;
-              var v_src_values = this.getDataAtRow(v_src_row);
-              var v_dest_row = v_edit_object.infoRows.length;
-              for (var c2 = 0; c2 < v_edit_object.columns.length; c2++) {
-                if (v_edit_object.columns[c2].v_is_pk || v_src_values[c2 + 1] == null) continue;
-                this.setDataAtCell(v_dest_row, c2 + 1, v_src_values[c2 + 1]);
-              }
-            } else if (key === "copy") {
-              this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-              document.execCommand("copy");
-            }
-          },
-          items: {
-            copy: {
-              name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
-            },
-            go_to_referenced: {
-              name: '<div style="position: absolute;"><i class="fas fa-link cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.go_to_referenced") + "</div>",
-              hidden: function(display, col2) {
-                var v_object2 = v_currTabTag.editDataObject;
-                var v_column = v_object2.columns[col2 - 1];
-                return !v_column || !findForeignKey(v_object2.fks, v_column.v_column);
-              }
-            },
-            duplicate_row: {
-              name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.duplicate_row") + "</div>"
-            },
-            edit_data: {
-              name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Edit Content</div>'
-            }
-          }
-        },
-        beforeChange: function(changes, source) {
-          if (!changes) {
-            return;
-          }
-          changes.forEach(function(element, index) {
-            var change = element;
-            var rowIndex = change[0];
-            var columnIndex = change[1];
-            var oldValue = change[2];
-            var newValue = change[3];
-            if (rowIndex >= v_currTabTag.editDataObject.infoRows.length) {
-              var v_object2 = {};
-              v_object2.mode = 2;
-              v_object2.old_mode = -1;
-              v_object2.changed_cols = [];
-              v_object2.index = v_currTabTag.editDataObject.infoRows.length;
-              v_object2.pk = null;
-              v_currTabTag.editDataObject.infoRows.push(v_object2);
-              v_currTabTag.button_save.style.visibility = "visible";
-            }
-            if (oldValue != newValue && v_currTabTag.editDataObject.infoRows[rowIndex].mode != 2) {
-              if (v_currTabTag.editDataObject.infoRows[rowIndex].changed_cols.indexOf(columnIndex - 1) == -1) {
-                v_currTabTag.editDataObject.infoRows[rowIndex].changed_cols.push(columnIndex - 1);
-              }
-              if (v_currTabTag.editDataObject.infoRows[rowIndex].mode != -1) {
-                v_currTabTag.editDataObject.infoRows[rowIndex].mode = 1;
-              } else v_currTabTag.editDataObject.infoRows[rowIndex].old_mode = 1;
-              v_currTabTag.button_save.style.visibility = "visible";
-            }
-          });
-        },
-        cells: function(row, col2, prop) {
-          var cellProperties = {};
-          if (v_currTabTag.editDataObject.infoRows[row] != null) {
-            if (!v_currTabTag.editDataObject.hasPK && v_currTabTag.editDataObject.infoRows[row].mode != 2) {
-              if (col2 == 0) cellProperties.renderer = grayEmptyRenderer;
-              else cellProperties.renderer = grayRenderer;
-              cellProperties.readOnly = true;
-            } else if (col2 == 0) {
-              cellProperties.renderer = editDataActionRenderer;
-              cellProperties.readOnly = true;
-            } else if (v_currTabTag.editDataObject.infoRows[row].mode == 2) {
-              cellProperties.renderer = greenRenderer;
-            } else if (v_currTabTag.editDataObject.infoRows[row].mode == -1) {
-              cellProperties.renderer = redRenderer;
-            } else if (v_currTabTag.editDataObject.infoRows[row].mode == 1) {
-              cellProperties.renderer = yellowRenderer;
-            } else {
-              cellProperties.renderer = whiteRenderer;
-            }
-          } else {
-            if (col2 == 0) {
-              cellProperties.renderer = newRowRenderer;
-              cellProperties.readOnly = true;
-            }
-          }
-          return cellProperties;
-        }
-      });
-    }
-    p_context.tab_tag.tab_loading_span.style.display = "none";
-    p_context.tab_tag.tab_check_span.style.display = "none";
-    p_context.tab_tag.bt_cancel.style.display = "none";
-  }
-  function saveEditData() {
-    var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    var v_state = v_currTabTag.state;
-    if (v_state != v_editDataState.Idle) {
-      showAlert$1(t$1("common.tab_activity_in_progress"));
-    } else {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Saving;
-      v_currTabTag.button_save.style.visibility = "hidden";
-      var v_changedRowsInfo = [];
-      var v_changedRowsData = [];
-      var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-      for (var i2 = 0; i2 < v_currTabTag.editDataObject.infoRows.length; i2++) {
-        if (v_currTabTag.editDataObject.infoRows[i2].mode != 0) {
-          v_currTabTag.editDataObject.infoRows[i2].index = i2;
-          v_changedRowsInfo.push(v_currTabTag.editDataObject.infoRows[i2]);
-          v_changedRowsData.push(v_currTabTag.editDataObject.ht.getDataAtRow(i2));
-        }
-      }
-      var v_message_data = {
-        v_table: v_currTabTag.editDataObject.table,
-        v_schema: v_currTabTag.editDataObject.schema,
-        v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-        v_data_rows: v_changedRowsData,
-        v_rows_info: v_changedRowsInfo,
-        v_pk_info: v_currTabTag.editDataObject.pk,
-        v_columns: v_currTabTag.editDataObject.columns,
-        v_conn_tab_id: v_connTabControl.selectedTab.id,
-        v_tab_id: v_currTabTag.tab_id
-      };
-      v_currTabTag.tab_loading_span.style.display = "";
-      v_currTabTag.bt_cancel.style.display = "";
-      var v_context = {
-        tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
-        start_time: (/* @__PURE__ */ new Date()).getTime()
-      };
-      v_context.tab_tag.context = v_context;
-      v_context.tab_tag.query_info.innerHTML = "";
-      createRequest(v_queryRequestCodes.SaveEditData, v_message_data, v_context);
-    }
-  }
-  function saveEditDataReturn(p_data, p_context) {
-    if (p_context.tab_tag.state != v_editDataState.Idle) {
-      p_context.duration = (/* @__PURE__ */ new Date()).getTime() - p_context.start_time;
-      if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
-        saveEditDataReturnRender(p_data, p_context);
-      } else {
-        p_context.tab_tag.state = v_editDataState.SaveReady;
-        p_context.tab_tag.context = p_context;
-        p_context.tab_tag.data = p_data;
-        p_context.tab_tag.tab_loading_span.style.display = "none";
-        p_context.tab_tag.tab_check_span.style.display = "";
-      }
-    }
-  }
-  function saveEditDataReturnRender(p_message, p_context) {
-    p_context.tab_tag.state = v_editDataState.Idle;
-    p_context.tab_tag.context = null;
-    p_context.tab_tag.data = null;
-    var v_data = p_message.v_data;
-    var v_currTabTag = p_context.tab_tag;
-    v_currTabTag.div_result;
-    var v_query_info = v_currTabTag.query_info;
-    var request_time = p_context.duration;
-    v_query_info.innerHTML = t$1("edit_data.save_time", { seconds: request_time / 1e3 });
-    var v_commands_log = "";
-    var v_has_error = false;
-    v_currTabTag.button_save.style.visibility = "hidden";
-    for (var i2 = v_data.length - 1; i2 >= 0; i2--) {
-      if (v_data[i2].mode == -1) {
-        if (!v_data[i2].error) {
-          v_currTabTag.editDataObject.infoRows.splice(v_data[i2].index, 1);
-          v_currTabTag.editDataObject.ht.alter("remove_row", v_data[i2].index);
-        } else {
-          v_has_error = true;
-          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
-          v_currTabTag.button_save.style.visibility = "visible";
-        }
-      } else if (v_data[i2].mode == 2) {
-        if (!v_data[i2].error) {
-          v_currTabTag.editDataObject.infoRows[v_data[i2].index].mode = 0;
-          v_currTabTag.editDataObject.infoRows[v_data[i2].index].old_mode = -1;
-          v_currTabTag.editDataObject.infoRows[v_data[i2].index].changed_cols = [];
-          var v_pk_list = [];
-          for (var j2 = 0; j2 < v_currTabTag.editDataObject.pk.length; j2++) {
-            var v_pk = {
-              v_column: v_currTabTag.editDataObject.pk[j2].v_column,
-              v_value: v_currTabTag.editDataObject.ht.getDataAtCell(
-                v_data[i2].index,
-                v_currTabTag.editDataObject.pk[j2].v_index + 1
-              )
-            };
-            v_pk_list.push(v_pk);
-          }
-          v_currTabTag.editDataObject.infoRows[v_data[i2].index].pk = v_pk_list;
-        } else {
-          v_has_error = true;
-          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
-          v_currTabTag.button_save.style.visibility = "visible";
-        }
-      } else if (v_data[i2].mode == 1) {
-        if (!v_data[i2].error) {
-          v_currTabTag.editDataObject.infoRows[v_data[i2].index].mode = 0;
-          v_currTabTag.editDataObject.infoRows[v_data[i2].index].old_mode = -1;
-          v_currTabTag.editDataObject.infoRows[v_data[i2].index].changed_cols = [];
-          var v_pk_list = [];
-          for (var j2 = 0; j2 < v_currTabTag.editDataObject.pk.length; j2++) {
-            var v_pk = {
-              v_column: v_currTabTag.editDataObject.pk[j2].v_column,
-              v_value: v_currTabTag.editDataObject.ht.getDataAtCell(
-                v_data[i2].index,
-                v_currTabTag.editDataObject.pk[j2].v_index + 1
-              )
-            };
-            v_pk_list.push(v_pk);
-          }
-          v_currTabTag.editDataObject.infoRows[v_data[i2].index].pk = v_pk_list;
-        } else {
-          v_has_error = true;
-          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
-          v_currTabTag.button_save.style.visibility = "visible";
-        }
-      }
-      v_currTabTag.bt_cancel.style.display = "";
-    }
-    if (v_has_error) {
-      showAlert$1(v_commands_log, null, null, true);
-    }
-    v_currTabTag.editDataObject.ht.render();
-    p_context.tab_tag.tab_loading_span.style.display = "none";
-    p_context.tab_tag.tab_check_span.style.display = "none";
-    p_context.tab_tag.bt_cancel.style.display = "none";
-  }
-  const editData = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    cancelEditData,
-    cancelEditDataTab,
-    checkEditDataStatus,
-    deleteRowEditData,
-    queryEditData,
-    queryEditDataReturn,
-    queryEditDataReturnRender,
-    saveEditData,
-    saveEditDataReturn,
-    saveEditDataReturnRender,
-    v_editDataState,
-    v_startEditData
-  }, Symbol.toStringTag, { value: "Module" }));
-  var v_context_code;
-  var v_client_id;
-  var v_polling_ajax = null;
-  var v_context_object = {
-    contextCode: 0,
-    /** @type {{code: number, context: any}[]} */
-    contextList: []
-  };
-  var v_polling_started = false;
-  function initKeepAlive() {
-    setInterval(function() {
-      execAjax$2("/client_keep_alive/", JSON.stringify({}), function(p_return) {
-      }, null, "box", false);
-    }, 6e4);
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initKeepAlive);
-  else setTimeout(initKeepAlive, 0);
-  function call_polling(p_startup) {
-    v_polling_ajax = execAjax$2(
-      "/long_polling/",
-      JSON.stringify({
-        p_startup
-      }),
-      function(p_return) {
-        for (var i2 = 0; i2 < p_return.returning_rows.length; i2++) {
-          try {
-            polling_response(p_return.returning_rows[i2]);
-          } catch (err) {
-          }
-        }
-        call_polling(false);
-      },
-      null,
-      "box",
-      false,
-      null,
-      function() {
-      }
-    );
-  }
-  window.addEventListener("beforeunload", function() {
-    clear_client().then(function() {
-    });
-  });
-  async function clear_client() {
-    try {
-      await fetch(v_url_folder + "/clear_client", { keepalive: true });
-    } catch (err) {
-    }
-  }
-  function polling_response(p_message) {
-    var v_message = p_message;
-    var p_context_code = null;
-    var p_context = null;
-    if (v_message.v_context_code != 0 && v_message.v_context_code != null) {
-      for (var i2 = 0; i2 < v_context_object.contextList.length; i2++) {
-        if (v_context_object.contextList[i2].code == v_message.v_context_code) {
-          p_context = v_context_object.contextList[i2].context;
-          p_context_code = v_context_object.contextList[i2].code;
-          break;
-        }
-      }
-    }
-    switch (v_message.v_code) {
-      // Pong is a leftover of the WebSocket transport: the handler it called,
-      // websocketPong(), has not existed for a long time, and the Go backend
-      // never sends this code (there is no Pong in longpolling.go's response
-      // constants). Kept as an explicit no-op rather than deleted so an
-      // unexpected Pong falls through here instead of into the "unhandled
-      // code" path.
-      case v_queryResponseCodes.Pong: {
-        break;
-      }
-      case v_queryResponseCodes.SessionMissing: {
-        showAlert$1(t$1("errors.session_not_found_reload"));
-        break;
-      }
-      case v_queryResponseCodes.MessageException: {
-        if (p_context) {
-          SetAcked(p_context);
-          queryError(p_message, p_context);
-          removeContext(p_context_code);
-        } else {
-          showError(p_message.v_data);
-        }
-        break;
-      }
-      case v_queryResponseCodes.PasswordRequired: {
-        if (p_context) {
-          SetAcked(p_context);
-          QueryPasswordRequired(p_context, v_message.v_data);
-          break;
-        }
-      }
-      case v_queryResponseCodes.QueryAck: {
-        if (p_context) {
-          SetAcked(p_context);
-          break;
-        }
-      }
-      case v_queryResponseCodes.QueryResult: {
-        if (p_context) {
-          SetAcked(p_context);
-          if (!v_message.v_error || v_message.v_data.v_chunks) {
-            p_context.tab_tag.tempData = p_context.tab_tag.tempData.concat(v_message.v_data.v_data);
-          }
-          if (!v_message.v_data.v_chunks || v_message.v_data.v_last_block || v_message.v_error) {
-            v_message.v_data.v_data = [];
-            querySQLReturn(v_message, p_context);
-            removeContext(p_context_code);
-          }
-        }
-        break;
-      }
-      case v_queryResponseCodes.ConsoleResult: {
-        if (p_context) {
-          if (!v_message.v_error) {
-            p_context.tab_tag.tempData += v_message.v_data.v_data;
-          }
-          if (v_message.v_data.v_last_block || v_message.v_error) {
-            v_message.v_data.v_data = [];
-            consoleReturn(v_message, p_context);
-            removeContext(p_context_code);
-          }
-        }
-        break;
-      }
-      case v_queryResponseCodes.TerminalResult: {
-        if (p_context) {
-          terminalReturn(v_message, p_context);
-        }
-        break;
-      }
-      case v_queryResponseCodes.NotifyResult: {
-        if (p_context) {
-          if (v_message.v_data && v_message.v_data.v_stopped) {
-            notifySessionStopped(p_context.tab_tag, v_message.v_data.v_message);
-          } else {
-            notifyMessageReceived(v_message, p_context);
-          }
-        }
-        break;
-      }
-      case v_queryResponseCodes.QueryEditDataResult: {
-        if (p_context) {
-          SetAcked(p_context);
-          queryEditDataReturn(v_message, p_context);
-          removeContext(p_context_code);
-        }
-        break;
-      }
-      case v_queryResponseCodes.SaveEditDataResult: {
-        if (p_context) {
-          saveEditDataReturn(v_message, p_context);
-          removeContext(p_context_code);
-        }
-        break;
-      }
-      case v_queryResponseCodes.RemoveContext: {
-        if (p_context) {
-          removeContext(p_context_code);
-        }
-        break;
-      }
-    }
-  }
-  function QueryPasswordRequired(p_context, p_message) {
-    if (p_context.tab_tag.mode == "query") {
-      showPasswordPrompt(
-        p_context.database_index,
-        function() {
-          cancelSQLTab(p_context.tab_tag);
-          querySQL(
-            p_context.mode,
-            p_context.all_data,
-            p_context.query,
-            p_context.callback,
-            p_context.log_query,
-            p_context.save_query,
-            p_context.cmd_type,
-            p_context.clear_data,
-            p_context.tab_title
-          );
-        },
-        function() {
-          cancelSQLTab(p_context.tab_tag);
-        },
-        p_message
-      );
-    } else if (p_context.tab_tag.mode == "edit") {
-      showPasswordPrompt(
-        p_context.database_index,
-        function() {
-          cancelEditDataTab(p_context.tab_tag);
-        },
-        function() {
-          cancelEditDataTab(p_context.tab_tag);
-        },
-        p_message
-      );
-    } else if (p_context.tab_tag.mode == "console") {
-      showPasswordPrompt(
-        p_context.database_index,
-        function() {
-          cancelConsoleTab(p_context.tab_tag);
-          p_context.tab_tag.editor_input.setValue(p_context.tab_tag.last_command);
-          p_context.tab_tag.editor_input.clearSelection();
-          consoleSQL(p_context.check_command, p_context.mode);
-        },
-        function() {
-          cancelConsoleTab(p_context.tab_tag);
-        },
-        p_message
-      );
-    }
-  }
-  function createContext(p_context) {
-    v_context_object.contextCode += 1;
-    v_context_code = v_context_object.contextCode;
-    p_context.v_context_code = v_context_code;
-    var v_context = {
-      code: v_context_code,
-      context: p_context
-    };
-    v_context_object.contextList.push(v_context);
-    return v_context;
-  }
-  function removeContext(p_context_code) {
-    for (var i2 = 0; i2 < v_context_object.contextList.length; i2++) {
-      if (v_context_object.contextList[i2].code == p_context_code) {
-        v_context_object.contextList.splice(i2, 1);
-        break;
-      }
-    }
-  }
-  function createRequest(p_messageCode, p_messageData, p_context) {
-    var v_context_code2 = 0;
-    if (p_context != null) {
-      if (p_context === parseInt(p_context, 10)) {
-        v_context_code2 = p_context;
-      } else {
-        v_context_object.contextCode += 1;
-        v_context_code2 = v_context_object.contextCode;
-        p_context.v_context_code = v_context_code2;
-        var v_context = {
-          code: v_context_code2,
-          context: p_context
-        };
-        v_context_object.contextList.push(v_context);
-      }
-    }
-    if (v_polling_ajax == null) call_polling(true);
-    else if (v_polling_ajax.readyState == 0 || v_polling_ajax.readyState == 4) {
-      call_polling(false);
-    }
-    execAjax$2(
-      "/create_request/",
-      JSON.stringify({
-        v_code: p_messageCode,
-        v_context_code: v_context_code2,
-        v_data: p_messageData
-      }),
-      function(p_return) {
-      },
-      null,
-      "box",
-      false
-    );
-  }
-  function SetAcked(p_context) {
-    if (p_context) p_context.acked = true;
-  }
-  const longPolling = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    QueryPasswordRequired,
-    SetAcked,
-    call_polling,
-    createContext,
-    createRequest,
-    polling_response,
-    removeContext,
-    v_client_id,
-    v_context_object,
-    get v_polling_ajax() {
-      return v_polling_ajax;
-    },
-    v_polling_started
   }, Symbol.toStringTag, { value: "Module" }));
   /*! name: vanilla-calendar-pro v3.4.0 | url: https://github.com/uvarov-frontend/vanilla-calendar-pro */
   var e = (e2) => /* @__PURE__ */ new Date(`${e2}T00:00:00`), t = (e2) => `${e2.getFullYear()}-${String(e2.getMonth() + 1).padStart(2, "0")}-${String(e2.getDate()).padStart(2, "0")}`, n = (n2, a2) => n2.reduce((n3, l2) => {
@@ -4676,6 +3204,1752 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     showConsoleHistory,
     v_consoleState
   }, Symbol.toStringTag, { value: "Module" }));
+  var NOTIFY_ICON_ACTIVE = "fas node-all fa-bell";
+  var NOTIFY_ICON_PAUSED = "fas node-all fa-bell-slash";
+  function getTreeNotifyChannels(p_tag) {
+    var context_menu = {
+      cm_notify_root: {
+        elements: [
+          {
+            text: t$1("notify.add_channel"),
+            icon: "fas cm-all fa-plus",
+            action: function(node) {
+              promptAddChannel(p_tag);
+            }
+          },
+          {
+            text: t$1("common.refresh"),
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              refreshNotifyChannels(p_tag);
+            }
+          }
+        ]
+      },
+      cm_notify_channel: {
+        // A function rather than a static array (Aimara.js's
+        // nodeContextMenu supports both): customMenu has no per-item
+        // "visible" predicate, so Pause/Resume has to be decided here,
+        // once per right-click, from the node's own state.
+        elements: function(p_node) {
+          var v_elements = [];
+          if (p_node.tag.active) {
+            v_elements.push({
+              text: t$1("notify.pause"),
+              icon: "fas cm-all fa-pause",
+              action: function(node) {
+                pauseChannel(p_tag, node);
+              }
+            });
+          } else {
+            v_elements.push({
+              text: t$1("notify.resume"),
+              icon: "fas cm-all fa-play",
+              action: function(node) {
+                resumeChannel(p_tag, node);
+              }
+            });
+          }
+          v_elements.push({
+            text: t$1("notify.clear_messages"),
+            icon: "fas cm-all fa-eraser",
+            action: function(node) {
+              clearNotifyChannelMessages(p_tag, node.tag.name);
+            }
+          });
+          v_elements.push({
+            text: t$1("common.delete"),
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              deleteChannel(p_tag, node);
+            }
+          });
+          return v_elements;
+        }
+      }
+    };
+    var tree = createTree(p_tag.divTree.id, "#fcfdfd", context_menu);
+    tree.tag = {};
+    var node1 = tree.createNode(
+      t$1("notify.channels_section"),
+      true,
+      NOTIFY_ICON_ACTIVE,
+      null,
+      // locked: true stops this root from being collapsed (see Aimara.js's
+      // collapseNode) -- the panel has nothing else to show in its place.
+      { type: "notify_root", locked: true },
+      "cm_notify_root"
+    );
+    tree.drawTree();
+    document.getElementById(p_tag.divTree.id).oncontextmenu = function(e2) {
+      e2.preventDefault();
+      tree.nodeContextMenu(e2, node1);
+    };
+    tree.clickNodeEvent = function(p_node) {
+      updateNotifySelectedChannel(p_tag, p_node.tag && p_node.tag.type === "notify_channel" ? p_node : null);
+    };
+    p_tag.tree = tree;
+    p_tag.treeRootNode = node1;
+    refreshNotifyChannels(p_tag);
+  }
+  function updateNotifySelectedChannel(p_tag, p_node) {
+    p_tag.selectedChannelNode = p_node;
+    if (p_tag.divDeleteChannelBtn == null) return;
+    if (p_node != null) p_tag.divDeleteChannelBtn.removeAttribute("disabled");
+    else p_tag.divDeleteChannelBtn.setAttribute("disabled", "disabled");
+  }
+  function notifyChannelsFromReturn(p_return) {
+    var v_data = p_return.v_data;
+    var v_list2 = Array.isArray(v_data) ? v_data : v_data && v_data.v_channels || [];
+    var v_channels = [];
+    for (var i2 = 0; i2 < v_list2.length; i2++) {
+      var v_row = v_list2[i2];
+      v_channels.push({
+        id: v_row.v_id,
+        name: v_row.v_channel_name,
+        // The paused/active flag is the one field of this row the wire
+        // format never spelled out -- read either spelling rather than
+        // silently showing every channel as active.
+        active: v_row.v_active !== void 0 ? !!v_row.v_active : !!v_row.active
+      });
+    }
+    return v_channels;
+  }
+  function refreshNotifyChannels(p_tag) {
+    execAjax$2(
+      "/get_notify_channels/",
+      JSON.stringify({ p_conn_id: p_tag.connID }),
+      function(p_return) {
+        p_tag.channels = notifyChannelsFromReturn(p_return);
+        renderNotifyChannelNodes(p_tag);
+        renderNotifyFilter(p_tag);
+        renderNotifyMessages(p_tag);
+      },
+      null,
+      "box",
+      false
+    );
+  }
+  function renderNotifyChannelNodes(p_tag) {
+    if (p_tag == null || p_tag.treeRootNode == null) return;
+    updateNotifySelectedChannel(p_tag, null);
+    p_tag.treeRootNode.removeChildNodes();
+    var v_channels = p_tag.channels || [];
+    for (var i2 = 0; i2 < v_channels.length; i2++) {
+      var v_active = v_channels[i2].active && !p_tag.sessionStopped;
+      p_tag.treeRootNode.createChildNode(
+        v_channels[i2].name,
+        false,
+        v_active ? NOTIFY_ICON_ACTIVE : NOTIFY_ICON_PAUSED,
+        {
+          type: "notify_channel",
+          id: v_channels[i2].id,
+          name: v_channels[i2].name,
+          active: v_channels[i2].active
+        },
+        "cm_notify_channel"
+      );
+    }
+  }
+  function promptAddChannel(p_tag) {
+    showConfirm(
+      "",
+      function() {
+        execAjax$2(
+          "/add_notify_channel/",
+          JSON.stringify({
+            p_conn_id: p_tag.connID,
+            p_channel_name: (
+              /** @type {HTMLInputElement} */
+              document.getElementById("element_name").value
+            ),
+            p_tab_id: p_tag.tab_id
+          }),
+          function(p_return) {
+            refreshNotifyChannels(p_tag);
+          },
+          null,
+          "box"
+        );
+      },
+      null,
+      function() {
+        var v_input = document.createElement("input");
+        v_input.id = "element_name";
+        v_input.className = "form-control";
+        v_input.placeholder = t$1("notify.channel_name_placeholder");
+        v_input.style.width = "100%";
+        document.getElementById("modal_message_content").appendChild(v_input);
+        v_input.onkeydown = function() {
+          if (
+            /** @type {any} */
+            event.keyCode == 13
+          )
+            document.getElementById("modal_message_ok").click();
+          else if (
+            /** @type {any} */
+            event.keyCode == 27
+          )
+            document.getElementById("modal_message_cancel").click();
+        };
+        v_input.focus();
+      }
+    );
+  }
+  function pauseChannel(p_tag, p_node) {
+    execAjax$2(
+      "/pause_notify_channel/",
+      JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
+      function(p_return) {
+        refreshNotifyChannels(p_tag);
+      },
+      null,
+      "box"
+    );
+  }
+  function resumeChannel(p_tag, p_node) {
+    execAjax$2(
+      "/resume_notify_channel/",
+      JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
+      function(p_return) {
+        refreshNotifyChannels(p_tag);
+      },
+      null,
+      "box"
+    );
+  }
+  function deleteChannel(p_tag, p_node) {
+    var v_channel_name = p_node.tag.name;
+    showConfirm(
+      t$1("notify.confirm_delete_channel"),
+      function() {
+        execAjax$2(
+          "/delete_notify_channel/",
+          JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
+          function(p_return) {
+            clearNotifyChannelMessages(p_tag, v_channel_name);
+            refreshNotifyChannels(p_tag);
+          },
+          null,
+          "box"
+        );
+      },
+      null,
+      function() {
+        var v_input = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_ok")
+        );
+        v_input.focus();
+      }
+    );
+  }
+  var NOTIFY_STRIP_SLOT_ID = "notify_panel_strip_slot";
+  var NOTIFY_CONTENT_ID = "notify_panel_content";
+  var NOTIFY_SUPPORTED_DB_TYPES = ["postgresql", "oracle", "firebird"];
+  var v_mounted_notify_tag = null;
+  function notifySupportedDbType(p_db_type) {
+    return NOTIFY_SUPPORTED_DB_TYPES.indexOf(p_db_type) !== -1;
+  }
+  var v_createNotifyPanelFunction = function() {
+    var v_html = "<div class='omnidb__notify'><div id='" + NOTIFY_STRIP_SLOT_ID + "' class='omnidb__tab-menu--container omnidb__tab-menu--container--primary omnidb__conn-strip-host'></div><div id='" + NOTIFY_CONTENT_ID + "' class='omnidb__notify__content'></div></div>";
+    var v_target = (
+      /** @type {HTMLElement} */
+      document.getElementById("omnidb__section_notify")
+    );
+    v_target.innerHTML = v_html;
+  };
+  function startNotifyForConnTab(p_conn_tab) {
+    var v_notify_tag = {
+      tab_id: p_conn_tab.id,
+      connID: p_conn_tab.tag.selectedDatabaseIndex,
+      dbType: p_conn_tab.tag.selectedDBMS,
+      /** @type {any[]} */
+      messages: [],
+      /** @type {any[]} */
+      channels: [],
+      // null = every channel, otherwise a Set of the channel names to show.
+      filterChannel: null,
+      context: null,
+      listening: false,
+      sessionStopped: false,
+      lastStopMessage: null,
+      tree: null,
+      treeRootNode: null,
+      divTab: null,
+      divLeft: null,
+      divTree: null,
+      divBanner: null,
+      divFilter: null,
+      divMessages: null
+    };
+    p_conn_tab.tag.notify = v_notify_tag;
+    if (notifySupportedDbType(v_notify_tag.dbType)) {
+      startNotifyListening(v_notify_tag);
+    }
+  }
+  function refreshNotifyPane() {
+    var v_content = document.getElementById(NOTIFY_CONTENT_ID);
+    if (v_content == null) return;
+    if (v_mounted_notify_tag != null) {
+      v_mounted_notify_tag.divTab = null;
+      v_mounted_notify_tag.divLeft = null;
+      v_mounted_notify_tag.divTree = null;
+      v_mounted_notify_tag.divBanner = null;
+      v_mounted_notify_tag.divFilter = null;
+      v_mounted_notify_tag.divMessages = null;
+      v_mounted_notify_tag = null;
+    }
+    v_content.innerHTML = "";
+    var v_conn_tab = typeof v_connTabControl !== "undefined" ? v_connTabControl.selectedTab : null;
+    if (v_conn_tab != null && v_connTabControl.tabList.indexOf(v_conn_tab) === -1) {
+      v_conn_tab = null;
+    }
+    if (v_conn_tab == null || v_conn_tab.tag == null || v_conn_tab.tag.notify == null) {
+      renderNotifyEmptyState(v_content);
+      return;
+    }
+    var v_notify_tag = v_conn_tab.tag.notify;
+    v_notify_tag.divTab = v_content;
+    v_mounted_notify_tag = v_notify_tag;
+    if (notifySupportedDbType(v_notify_tag.dbType)) {
+      buildNotifyTabLayout(v_notify_tag);
+      getTreeNotifyChannels(v_notify_tag);
+      if (v_notify_tag.sessionStopped) {
+        notifySessionStopped(v_notify_tag, v_notify_tag.lastStopMessage);
+      }
+    } else {
+      renderNotifyUnsupported(v_notify_tag, v_notify_tag.dbType);
+    }
+  }
+  function renderNotifyEmptyState(p_content) {
+    var v_wrapper = document.createElement("div");
+    v_wrapper.className = "omnidb__notify__unsupported";
+    var v_icon = document.createElement("i");
+    v_icon.className = "fas fa-bell-slash omnidb__notify__unsupported-icon";
+    v_wrapper.appendChild(v_icon);
+    var v_title = document.createElement("div");
+    v_title.className = "omnidb__notify__unsupported-title";
+    v_title.textContent = t$1("notify.no_connection_open");
+    v_wrapper.appendChild(v_title);
+    var v_text = document.createElement("div");
+    v_text.className = "omnidb__notify__unsupported-text";
+    v_text.textContent = t$1("notify.open_connection_hint");
+    v_wrapper.appendChild(v_text);
+    p_content.appendChild(v_wrapper);
+  }
+  function buildNotifyTabLayout(p_tag) {
+    var v_id = p_tag.tab_id;
+    p_tag.divTab.innerHTML = "<div class='omnidb__notify__tab'><div id='" + v_id + "_notify_div_left' class='omnidb__notify__div-left'><div id='" + v_id + "_notify_tree' class='omnidb__notify__tree'></div><div id='" + v_id + "_notify_footer' class='omnidb__list-footer'><div class='omnidb__addremove'><button id='" + v_id + "_notify_add_channel' type='button' title='" + t$1("notify.add_channel") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='" + v_id + "_notify_delete_channel' type='button' title='" + t$1("notify.delete_channel") + "' disabled><i class='fas fa-minus'></i></button></div></div><div id='" + v_id + "_notify_resize_line' class='resize_line_vertical omnidb__resize-line__container omnidb__notify__resize-line'></div></div><div id='" + v_id + "_notify_div_right' class='omnidb__notify__div-right'><div id='" + v_id + "_notify_banner' class='omnidb__notify__banner' style='display: none;'></div><div id='" + v_id + "_notify_filter' class='omnidb__notify__filter'></div><div id='" + v_id + "_notify_messages' class='omnidb__notify__messages'></div></div></div>";
+    p_tag.divLeft = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_div_left");
+    p_tag.divTree = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_tree");
+    p_tag.divBanner = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_banner");
+    p_tag.divFilter = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_filter");
+    p_tag.divMessages = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_messages");
+    p_tag.selectedChannelNode = null;
+    p_tag.divDeleteChannelBtn = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_delete_channel");
+    document.getElementById(v_id + "_notify_resize_line").addEventListener(
+      "mousedown",
+      function(event2) {
+        resizeNotifyHorizontal(event2, p_tag);
+      }
+    );
+    document.getElementById(v_id + "_notify_add_channel").addEventListener("click", function() {
+      promptAddChannel(p_tag);
+    });
+    document.getElementById(v_id + "_notify_delete_channel").addEventListener("click", function() {
+      if (p_tag.selectedChannelNode) deleteChannel(p_tag, p_tag.selectedChannelNode);
+    });
+    renderNotifyFilter(p_tag);
+    renderNotifyMessages(p_tag);
+  }
+  function resizeNotifyHorizontal(p_event, p_tag) {
+    p_event.preventDefault();
+    var v_move = function(e2) {
+      var v_width = e2.clientX - p_tag.divLeft.getBoundingClientRect().left;
+      if (v_width < 150) v_width = 150;
+      if (v_width > 600) v_width = 600;
+      p_tag.divLeft.style.width = v_width + "px";
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
+  }
+  function renderNotifyUnsupported(p_tag, p_db_type) {
+    var v_div = p_tag.divTab;
+    v_div.innerHTML = "";
+    var v_wrapper = document.createElement("div");
+    v_wrapper.className = "omnidb__notify__unsupported";
+    var v_icon = document.createElement("i");
+    v_icon.className = "fas fa-bell-slash omnidb__notify__unsupported-icon";
+    v_wrapper.appendChild(v_icon);
+    var v_title = document.createElement("div");
+    v_title.className = "omnidb__notify__unsupported-title";
+    v_title.textContent = t$1("notify.channels_not_supported", { technology: p_db_type });
+    v_wrapper.appendChild(v_title);
+    var v_text = document.createElement("div");
+    v_text.className = "omnidb__notify__unsupported-text";
+    v_text.textContent = t$1("notify.supported_technologies_hint");
+    v_wrapper.appendChild(v_text);
+    v_div.appendChild(v_wrapper);
+  }
+  function startNotifyListening(p_tag) {
+    if (p_tag.context == null) {
+      p_tag.context = createContext({ tab_tag: p_tag, acked: false });
+    }
+    p_tag.sessionStopped = false;
+    p_tag.listening = true;
+    createRequest(
+      v_queryRequestCodes.NotifyListen,
+      { v_db_index: p_tag.connID, v_tab_id: p_tag.tab_id },
+      p_tag.context.code
+    );
+  }
+  function notifyMessageReceived(p_message, p_context) {
+    var v_tag = p_context.tab_tag;
+    if (v_tag == null) return;
+    v_tag.messages.push({
+      channel: p_message.v_data.v_channel,
+      payload: p_message.v_data.v_payload,
+      ts: p_message.v_data.v_timestamp
+    });
+    renderNotifyMessages(v_tag);
+  }
+  function notifySessionStopped(p_tag, p_message) {
+    if (p_tag == null) return;
+    p_tag.sessionStopped = true;
+    p_tag.listening = false;
+    p_tag.lastStopMessage = p_message;
+    renderNotifyChannelNodes(p_tag);
+    if (p_tag.divBanner == null) return;
+    p_tag.divBanner.innerHTML = "";
+    var v_text = document.createElement("span");
+    v_text.textContent = p_message ? String(p_message) : t$1("notify.listening_stopped");
+    p_tag.divBanner.appendChild(v_text);
+    var v_button = document.createElement("button");
+    v_button.type = "button";
+    v_button.className = "btn btn-sm omnidb__theme__btn--secondary ms-2";
+    v_button.textContent = t$1("notify.restart_listening");
+    v_button.addEventListener("click", function() {
+      restartNotifyListening(p_tag);
+    });
+    p_tag.divBanner.appendChild(v_button);
+    p_tag.divBanner.style.display = "";
+  }
+  function restartNotifyListening(p_tag) {
+    p_tag.divBanner.innerHTML = "";
+    p_tag.divBanner.style.display = "none";
+    startNotifyListening(p_tag);
+    refreshNotifyChannels(p_tag);
+  }
+  function renderNotifyFilter(p_tag) {
+    if (p_tag == null || p_tag.divFilter == null) return;
+    var v_div = p_tag.divFilter;
+    v_div.innerHTML = "";
+    var v_channels = p_tag.channels || [];
+    v_div.appendChild(
+      buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_all", t$1("notify.all_channels"), p_tag.filterChannel == null, function(p_checked) {
+        p_tag.filterChannel = p_checked ? null : /* @__PURE__ */ new Set();
+        renderNotifyFilter(p_tag);
+        renderNotifyMessages(p_tag);
+      })
+    );
+    for (var i2 = 0; i2 < v_channels.length; i2++)
+      (function(i3) {
+        var v_name = v_channels[i3].name;
+        var v_checked = p_tag.filterChannel == null || p_tag.filterChannel.has(v_name);
+        v_div.appendChild(
+          buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_" + i3, v_name, v_checked, function(p_checked) {
+            var v_set;
+            if (p_tag.filterChannel == null) {
+              v_set = /* @__PURE__ */ new Set();
+              for (var k2 = 0; k2 < v_channels.length; k2++) v_set.add(v_channels[k2].name);
+            } else {
+              v_set = new Set(p_tag.filterChannel);
+            }
+            if (p_checked) v_set.add(v_name);
+            else v_set.delete(v_name);
+            p_tag.filterChannel = v_set.size === v_channels.length ? null : v_set;
+            renderNotifyFilter(p_tag);
+            renderNotifyMessages(p_tag);
+          })
+        );
+      })(i2);
+    var v_clear_all = document.createElement("button");
+    v_clear_all.type = "button";
+    v_clear_all.className = "btn btn-sm omnidb__theme__btn--secondary omnidb__notify__filter-clear";
+    v_clear_all.textContent = t$1("notify.clear_all");
+    v_clear_all.addEventListener("click", function() {
+      clearAllNotifyMessages(p_tag);
+    });
+    v_div.appendChild(v_clear_all);
+  }
+  function buildNotifyFilterCheckbox(p_id, p_label, p_checked, p_change_function) {
+    var v_wrapper = document.createElement("label");
+    v_wrapper.className = "omnidb__notify__filter-item";
+    v_wrapper.htmlFor = p_id;
+    var v_input = document.createElement("input");
+    v_input.type = "checkbox";
+    v_input.id = p_id;
+    v_input.checked = p_checked;
+    v_input.addEventListener("change", function() {
+      p_change_function(v_input.checked);
+    });
+    v_wrapper.appendChild(v_input);
+    var v_text = document.createElement("span");
+    v_text.textContent = p_label;
+    v_wrapper.appendChild(v_text);
+    return v_wrapper;
+  }
+  function notifyFilteredMessages(p_tag) {
+    if (p_tag.filterChannel == null) return p_tag.messages;
+    var v_filter = p_tag.filterChannel;
+    return p_tag.messages.filter(function(p_message) {
+      return v_filter.has(p_message.channel);
+    });
+  }
+  function renderNotifyMessages(p_tag) {
+    if (p_tag == null || p_tag.divMessages == null) return;
+    var v_div = p_tag.divMessages;
+    v_div.innerHTML = "";
+    var v_messages = notifyFilteredMessages(p_tag);
+    if (v_messages.length === 0) {
+      var v_empty = document.createElement("div");
+      v_empty.className = "omnidb__notify__empty";
+      v_empty.textContent = p_tag.messages.length === 0 ? t$1("notify.no_messages_yet") : t$1("notify.no_messages_selected_channels");
+      v_div.appendChild(v_empty);
+      return;
+    }
+    var v_table = document.createElement("table");
+    v_table.className = "omnidb__notify__table";
+    var v_thead = document.createElement("thead");
+    var v_header_row = document.createElement("tr");
+    var v_columns = [t$1("notify.column_channel"), t$1("notify.column_time"), t$1("notify.column_payload")];
+    for (var c2 = 0; c2 < v_columns.length; c2++) {
+      var v_th = document.createElement("th");
+      v_th.textContent = v_columns[c2];
+      v_header_row.appendChild(v_th);
+    }
+    v_thead.appendChild(v_header_row);
+    v_table.appendChild(v_thead);
+    var v_tbody = document.createElement("tbody");
+    for (var i2 = 0; i2 < v_messages.length; i2++) {
+      var v_row = document.createElement("tr");
+      var v_cells = [v_messages[i2].channel, v_messages[i2].ts, v_messages[i2].payload];
+      for (var k2 = 0; k2 < v_cells.length; k2++) {
+        var v_td = document.createElement("td");
+        v_td.textContent = v_cells[k2] == null ? "" : String(v_cells[k2]);
+        v_row.appendChild(v_td);
+      }
+      v_tbody.appendChild(v_row);
+    }
+    v_table.appendChild(v_tbody);
+    v_div.appendChild(v_table);
+    v_div.scrollTop = v_div.scrollHeight;
+  }
+  function clearNotifyChannelMessages(p_tag, p_channel_name) {
+    p_tag.messages = p_tag.messages.filter(function(p_message) {
+      return p_message.channel !== p_channel_name;
+    });
+    renderNotifyMessages(p_tag);
+  }
+  function clearAllNotifyMessages(p_tag) {
+    p_tag.messages = [];
+    renderNotifyMessages(p_tag);
+  }
+  var v_terminalState = {
+    Idle: 0,
+    Executing: 1,
+    Ready: 2
+  };
+  function clearTerminal() {
+    var v_tag = v_connTabControl.selectedTab.tag;
+    v_tag.editor_console.clear();
+  }
+  function startTerminal(p_conn_id) {
+    var v_tag = v_connTabControl.selectedTab.tag;
+    var v_context = {
+      tab_tag: v_tag,
+      acked: false
+    };
+    v_tag.context = createContext(v_context);
+    v_tag.editor_console.focus();
+    v_tag.editor_console.write(t$1("terminal.starting"));
+    v_tag.clear_terminal = true;
+    terminalRun(true, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
+  }
+  function terminalKey(p_key) {
+    terminalRun(false, p_key);
+  }
+  function terminalContextMenu(e2, p_tab) {
+    var v_tab = p_tab ? p_tab : v_connTabControl.selectedTab;
+    var v_tag = v_tab.tag;
+    var v_option_list = [];
+    v_option_list.push({
+      text: t$1("terminal.adjust_dimensions"),
+      icon: "fas cm-all fa-window-maximize",
+      action: function() {
+        terminalRun(false, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
+        setTimeout(function() {
+          v_tag.editor_console.focus();
+        }, 10);
+      }
+    });
+    customMenu(
+      {
+        x: e2.clientX + 5,
+        y: e2.clientY + 5
+      },
+      v_option_list,
+      null
+    );
+  }
+  function terminalRun(p_spawn = false, p_query = "") {
+    var v_tag = v_connTabControl.selectedTab.tag;
+    v_tag.tempData = "";
+    var v_content = p_query;
+    v_tag.last_command = v_content;
+    var v_message_data = {
+      v_cmd: v_content,
+      v_tab_id: v_tag.tab_id,
+      v_db_index: null,
+      v_spawn: p_spawn,
+      v_ssh_id: v_tag.connId
+    };
+    var d2 = /* @__PURE__ */ new Date();
+    [(d2.getMonth() + 1).padLeft(), d2.getDate().padLeft(), d2.getFullYear()].join("/") + " " + [d2.getHours().padLeft(), d2.getMinutes().padLeft(), d2.getSeconds().padLeft()].join(":");
+    createRequest(v_queryRequestCodes.Terminal, v_message_data, v_tag.context.code);
+    v_tag.state = v_consoleState.Executing;
+  }
+  function terminalReturn(p_data, p_context) {
+    terminalReturnRender(p_data, p_context);
+  }
+  function terminalReturnRender(p_message, p_context) {
+    var v_tag = p_context.tab_tag;
+    if (p_context.tab_tag.clear_terminal == true) {
+      v_tag.editor_console.write("\x1B[H\x1B[2J");
+      p_context.tab_tag.clear_terminal = false;
+    }
+    p_context.tab_tag.state = v_consoleState.Idle;
+    v_tag.editor_console.write(p_message.v_data.v_data);
+  }
+  const terminal = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    clearTerminal,
+    startTerminal,
+    terminalContextMenu,
+    terminalKey,
+    terminalReturn,
+    terminalReturnRender,
+    terminalRun,
+    v_terminalState
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_context_code;
+  var v_client_id;
+  var v_polling_ajax = null;
+  var v_context_object = {
+    contextCode: 0,
+    /** @type {{code: number, context: any}[]} */
+    contextList: []
+  };
+  var v_polling_started = false;
+  function initKeepAlive() {
+    setInterval(function() {
+      execAjax$2("/client_keep_alive/", JSON.stringify({}), function(p_return) {
+      }, null, "box", false);
+    }, 6e4);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initKeepAlive);
+  else setTimeout(initKeepAlive, 0);
+  function call_polling(p_startup) {
+    v_polling_ajax = execAjax$2(
+      "/long_polling/",
+      JSON.stringify({
+        p_startup
+      }),
+      function(p_return) {
+        for (var i2 = 0; i2 < p_return.returning_rows.length; i2++) {
+          try {
+            polling_response(p_return.returning_rows[i2]);
+          } catch (err) {
+          }
+        }
+        call_polling(false);
+      },
+      null,
+      "box",
+      false,
+      null,
+      function() {
+      }
+    );
+  }
+  window.addEventListener("beforeunload", function() {
+    clear_client().then(function() {
+    });
+  });
+  async function clear_client() {
+    try {
+      await fetch(v_url_folder + "/clear_client", { keepalive: true });
+    } catch (err) {
+    }
+  }
+  function polling_response(p_message) {
+    var v_message = p_message;
+    var p_context_code = null;
+    var p_context = null;
+    if (v_message.v_context_code != 0 && v_message.v_context_code != null) {
+      for (var i2 = 0; i2 < v_context_object.contextList.length; i2++) {
+        if (v_context_object.contextList[i2].code == v_message.v_context_code) {
+          p_context = v_context_object.contextList[i2].context;
+          p_context_code = v_context_object.contextList[i2].code;
+          break;
+        }
+      }
+    }
+    switch (v_message.v_code) {
+      // Pong is a leftover of the WebSocket transport: the handler it called,
+      // websocketPong(), has not existed for a long time, and the Go backend
+      // never sends this code (there is no Pong in longpolling.go's response
+      // constants). Kept as an explicit no-op rather than deleted so an
+      // unexpected Pong falls through here instead of into the "unhandled
+      // code" path.
+      case v_queryResponseCodes.Pong: {
+        break;
+      }
+      case v_queryResponseCodes.SessionMissing: {
+        showAlert$1(t$1("errors.session_not_found_reload"));
+        break;
+      }
+      case v_queryResponseCodes.MessageException: {
+        if (p_context) {
+          SetAcked(p_context);
+          queryError(p_message, p_context);
+          removeContext(p_context_code);
+        } else {
+          showError(p_message.v_data);
+        }
+        break;
+      }
+      case v_queryResponseCodes.PasswordRequired: {
+        if (p_context) {
+          SetAcked(p_context);
+          QueryPasswordRequired(p_context, v_message.v_data);
+          break;
+        }
+      }
+      case v_queryResponseCodes.QueryAck: {
+        if (p_context) {
+          SetAcked(p_context);
+          break;
+        }
+      }
+      case v_queryResponseCodes.QueryResult: {
+        if (p_context) {
+          SetAcked(p_context);
+          if (!v_message.v_error || v_message.v_data.v_chunks) {
+            p_context.tab_tag.tempData = p_context.tab_tag.tempData.concat(v_message.v_data.v_data);
+          }
+          if (!v_message.v_data.v_chunks || v_message.v_data.v_last_block || v_message.v_error) {
+            v_message.v_data.v_data = [];
+            querySQLReturn(v_message, p_context);
+            removeContext(p_context_code);
+          }
+        }
+        break;
+      }
+      case v_queryResponseCodes.ConsoleResult: {
+        if (p_context) {
+          if (!v_message.v_error) {
+            p_context.tab_tag.tempData += v_message.v_data.v_data;
+          }
+          if (v_message.v_data.v_last_block || v_message.v_error) {
+            v_message.v_data.v_data = [];
+            consoleReturn(v_message, p_context);
+            removeContext(p_context_code);
+          }
+        }
+        break;
+      }
+      case v_queryResponseCodes.TerminalResult: {
+        if (p_context) {
+          terminalReturn(v_message, p_context);
+        }
+        break;
+      }
+      case v_queryResponseCodes.NotifyResult: {
+        if (p_context) {
+          if (v_message.v_data && v_message.v_data.v_stopped) {
+            notifySessionStopped(p_context.tab_tag, v_message.v_data.v_message);
+          } else {
+            notifyMessageReceived(v_message, p_context);
+          }
+        }
+        break;
+      }
+      case v_queryResponseCodes.QueryEditDataResult: {
+        if (p_context) {
+          SetAcked(p_context);
+          queryEditDataReturn(v_message, p_context);
+          removeContext(p_context_code);
+        }
+        break;
+      }
+      case v_queryResponseCodes.SaveEditDataResult: {
+        if (p_context) {
+          saveEditDataReturn(v_message, p_context);
+          removeContext(p_context_code);
+        }
+        break;
+      }
+      case v_queryResponseCodes.RemoveContext: {
+        if (p_context) {
+          removeContext(p_context_code);
+        }
+        break;
+      }
+    }
+  }
+  function QueryPasswordRequired(p_context, p_message) {
+    if (p_context.tab_tag.mode == "query") {
+      showPasswordPrompt(
+        p_context.database_index,
+        function() {
+          cancelSQLTab(p_context.tab_tag);
+          querySQL(
+            p_context.mode,
+            p_context.all_data,
+            p_context.query,
+            p_context.callback,
+            p_context.log_query,
+            p_context.save_query,
+            p_context.cmd_type,
+            p_context.clear_data,
+            p_context.tab_title
+          );
+        },
+        function() {
+          cancelSQLTab(p_context.tab_tag);
+        },
+        p_message
+      );
+    } else if (p_context.tab_tag.mode == "edit") {
+      showPasswordPrompt(
+        p_context.database_index,
+        function() {
+          cancelEditDataTab(p_context.tab_tag);
+        },
+        function() {
+          cancelEditDataTab(p_context.tab_tag);
+        },
+        p_message
+      );
+    } else if (p_context.tab_tag.mode == "console") {
+      showPasswordPrompt(
+        p_context.database_index,
+        function() {
+          cancelConsoleTab(p_context.tab_tag);
+          p_context.tab_tag.editor_input.setValue(p_context.tab_tag.last_command);
+          p_context.tab_tag.editor_input.clearSelection();
+          consoleSQL(p_context.check_command, p_context.mode);
+        },
+        function() {
+          cancelConsoleTab(p_context.tab_tag);
+        },
+        p_message
+      );
+    }
+  }
+  function createContext(p_context) {
+    v_context_object.contextCode += 1;
+    v_context_code = v_context_object.contextCode;
+    p_context.v_context_code = v_context_code;
+    var v_context = {
+      code: v_context_code,
+      context: p_context
+    };
+    v_context_object.contextList.push(v_context);
+    return v_context;
+  }
+  function removeContext(p_context_code) {
+    for (var i2 = 0; i2 < v_context_object.contextList.length; i2++) {
+      if (v_context_object.contextList[i2].code == p_context_code) {
+        v_context_object.contextList.splice(i2, 1);
+        break;
+      }
+    }
+  }
+  function createRequest(p_messageCode, p_messageData, p_context) {
+    var v_context_code2 = 0;
+    if (p_context != null) {
+      if (p_context === parseInt(p_context, 10)) {
+        v_context_code2 = p_context;
+      } else {
+        v_context_object.contextCode += 1;
+        v_context_code2 = v_context_object.contextCode;
+        p_context.v_context_code = v_context_code2;
+        var v_context = {
+          code: v_context_code2,
+          context: p_context
+        };
+        v_context_object.contextList.push(v_context);
+      }
+    }
+    if (v_polling_ajax == null) call_polling(true);
+    else if (v_polling_ajax.readyState == 0 || v_polling_ajax.readyState == 4) {
+      call_polling(false);
+    }
+    execAjax$2(
+      "/create_request/",
+      JSON.stringify({
+        v_code: p_messageCode,
+        v_context_code: v_context_code2,
+        v_data: p_messageData
+      }),
+      function(p_return) {
+      },
+      null,
+      "box",
+      false
+    );
+  }
+  function SetAcked(p_context) {
+    if (p_context) p_context.acked = true;
+  }
+  const longPolling = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    QueryPasswordRequired,
+    SetAcked,
+    call_polling,
+    createContext,
+    createRequest,
+    polling_response,
+    removeContext,
+    v_client_id,
+    v_context_object,
+    get v_polling_ajax() {
+      return v_polling_ajax;
+    },
+    v_polling_started
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_editDataState = {
+    Idle: 0,
+    Querying: 1,
+    QueryReady: 2,
+    Saving: 3,
+    SaveReady: 4
+  };
+  function v_startEditData(p_table, p_schema, p_filter = "") {
+    var input = JSON.stringify({
+      p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+      p_tab_id: v_connTabControl.selectedTab.id,
+      p_table,
+      p_schema
+    });
+    execAjax$2(
+      "/start_edit_data/",
+      input,
+      function(p_return) {
+        if (p_schema) v_connTabControl.tag.createEditDataTab(p_schema + "." + p_table);
+        else v_connTabControl.tag.createEditDataTab(p_table);
+        var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+        if (v_currTabTag.editDataObject != null) {
+          if (v_currTabTag.editor != null) {
+            v_currTabTag.editor.destroy();
+          }
+        }
+        v_currTabTag.editor.setValue(p_filter || p_return.v_data.v_ini_orderby);
+        v_currTabTag.editor.clearSelection();
+        v_currTabTag.editDataObject = new Object();
+        v_currTabTag.editDataObject.editor = v_currTabTag.editor;
+        v_currTabTag.editDataObject.table = p_table;
+        v_currTabTag.editDataObject.schema = p_schema;
+        v_currTabTag.editDataObject.firstRender = true;
+        v_currTabTag.editDataObject.pk = p_return.v_data.v_pk;
+        v_currTabTag.editDataObject.columns = p_return.v_data.v_cols;
+        v_currTabTag.editDataObject.fks = p_return.v_data.v_fks || [];
+        queryEditData();
+      },
+      function(p_return) {
+        if (p_return.v_data.password_timeout) {
+          showPasswordPrompt(
+            v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            function() {
+              v_startEditData(p_table, p_schema, p_filter);
+            },
+            null,
+            p_return.v_data.message
+          );
+        } else {
+          showError(p_return.v_data);
+        }
+      },
+      "box",
+      true
+    );
+  }
+  function deleteRowEditData() {
+    var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    var v_data = v_currTabTag.editDataObject.ht.getData();
+    var v_sel = v_currTabTag.editDataObject.ht.getSelected();
+    if (!v_sel || v_sel.length === 0) return;
+    var v_row = v_sel[0][0];
+    if (v_currTabTag.editDataObject.infoRows[v_row].mode == 2) {
+      v_currTabTag.editDataObject.infoRows.splice(v_row, 1);
+      v_data.splice(v_row, 1);
+      v_currTabTag.editDataObject.ht.loadData(v_data);
+    } else {
+      var v_mode = v_currTabTag.editDataObject.infoRows[v_row].mode;
+      v_currTabTag.editDataObject.infoRows[v_row].mode = v_currTabTag.editDataObject.infoRows[v_row].old_mode;
+      v_currTabTag.editDataObject.infoRows[v_row].old_mode = v_mode;
+      v_currTabTag.editDataObject.ht.render();
+    }
+    v_currTabTag.button_save.style.visibility = "visible";
+  }
+  function cancelEditData(p_tab_tag) {
+    var v_tab_tag;
+    if (p_tab_tag) v_tab_tag = p_tab_tag;
+    else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag.tab_id);
+    cancelEditDataTab();
+  }
+  function cancelEditDataTab(p_tab_tag) {
+    var v_tab_tag;
+    if (p_tab_tag) v_tab_tag = p_tab_tag;
+    else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    if (v_tab_tag.state == v_editDataState.Querying) v_tab_tag.div_result.innerHTML = t$1("common.canceled");
+    v_tab_tag.state = v_editDataState.Idle;
+    v_tab_tag.tab_loading_span.style.display = "none";
+    v_tab_tag.tab_check_span.style.display = "none";
+    v_tab_tag.bt_cancel.style.display = "none";
+    removeContext(v_tab_tag.context.v_context_code);
+    SetAcked(v_tab_tag.context);
+  }
+  function queryEditData() {
+    var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    var v_state = v_currTabTag.state;
+    if (v_state != 0) {
+      showAlert$1(t$1("common.tab_activity_in_progress"));
+    } else {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Querying;
+      v_currTabTag.button_save.style.visibility = "hidden";
+      var v_message_data = {
+        v_table: v_currTabTag.editDataObject.table,
+        v_schema: v_currTabTag.editDataObject.schema,
+        v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        v_filter: v_currTabTag.editDataObject.editor.getValue(),
+        // parseInt because a <select>'s .value is a string, and v_count is
+        // a row limit. The backend tolerates either spelling now, but the
+        // string is what silently broke this whole feature once already.
+        v_count: parseInt(v_currTabTag.sel_filtered_data.value, 10),
+        v_pk_list: v_currTabTag.editDataObject.pk,
+        v_columns: v_currTabTag.editDataObject.columns,
+        v_conn_tab_id: v_connTabControl.selectedTab.id,
+        v_tab_id: v_currTabTag.tab_id
+      };
+      (/* @__PURE__ */ new Date()).getTime();
+      v_currTabTag.tab_loading_span.style.display = "";
+      v_currTabTag.bt_cancel.style.display = "";
+      var v_context = {
+        tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
+        start_time: (/* @__PURE__ */ new Date()).getTime(),
+        database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex
+      };
+      v_context.tab_tag.context = v_context;
+      if (v_context.tab_tag.editDataObject.ht != null) {
+        v_context.tab_tag.editDataObject.ht.destroy();
+        v_context.tab_tag.editDataObject.ht = null;
+      }
+      v_context.tab_tag.div_result.innerHTML = t$1("common.running");
+      v_context.tab_tag.query_info.innerHTML = "";
+      createRequest(v_queryRequestCodes.QueryEditData, v_message_data, v_context);
+      setTimeout(function() {
+        if (!v_context.acked) {
+          cancelEditDataTab(v_context.tab_tag);
+          showAlert$1(t$1("query.no_response_from_server"));
+        }
+      }, 1e4);
+    }
+  }
+  function checkEditDataStatus(p_tab) {
+    if (p_tab.tag.state == v_editDataState.QueryReady) {
+      queryEditDataReturnRender(p_tab.tag.data, p_tab.tag.context);
+    } else if (p_tab.tag.state == v_editDataState.SaveReady) {
+      saveEditDataReturnRender(p_tab.tag.data, p_tab.tag.context);
+    }
+  }
+  function queryEditDataReturn(p_data, p_context) {
+    if (p_context.tab_tag.state != v_editDataState.Idle) {
+      p_context.duration = (/* @__PURE__ */ new Date()).getTime() - p_context.start_time;
+      if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
+        queryEditDataReturnRender(p_data, p_context);
+      } else {
+        p_context.tab_tag.state = v_editDataState.QueryReady;
+        p_context.tab_tag.context = p_context;
+        p_context.tab_tag.data = p_data;
+        p_context.tab_tag.tab_loading_span.style.display = "none";
+        p_context.tab_tag.tab_check_span.style.display = "";
+      }
+    }
+  }
+  function queryEditDataReturnRender(p_message, p_context) {
+    p_context.tab_tag.state = v_editDataState.Idle;
+    p_context.tab_tag.context = null;
+    p_context.tab_tag.data = null;
+    var v_data = p_message.v_data;
+    var v_currTabTag = p_context.tab_tag;
+    var v_div_result = v_currTabTag.div_result;
+    var v_query_info = v_currTabTag.query_info;
+    if (v_currTabTag.editDataObject.ht != null) {
+      v_currTabTag.editDataObject.ht.destroy();
+      v_currTabTag.editDataObject.ht = null;
+    }
+    v_div_result.innerHTML = "";
+    var request_time = p_context.duration;
+    if (p_message.v_error) {
+      var v_err_div = document.createElement("div");
+      v_err_div.className = "error_text";
+      v_err_div.textContent = p_message.v_data;
+      v_div_result.appendChild(v_err_div);
+      v_query_info.innerHTML = t$1("edit_data.response_time", { seconds: request_time / 1e3 });
+    } else {
+      if (v_currTabTag.editDataObject.pk.length == 0) {
+        if (v_currTabTag.editDataObject.firstRender) showAlert$1(t$1("edit_data.no_pk_readonly_warning"));
+        v_currTabTag.editDataObject.firstRender = false;
+        v_currTabTag.editDataObject.hasPK = false;
+      } else v_currTabTag.editDataObject.hasPK = true;
+      window.scrollTo(0, 0);
+      v_query_info.innerHTML = "";
+      var v_qi_rows = document.createElement("span");
+      v_qi_rows.style.fontWeight = "900";
+      v_qi_rows.style.color = "#4a81d4";
+      v_qi_rows.textContent = v_data.v_query_info;
+      var v_qi_in = document.createElement("span");
+      v_qi_in.textContent = " rows in ";
+      var v_qi_time = document.createElement("span");
+      v_qi_time.style.fontWeight = "900";
+      v_qi_time.style.color = "#4a81d4";
+      v_qi_time.textContent = String(request_time / 1e3);
+      var v_qi_sec = document.createElement("span");
+      v_qi_sec.textContent = " seconds";
+      v_query_info.appendChild(v_qi_rows);
+      v_query_info.appendChild(v_qi_in);
+      v_query_info.appendChild(v_qi_time);
+      v_query_info.appendChild(v_qi_sec);
+      var columnProperties = [];
+      var col = {};
+      col.title = " ";
+      col.width = 40;
+      columnProperties.push(col);
+      for (var i2 = 0; i2 < v_currTabTag.editDataObject.columns.length; i2++) {
+        var col = {};
+        var v_tooltip_attr = 'title="Type ' + escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i2].v_type) + '"';
+        var v_tooltip_html = '<i class="ms-1 omnidb__theme-text--primary fas fa-info-circle" ' + v_tooltip_attr + "></i>";
+        var v_column_html = "<span>" + escapeHtml(v_currTabTag.editDataObject.columns[i2].v_column) + "</span>";
+        if (!v_currTabTag.editDataObject.columns[i2].v_is_pk) col.title = v_column_html + v_tooltip_html;
+        else col.title = '<i class="fas fa-key action-key text-secondary"></i> ' + v_column_html + v_tooltip_html;
+        col.titleHtml = true;
+        col.renderer = "text";
+        columnProperties.push(col);
+      }
+      var v_infoRows = [];
+      for (var i2 = 0; i2 < v_data.v_data.length; i2++) {
+        var v_object = {};
+        v_object.mode = 0;
+        v_object.old_mode = -1;
+        v_object.index = i2;
+        v_object.changed_cols = [];
+        v_object.pk = v_data.v_row_pk[i2];
+        v_infoRows.push(v_object);
+      }
+      var v_div_result = v_currTabTag.div_result;
+      if (v_div_result.innerHTML != "") {
+        v_currTabTag.editDataObject.ht.destroy();
+      }
+      v_currTabTag.editDataObject.infoRows = v_infoRows;
+      var container = v_div_result;
+      v_currTabTag.editDataObject.ht = new Handsontable(container, {
+        licenseKey: "non-commercial-and-evaluation",
+        // Turns on VirtualGrid's editable mode: per-cell renderers and
+        // readOnly flags from `cells`, the `beforeChange` hook, and
+        // `minSpareRows`. Opt-in because most other grids in the app pass a
+        // `cells` callback too but are meant to stay read-only — see
+        // VirtualGrid's constructor.
+        omnidbEditable: true,
+        columns: columnProperties,
+        data: v_data.v_data,
+        colHeaders: true,
+        rowHeaders: true,
+        manualColumnResize: true,
+        fixedColumnsLeft: 1,
+        minSpareRows: 1,
+        contextMenu: {
+          callback: function(key, options) {
+            if (key === "edit_data") {
+              var v_col_type = v_currTabTag.editDataObject.columns[options[0].start.col - 1] ? v_currTabTag.editDataObject.columns[options[0].start.col - 1].v_type : null;
+              if (v_currTabTag.editDataObject.hasPK)
+                editCellData(
+                  this,
+                  options[0].start.row,
+                  options[0].start.col,
+                  this.getDataAtCell(options[0].start.row, options[0].start.col),
+                  true,
+                  v_col_type
+                );
+              else
+                editCellData(
+                  this,
+                  options[0].start.row,
+                  options[0].start.col,
+                  this.getDataAtCell(options[0].start.row, options[0].start.col),
+                  false,
+                  v_col_type
+                );
+            } else if (key === "go_to_referenced") {
+              var v_fk_object = v_currTabTag.editDataObject;
+              var v_fk_column = v_fk_object.columns[options[0].start.col - 1];
+              var v_fk = v_fk_column ? findForeignKey(v_fk_object.fks, v_fk_column.v_column) : null;
+              if (!v_fk) return;
+              var v_fk_filter = buildReferencedFilter(
+                v_fk,
+                v_fk_object.columns,
+                this.getDataAtRow(options[0].start.row),
+                v_connTabControl.selectedTab.tag.selectedDBMS
+              );
+              if (v_fk_filter === null) {
+                showAlert$1(t$1("edit_data.fk_null"));
+                return;
+              }
+              v_startEditData(v_fk.r_table, v_fk.r_schema || v_fk_object.schema, v_fk_filter);
+            } else if (key === "duplicate_row") {
+              var v_src_row = options[0].start.row;
+              var v_edit_object = v_currTabTag.editDataObject;
+              if (v_src_row >= v_edit_object.infoRows.length) return;
+              var v_src_values = this.getDataAtRow(v_src_row);
+              var v_dest_row = v_edit_object.infoRows.length;
+              for (var c2 = 0; c2 < v_edit_object.columns.length; c2++) {
+                if (v_edit_object.columns[c2].v_is_pk || v_src_values[c2 + 1] == null) continue;
+                this.setDataAtCell(v_dest_row, c2 + 1, v_src_values[c2 + 1]);
+              }
+            } else if (key === "copy") {
+              this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
+              document.execCommand("copy");
+            }
+          },
+          items: {
+            copy: {
+              name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
+            },
+            go_to_referenced: {
+              name: '<div style="position: absolute;"><i class="fas fa-link cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.go_to_referenced") + "</div>",
+              hidden: function(display, col2) {
+                var v_object2 = v_currTabTag.editDataObject;
+                var v_column = v_object2.columns[col2 - 1];
+                return !v_column || !findForeignKey(v_object2.fks, v_column.v_column);
+              }
+            },
+            duplicate_row: {
+              name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("edit_data.duplicate_row") + "</div>"
+            },
+            edit_data: {
+              name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Edit Content</div>'
+            }
+          }
+        },
+        beforeChange: function(changes, source) {
+          if (!changes) {
+            return;
+          }
+          changes.forEach(function(element, index) {
+            var change = element;
+            var rowIndex = change[0];
+            var columnIndex = change[1];
+            var oldValue = change[2];
+            var newValue = change[3];
+            if (rowIndex >= v_currTabTag.editDataObject.infoRows.length) {
+              var v_object2 = {};
+              v_object2.mode = 2;
+              v_object2.old_mode = -1;
+              v_object2.changed_cols = [];
+              v_object2.index = v_currTabTag.editDataObject.infoRows.length;
+              v_object2.pk = null;
+              v_currTabTag.editDataObject.infoRows.push(v_object2);
+              v_currTabTag.button_save.style.visibility = "visible";
+            }
+            if (oldValue != newValue && v_currTabTag.editDataObject.infoRows[rowIndex].mode != 2) {
+              if (v_currTabTag.editDataObject.infoRows[rowIndex].changed_cols.indexOf(columnIndex - 1) == -1) {
+                v_currTabTag.editDataObject.infoRows[rowIndex].changed_cols.push(columnIndex - 1);
+              }
+              if (v_currTabTag.editDataObject.infoRows[rowIndex].mode != -1) {
+                v_currTabTag.editDataObject.infoRows[rowIndex].mode = 1;
+              } else v_currTabTag.editDataObject.infoRows[rowIndex].old_mode = 1;
+              v_currTabTag.button_save.style.visibility = "visible";
+            }
+          });
+        },
+        cells: function(row, col2, prop) {
+          var cellProperties = {};
+          if (v_currTabTag.editDataObject.infoRows[row] != null) {
+            if (!v_currTabTag.editDataObject.hasPK && v_currTabTag.editDataObject.infoRows[row].mode != 2) {
+              if (col2 == 0) cellProperties.renderer = grayEmptyRenderer;
+              else cellProperties.renderer = grayRenderer;
+              cellProperties.readOnly = true;
+            } else if (col2 == 0) {
+              cellProperties.renderer = editDataActionRenderer;
+              cellProperties.readOnly = true;
+            } else if (v_currTabTag.editDataObject.infoRows[row].mode == 2) {
+              cellProperties.renderer = greenRenderer;
+            } else if (v_currTabTag.editDataObject.infoRows[row].mode == -1) {
+              cellProperties.renderer = redRenderer;
+            } else if (v_currTabTag.editDataObject.infoRows[row].mode == 1) {
+              cellProperties.renderer = yellowRenderer;
+            } else {
+              cellProperties.renderer = whiteRenderer;
+            }
+          } else {
+            if (col2 == 0) {
+              cellProperties.renderer = newRowRenderer;
+              cellProperties.readOnly = true;
+            }
+          }
+          return cellProperties;
+        }
+      });
+    }
+    p_context.tab_tag.tab_loading_span.style.display = "none";
+    p_context.tab_tag.tab_check_span.style.display = "none";
+    p_context.tab_tag.bt_cancel.style.display = "none";
+  }
+  function saveEditData() {
+    var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    var v_state = v_currTabTag.state;
+    if (v_state != v_editDataState.Idle) {
+      showAlert$1(t$1("common.tab_activity_in_progress"));
+    } else {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Saving;
+      v_currTabTag.button_save.style.visibility = "hidden";
+      var v_changedRowsInfo = [];
+      var v_changedRowsData = [];
+      var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+      for (var i2 = 0; i2 < v_currTabTag.editDataObject.infoRows.length; i2++) {
+        if (v_currTabTag.editDataObject.infoRows[i2].mode != 0) {
+          v_currTabTag.editDataObject.infoRows[i2].index = i2;
+          v_changedRowsInfo.push(v_currTabTag.editDataObject.infoRows[i2]);
+          v_changedRowsData.push(v_currTabTag.editDataObject.ht.getDataAtRow(i2));
+        }
+      }
+      var v_message_data = {
+        v_table: v_currTabTag.editDataObject.table,
+        v_schema: v_currTabTag.editDataObject.schema,
+        v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        v_data_rows: v_changedRowsData,
+        v_rows_info: v_changedRowsInfo,
+        v_pk_info: v_currTabTag.editDataObject.pk,
+        v_columns: v_currTabTag.editDataObject.columns,
+        v_conn_tab_id: v_connTabControl.selectedTab.id,
+        v_tab_id: v_currTabTag.tab_id
+      };
+      v_currTabTag.tab_loading_span.style.display = "";
+      v_currTabTag.bt_cancel.style.display = "";
+      var v_context = {
+        tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
+        start_time: (/* @__PURE__ */ new Date()).getTime()
+      };
+      v_context.tab_tag.context = v_context;
+      v_context.tab_tag.query_info.innerHTML = "";
+      createRequest(v_queryRequestCodes.SaveEditData, v_message_data, v_context);
+    }
+  }
+  function saveEditDataReturn(p_data, p_context) {
+    if (p_context.tab_tag.state != v_editDataState.Idle) {
+      p_context.duration = (/* @__PURE__ */ new Date()).getTime() - p_context.start_time;
+      if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
+        saveEditDataReturnRender(p_data, p_context);
+      } else {
+        p_context.tab_tag.state = v_editDataState.SaveReady;
+        p_context.tab_tag.context = p_context;
+        p_context.tab_tag.data = p_data;
+        p_context.tab_tag.tab_loading_span.style.display = "none";
+        p_context.tab_tag.tab_check_span.style.display = "";
+      }
+    }
+  }
+  function saveEditDataReturnRender(p_message, p_context) {
+    p_context.tab_tag.state = v_editDataState.Idle;
+    p_context.tab_tag.context = null;
+    p_context.tab_tag.data = null;
+    var v_data = p_message.v_data;
+    var v_currTabTag = p_context.tab_tag;
+    v_currTabTag.div_result;
+    var v_query_info = v_currTabTag.query_info;
+    var request_time = p_context.duration;
+    v_query_info.innerHTML = t$1("edit_data.save_time", { seconds: request_time / 1e3 });
+    var v_commands_log = "";
+    var v_has_error = false;
+    v_currTabTag.button_save.style.visibility = "hidden";
+    for (var i2 = v_data.length - 1; i2 >= 0; i2--) {
+      if (v_data[i2].mode == -1) {
+        if (!v_data[i2].error) {
+          v_currTabTag.editDataObject.infoRows.splice(v_data[i2].index, 1);
+          v_currTabTag.editDataObject.ht.alter("remove_row", v_data[i2].index);
+        } else {
+          v_has_error = true;
+          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
+          v_currTabTag.button_save.style.visibility = "visible";
+        }
+      } else if (v_data[i2].mode == 2) {
+        if (!v_data[i2].error) {
+          v_currTabTag.editDataObject.infoRows[v_data[i2].index].mode = 0;
+          v_currTabTag.editDataObject.infoRows[v_data[i2].index].old_mode = -1;
+          v_currTabTag.editDataObject.infoRows[v_data[i2].index].changed_cols = [];
+          var v_pk_list = [];
+          for (var j2 = 0; j2 < v_currTabTag.editDataObject.pk.length; j2++) {
+            var v_pk = {
+              v_column: v_currTabTag.editDataObject.pk[j2].v_column,
+              v_value: v_currTabTag.editDataObject.ht.getDataAtCell(
+                v_data[i2].index,
+                v_currTabTag.editDataObject.pk[j2].v_index + 1
+              )
+            };
+            v_pk_list.push(v_pk);
+          }
+          v_currTabTag.editDataObject.infoRows[v_data[i2].index].pk = v_pk_list;
+        } else {
+          v_has_error = true;
+          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
+          v_currTabTag.button_save.style.visibility = "visible";
+        }
+      } else if (v_data[i2].mode == 1) {
+        if (!v_data[i2].error) {
+          v_currTabTag.editDataObject.infoRows[v_data[i2].index].mode = 0;
+          v_currTabTag.editDataObject.infoRows[v_data[i2].index].old_mode = -1;
+          v_currTabTag.editDataObject.infoRows[v_data[i2].index].changed_cols = [];
+          var v_pk_list = [];
+          for (var j2 = 0; j2 < v_currTabTag.editDataObject.pk.length; j2++) {
+            var v_pk = {
+              v_column: v_currTabTag.editDataObject.pk[j2].v_column,
+              v_value: v_currTabTag.editDataObject.ht.getDataAtCell(
+                v_data[i2].index,
+                v_currTabTag.editDataObject.pk[j2].v_index + 1
+              )
+            };
+            v_pk_list.push(v_pk);
+          }
+          v_currTabTag.editDataObject.infoRows[v_data[i2].index].pk = v_pk_list;
+        } else {
+          v_has_error = true;
+          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
+          v_currTabTag.button_save.style.visibility = "visible";
+        }
+      }
+      v_currTabTag.bt_cancel.style.display = "";
+    }
+    if (v_has_error) {
+      showAlert$1(v_commands_log, null, null, true);
+    }
+    v_currTabTag.editDataObject.ht.render();
+    p_context.tab_tag.tab_loading_span.style.display = "none";
+    p_context.tab_tag.tab_check_span.style.display = "none";
+    p_context.tab_tag.bt_cancel.style.display = "none";
+  }
+  const editData = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    cancelEditData,
+    cancelEditDataTab,
+    checkEditDataStatus,
+    deleteRowEditData,
+    queryEditData,
+    queryEditDataReturn,
+    queryEditDataReturnRender,
+    saveEditData,
+    saveEditDataReturn,
+    saveEditDataReturnRender,
+    v_editDataState,
+    v_startEditData
+  }, Symbol.toStringTag, { value: "Module" }));
+  const MAX_SHOWN = 40;
+  const DOUBLE_SHIFT_MS = 400;
+  function matchRank(label, query2) {
+    const fold = (text) => text.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+    const q2 = fold(query2.trim());
+    if (!q2) return 0;
+    const l2 = fold(label).replace(/"/g, "");
+    const index = l2.indexOf(q2);
+    if (index < 0) return -1;
+    if (index === 0) return 0;
+    return /[\s._\-/]/.test(l2[index - 1]) ? 1 : 2;
+  }
+  function rankEntries(entries, query2) {
+    return entries.map((entry, order) => ({ entry, order, rank: matchRank(entry.label, query2) })).filter((x2) => x2.rank >= 0).sort((a2, b2) => a2.rank - b2.rank || a2.order - b2.order).map((x2) => x2.entry);
+  }
+  function flattenSnippets(tree, path = "") {
+    if (!tree) return [];
+    const out = (tree.files || []).map((f2) => ({ id: f2.id, name: f2.name, path }));
+    for (const folder of tree.folders || []) {
+      out.push(...flattenSnippets(folder, path ? path + " / " + folder.name : folder.name));
+    }
+    return out;
+  }
+  let overlay = null;
+  let staticEntries = [];
+  let tableEntries = [];
+  let shown = [];
+  let selected = 0;
+  let tableTimer = 0;
+  let tableToken = 0;
+  function openConnection(connId) {
+    const tab = v_connTabControl.tabList.find((x2) => x2.tag && x2.tag.selectedDatabaseIndex === connId);
+    switchSection("database");
+    if (tab) v_connTabControl.selectTab(tab);
+    else v_connTabControl.tag.createConnTab(connId);
+  }
+  function currentConnectionLabel() {
+    const tab = v_connTabControl && v_connTabControl.selectedTab;
+    return tab && v_connTabControl.tabList.indexOf(tab) >= 0 && tab.tag && tab.tag.mode === "connection" ? tab : null;
+  }
+  function collectStaticEntries(done) {
+    const entries = [];
+    for (const section of getSectionEntries()) {
+      entries.push({
+        kind: t$1("search.kind_section"),
+        icon: "fa-compass",
+        label: section.title,
+        run: () => switchSection(section.name)
+      });
+    }
+    for (const conn of v_connTabControl.tag.connections || []) {
+      const label = conn.v_alias || conn.v_details1 || String(conn.v_conn_id);
+      entries.push({
+        kind: t$1("search.kind_connection"),
+        icon: "fa-plug",
+        label,
+        run: () => openConnection(conn.v_conn_id)
+      });
+    }
+    for (const snippet of flattenSnippets(v_connTabControl.tag.globalSnippets)) {
+      entries.push({
+        kind: t$1("search.kind_snippet"),
+        icon: "fa-scroll",
+        label: snippet.name,
+        detail: snippet.path,
+        run: () => {
+          switchSection("snippets");
+          startEditSnippetText({ tag: { type: "snippet", id: snippet.id, id_parent: null, name: snippet.name } });
+        }
+      });
+    }
+    execAjax$2(
+      "/get_bookmarks/",
+      JSON.stringify({}),
+      function(r2) {
+        for (const b2 of r2.v_data) {
+          entries.push({
+            kind: t$1("search.kind_bookmark"),
+            icon: "fa-star",
+            label: (b2.schema ? b2.schema + "." : "") + b2.name,
+            detail: b2.alias,
+            run: () => {
+              openConnection(b2.conn_id);
+              v_startEditData(b2.name, b2.schema);
+            }
+          });
+        }
+        done(entries);
+      },
+      function() {
+        done(entries);
+      },
+      "box",
+      false
+    );
+  }
+  function render() {
+    if (!overlay) return;
+    const input = (
+      /** @type {HTMLInputElement} */
+      overlay.querySelector("input")
+    );
+    const list = (
+      /** @type {HTMLElement} */
+      overlay.querySelector("[role=listbox]")
+    );
+    shown = rankEntries([...staticEntries, ...tableEntries], input.value).slice(0, MAX_SHOWN);
+    selected = Math.min(selected, Math.max(shown.length - 1, 0));
+    list.innerHTML = "";
+    if (shown.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "omnidb__search-everywhere__empty";
+      empty.textContent = t$1("search.no_results");
+      list.appendChild(empty);
+    }
+    shown.forEach((entry, i2) => {
+      const row = document.createElement("div");
+      row.className = "omnidb__search-everywhere__row" + (i2 === selected ? " omnidb__search-everywhere__row--selected" : "");
+      row.setAttribute("role", "option");
+      row.setAttribute("aria-selected", String(i2 === selected));
+      const icon = document.createElement("i");
+      icon.className = "fas " + entry.icon;
+      const label = document.createElement("span");
+      label.className = "omnidb__search-everywhere__label";
+      label.textContent = entry.label;
+      const meta = document.createElement("span");
+      meta.className = "omnidb__search-everywhere__meta";
+      meta.textContent = entry.detail ? entry.kind + " · " + entry.detail : entry.kind;
+      row.append(icon, label, meta);
+      row.addEventListener("mousedown", (e2) => {
+        e2.preventDefault();
+        choose(i2);
+      });
+      list.appendChild(row);
+    });
+    const active = list.querySelector("[aria-selected=true]");
+    if (active) active.scrollIntoView({ block: "nearest" });
+  }
+  function choose(index) {
+    const entry = shown[index];
+    closeSearchEverywhere();
+    if (entry) entry.run();
+  }
+  function searchTables() {
+    if (!overlay) return;
+    const query2 = (
+      /** @type {HTMLInputElement} */
+      overlay.querySelector("input").value.trim()
+    );
+    const tab = currentConnectionLabel();
+    const token = ++tableToken;
+    const connection = (v_connTabControl.tag.connections || []).find((c2) => tab && c2.v_conn_id === tab.tag.selectedDatabaseIndex);
+    const alias = connection ? connection.v_alias : void 0;
+    if (query2.length < 2 || !tab) {
+      if (tableEntries.length) {
+        tableEntries = [];
+        render();
+      }
+      return;
+    }
+    execAjax$2(
+      "/search_tables/",
+      JSON.stringify({ p_database_index: tab.tag.selectedDatabaseIndex, p_tab_id: tab.id, p_query: query2 }),
+      function(r2) {
+        if (token !== tableToken || !overlay) return;
+        tableEntries = r2.v_data.map((hit) => ({
+          kind: t$1("search.kind_table"),
+          icon: "fa-table",
+          label: (hit.schema ? hit.schema + "." : "") + hit.name,
+          detail: alias,
+          run: () => {
+            switchSection("database");
+            v_connTabControl.selectTab(tab);
+            v_startEditData(hit.name, hit.schema);
+          }
+        }));
+        render();
+      },
+      null,
+      "box",
+      false
+    );
+  }
+  function closeSearchEverywhere() {
+    if (!overlay) return;
+    overlay.remove();
+    overlay = null;
+    tableToken++;
+    clearTimeout(tableTimer);
+  }
+  function openSearchEverywhere() {
+    if (overlay) return;
+    staticEntries = [];
+    tableEntries = [];
+    selected = 0;
+    overlay = document.createElement("div");
+    overlay.className = "omnidb__search-everywhere";
+    const box = document.createElement("div");
+    box.className = "omnidb__search-everywhere__box";
+    box.setAttribute("role", "dialog");
+    box.setAttribute("aria-label", t$1("search.title"));
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "form-control";
+    input.placeholder = t$1("search.placeholder");
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-expanded", "true");
+    input.setAttribute("aria-label", t$1("search.title"));
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    const list = document.createElement("div");
+    list.setAttribute("role", "listbox");
+    list.className = "omnidb__search-everywhere__list";
+    box.append(input, list);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    overlay.addEventListener("mousedown", (e2) => {
+      if (e2.target === overlay) closeSearchEverywhere();
+    });
+    input.addEventListener("input", () => {
+      selected = 0;
+      render();
+      clearTimeout(tableTimer);
+      tableTimer = window.setTimeout(searchTables, 200);
+    });
+    input.addEventListener("keydown", (e2) => {
+      if (e2.key === "Escape") {
+        e2.preventDefault();
+        closeSearchEverywhere();
+      } else if (e2.key === "ArrowDown") {
+        e2.preventDefault();
+        selected = Math.min(selected + 1, shown.length - 1);
+        render();
+      } else if (e2.key === "ArrowUp") {
+        e2.preventDefault();
+        selected = Math.max(selected - 1, 0);
+        render();
+      } else if (e2.key === "Enter") {
+        e2.preventDefault();
+        choose(selected);
+      }
+    });
+    input.focus();
+    render();
+    collectStaticEntries((entries) => {
+      if (!overlay) return;
+      staticEntries = entries;
+      render();
+    });
+  }
+  function initSearchEverywhere() {
+    let lastShift = 0;
+    let otherKey = false;
+    document.addEventListener(
+      "keydown",
+      (e2) => {
+        if (e2.key !== "Shift") {
+          otherKey = true;
+          return;
+        }
+        if (e2.repeat) return;
+        const now = Date.now();
+        if (!otherKey && now - lastShift < DOUBLE_SHIFT_MS) {
+          lastShift = 0;
+          if (overlay) closeSearchEverywhere();
+          else openSearchEverywhere();
+        } else {
+          lastShift = now;
+        }
+        otherKey = false;
+      },
+      true
+    );
+  }
   var CONNECTED_USERS_STRIP_SLOT_ID = "connected_users_panel_strip_slot";
   var CONNECTED_USERS_CONTENT_ID = "connected_users_panel_content";
   function isBlank(p_value) {
@@ -35852,6 +36126,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     v_connTabControl.tag.createPermissionsPanel();
     v_connTabControl.tag.createMonitoringPanel();
     initSectionSwitcher();
+    initSearchEverywhere();
     switchSection("database");
     updateExplainComponent();
     getAllSnippets();
@@ -39612,6 +39887,11 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     snippets: "tree.snippets_section",
     settings: "nav.settings"
   };
+  function getSectionEntries() {
+    return SECTION_NAMES.map(function(p_name) {
+      return { name: p_name, title: t$1(SECTION_TITLE_KEYS[p_name]) };
+    });
+  }
   function applyWindowTitle(p_name) {
     var v_key = SECTION_TITLE_KEYS[p_name];
     var v_title = v_key ? "OmniDB - " + t$1(v_key) : "OmniDB";
@@ -39833,6 +40113,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   }
   const sectionSwitcher = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
+    getSectionEntries,
     initSectionSwitcher,
     isSectionActive,
     switchSection

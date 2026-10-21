@@ -32,6 +32,7 @@ SOFTWARE.
 /// Startup function.
 /// </summary>
 
+import { initSearchEverywhere } from "./search_everywhere.js";
 import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
 import { checkConsoleStatus } from "./console.js";
 import { initCreateTabFunctions } from "./create_tab_functions.js";
@@ -119,6 +120,7 @@ function initWorkspace() {
 	// Creating the vertical section nav (Welcome/Connections/Snippets/
 	// Database/Settings/About).
 	initSectionSwitcher();
+	initSearchEverywhere();
 
 	// Showing the Database section *before* getDatabaseList() below
 	// restores any previously-open connection tabs -- outer_connection_tab.js

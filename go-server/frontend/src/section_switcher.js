@@ -73,6 +73,17 @@ const SECTION_TITLE_KEYS = {
 	settings: "nav.settings",
 };
 
+/**
+ * The sections the user can switch to, with their display names, for the
+ * Search Everywhere palette.
+ * @returns {Array<{ name: string, title: string }>}
+ */
+export function getSectionEntries() {
+	return SECTION_NAMES.map(function (p_name) {
+		return { name: p_name, title: t(SECTION_TITLE_KEYS[p_name]) };
+	});
+}
+
 // Sets both the page's own title (document.title -- read by the browser tab
 // in server/web mode) and, in the desktop shell, the native OS window title.
 // Wails does NOT sync those two automatically, and worse: window.runtime
