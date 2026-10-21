@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { showResultChart } from "../result_chart.js";
 import { installEditorHistory } from "../editor_history.js";
 import { autocomplete_keydown, autocomplete_start, autocomplete_update_editor_cursor } from "../autocomplete.js";
 import { closeCommandHistory, showCommandList } from "../command_history.js";
@@ -178,6 +179,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<button id="bt_history_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button>' +
+		'<button id="bt_chart_' +
+		v_tab.id +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("chart.button_title")) + '"><i class="fas fa-chart-bar fa-light"></i></button>' +
 		'<button id="bt_local_history_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("history.button_title")) + '"><i class="fas fa-code-branch fa-light"></i></button>' +
@@ -649,6 +653,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		},
 		/** @type {HTMLElement} */ (document.getElementById("bt_local_history_" + v_tab.id)),
 	);
+	/** @type {HTMLElement} */ (document.getElementById("bt_chart_" + v_tab.id)).addEventListener("click", () => showResultChart(v_tag));
 	v_tag.filter_input = v_filter_input;
 	v_tag.filter_count = v_filter_count;
 	v_filter_input.addEventListener("input", () => applyResultFilter(v_tag));

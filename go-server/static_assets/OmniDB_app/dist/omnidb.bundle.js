@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$5 = document.getElementById("omnidb_bootstrap");
-  if (!el$5) {
+  const el$6 = document.getElementById("omnidb_bootstrap");
+  if (!el$6) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$5.textContent);
+  const cfg = JSON.parse(el$6.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -949,7 +949,7 @@
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$4(id) {
+  function el$5(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -971,7 +971,7 @@
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    var v_modal_message = el$4("modal_message");
+    var v_modal_message = el$5("modal_message");
     v_modal_message.addEventListener("hide.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
@@ -979,7 +979,7 @@
       v_message_modal_animating = true;
     });
     v_modal_message.addEventListener("hidden.bs.modal", function(e2) {
-      el$4("modal_message_content").innerHTML = "";
+      el$5("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -999,21 +999,21 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$4("modal_message_dialog");
+    var v_dialog = el$5("modal_message_dialog");
     var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
     if (v_old_title) v_old_title.remove();
     v_dialog.classList.toggle("modal-xl", p_large === true);
     v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$4("modal_message")).show();
+      bootstrap.Modal.getOrCreateInstance(el$5("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
   }
   function setMessageModalTitle(p_text, p_icon_class = null) {
-    var v_header = el$4("modal_message_dialog").querySelector(".modal-header");
+    var v_header = el$5("modal_message_dialog").querySelector(".modal-header");
     if (!v_header) return;
     var v_title = document.createElement("h5");
     v_title.className = "modal-title";
@@ -1027,11 +1027,11 @@
     v_header.insertBefore(v_title, v_header.firstChild);
   }
   function showError(p_message) {
-    var v_content_div = el$4("modal_message_content");
-    var v_button_yes = el$4("modal_message_yes");
-    var v_button_ok = el$4("modal_message_ok");
-    var v_button_no = el$4("modal_message_no");
-    var v_button_cancel = el$4("modal_message_cancel");
+    var v_content_div = el$5("modal_message_content");
+    var v_button_yes = el$5("modal_message_yes");
+    var v_button_ok = el$5("modal_message_ok");
+    var v_button_no = el$5("modal_message_no");
+    var v_button_cancel = el$5("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_ok.textContent = t$1("common.ok");
     v_button_yes.style.display = "none";
@@ -1045,11 +1045,11 @@
   }
   function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el$4("modal_message_content");
-      var v_button_yes = el$4("modal_message_yes");
-      var v_button_ok = el$4("modal_message_ok");
-      var v_button_no = el$4("modal_message_no");
-      var v_button_cancel = el$4("modal_message_cancel");
+      var v_content_div = el$5("modal_message_content");
+      var v_button_yes = el$5("modal_message_yes");
+      var v_button_ok = el$5("modal_message_ok");
+      var v_button_no = el$5("modal_message_no");
+      var v_button_cancel = el$5("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -1069,11 +1069,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$4("modal_message_content");
-      var v_button_yes = el$4("modal_message_yes");
-      var v_button_ok = el$4("modal_message_ok");
-      var v_button_no = el$4("modal_message_no");
-      var v_button_cancel = el$4("modal_message_cancel");
+      var v_content_div = el$5("modal_message_content");
+      var v_button_yes = el$5("modal_message_yes");
+      var v_button_ok = el$5("modal_message_ok");
+      var v_button_no = el$5("modal_message_no");
+      var v_button_cancel = el$5("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.textContent = p_yes_label || t$1("common.ok");
       v_button_ok.onclick = function() {
@@ -1090,11 +1090,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$4("modal_message_content");
-    var v_button_yes = el$4("modal_message_yes");
-    var v_button_ok = el$4("modal_message_ok");
-    var v_button_no = el$4("modal_message_no");
-    var v_button_cancel = el$4("modal_message_cancel");
+    var v_content_div = el$5("modal_message_content");
+    var v_button_yes = el$5("modal_message_yes");
+    var v_button_ok = el$5("modal_message_ok");
+    var v_button_no = el$5("modal_message_no");
+    var v_button_cancel = el$5("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1113,11 +1113,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$4("modal_message_content");
-    var v_button_yes = el$4("modal_message_yes");
-    var v_button_ok = el$4("modal_message_ok");
-    var v_button_no = el$4("modal_message_no");
-    var v_button_cancel = el$4("modal_message_cancel");
+    var v_content_div = el$5("modal_message_content");
+    var v_button_yes = el$5("modal_message_yes");
+    var v_button_ok = el$5("modal_message_ok");
+    var v_button_no = el$5("modal_message_no");
+    var v_button_cancel = el$5("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1305,7 +1305,7 @@
       return terms.every((term) => cells.some((cell) => cell.includes(term)));
     };
   }
-  const NUMERIC_TYPE$1 = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/i;
+  const NUMERIC_TYPE$2 = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/i;
   const BOOL_TYPE = /^(BOOL|BOOLEAN)$/i;
   function isNull(value) {
     return value === null || value === void 0;
@@ -1313,7 +1313,7 @@
   function sqlLiteral(value, type) {
     if (isNull(value)) return "NULL";
     const text = String(value);
-    if (type && NUMERIC_TYPE$1.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text)) return text;
+    if (type && NUMERIC_TYPE$2.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text)) return text;
     if (type && BOOL_TYPE.test(type) && /^(true|false)$/i.test(text)) return text.toUpperCase();
     return "'" + text.replace(/'/g, "''") + "'";
   }
@@ -1404,7 +1404,7 @@
   }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   var v_pgpass_lookup_info = null;
-  function el$3(id) {
+  function el$4(id) {
     return document.getElementById(id);
   }
   function initPasswordModal() {
@@ -1435,15 +1435,15 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-    if (gv_desktopMode) el$3("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
-    el$3("modal_password_pgpass_button").addEventListener("click", function() {
+    if (gv_desktopMode) el$4("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
+    el$4("modal_password_pgpass_button").addEventListener("click", function() {
       if (gv_desktopMode) {
         grantPgpassAccess(v_pgpass_lookup_info);
       } else {
-        el$3("modal_password_pgpass_input").click();
+        el$4("modal_password_pgpass_input").click();
       }
     });
-    el$3("modal_password_pgpass_input").addEventListener("change", function(e2) {
+    el$4("modal_password_pgpass_input").addEventListener("change", function(e2) {
       var v_file = e2.target.files ? e2.target.files[0] : null;
       e2.target.value = "";
       if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
@@ -1484,12 +1484,12 @@
     return null;
   }
   function showPgpassError(p_message) {
-    var v_error_div = el$3("modal_password_pgpass_error");
+    var v_error_div = el$4("modal_password_pgpass_error");
     v_error_div.textContent = p_message;
     v_error_div.style.display = "block";
   }
   function hidePgpassError() {
-    el$3("modal_password_pgpass_error").style.display = "none";
+    el$4("modal_password_pgpass_error").style.display = "none";
   }
   function readPgpassFileViaInput(p_file, p_lookup_info) {
     var v_reader = new FileReader();
@@ -1629,7 +1629,7 @@
     v_modal_password_input = /** @type {HTMLInputElement} */
     document.getElementById("txt_password_prompt");
     v_pgpass_lookup_info = resolvePgpassLookupInfo(p_database_index);
-    el$3("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
+    el$4("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
     hidePgpassError();
     if (p_message) v_content_div.textContent = p_message;
     bootstrap.Modal.getOrCreateInstance(
@@ -1679,14 +1679,14 @@
     parsePgpassText,
     showPasswordPrompt
   }, Symbol.toStringTag, { value: "Module" }));
-  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)\b/i;
+  const NUMERIC_TYPE$1 = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)\b/i;
   const NULL_CELL = "[null]";
   function findForeignKey(fks, columnName) {
     return (fks || []).find((fk) => fk.columns.includes(columnName)) || null;
   }
   function literal(value, type, technology) {
     const text = String(value);
-    if (type && NUMERIC_TYPE.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text.trim())) return text.trim();
+    if (type && NUMERIC_TYPE$1.test(type) && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(text.trim())) return text.trim();
     let escaped = text;
     if (technology === "mysql" || technology === "mariadb") escaped = escaped.replace(/\\/g, "\\\\");
     return "'" + escaped.replace(/'/g, "''") + "'";
@@ -12633,6 +12633,202 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     __proto__: null,
     v_createGraphTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
+  const MAX_POINTS = 500;
+  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|OID|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)\b/i;
+  const NUMBER_TEXT = /^\s*-?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?\s*$/;
+  function toNumber(value) {
+    if (value === null || value === void 0 || value === "") return null;
+    if (typeof value === "number") return Number.isFinite(value) ? value : null;
+    const text = String(value);
+    return NUMBER_TEXT.test(text) ? Number(text) : null;
+  }
+  function numericColumns(types, rows, width) {
+    return Array.from({ length: width }, (_2, i2) => {
+      const type = types && types[i2];
+      if (type && NUMERIC_TYPE.test(type)) return true;
+      if (type) return false;
+      let seen = 0;
+      for (const row of rows) {
+        const v2 = row[i2];
+        if (v2 === null || v2 === void 0 || v2 === "") continue;
+        if (toNumber(v2) === null) return false;
+        seen++;
+      }
+      return seen > 0;
+    });
+  }
+  function buildChartData(rows, labelCol, valueCols, columnNames) {
+    const shown2 = rows.slice(0, MAX_POINTS);
+    return {
+      labels: shown2.map((row) => {
+        const v2 = row[labelCol];
+        return v2 === null || v2 === void 0 ? "NULL" : String(v2);
+      }),
+      datasets: valueCols.map((col) => ({
+        label: columnNames[col],
+        data: shown2.map((row) => toNumber(row[col]))
+      })),
+      truncated: rows.length > MAX_POINTS
+    };
+  }
+  const PALETTE = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999"];
+  function paletteColor(index) {
+    return PALETTE[index % PALETTE.length];
+  }
+  const CHART_TYPES = ["bar", "line", "pie", "doughnut"];
+  function el$3(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  let chart = null;
+  function showResultChart(p_tab_tag) {
+    const grid = p_tab_tag.ht;
+    if (!grid || !p_tab_tag.result_columns || p_tab_tag.result_columns.length === 0) {
+      showAlert$1(t$1("chart.no_result"));
+      return;
+    }
+    const columns = p_tab_tag.result_columns;
+    const rows = grid.getVisibleData();
+    if (rows.length === 0) {
+      showAlert$1(t$1("chart.no_rows"));
+      return;
+    }
+    const numeric = numericColumns(p_tab_tag.result_types || null, rows, columns.length);
+    const firstNumeric = numeric.indexOf(true);
+    if (firstNumeric < 0) {
+      showAlert$1(t$1("chart.no_numeric"));
+      return;
+    }
+    showAlert$1('<div id="result_chart_root"></div>', null, true, true);
+    const root = (
+      /** @type {HTMLElement} */
+      document.getElementById("result_chart_root")
+    );
+    document.getElementById("modal_message_content").style.whiteSpace = "normal";
+    const typeSelect = (
+      /** @type {HTMLSelectElement} */
+      el$3("select", "form-select form-select-sm")
+    );
+    for (const type of CHART_TYPES) {
+      const o2 = (
+        /** @type {HTMLOptionElement} */
+        el$3("option", void 0, t$1("chart.type_" + type))
+      );
+      o2.value = type;
+      typeSelect.appendChild(o2);
+    }
+    const xSelect = (
+      /** @type {HTMLSelectElement} */
+      el$3("select", "form-select form-select-sm")
+    );
+    columns.forEach((name, i2) => {
+      const o2 = (
+        /** @type {HTMLOptionElement} */
+        el$3("option", void 0, name)
+      );
+      o2.value = String(i2);
+      xSelect.appendChild(o2);
+    });
+    const firstText = numeric.indexOf(false);
+    xSelect.value = String(firstText >= 0 ? firstText : 0);
+    const yBoxes = el$3("div", "d-flex flex-wrap gap-3");
+    const yInputs = [];
+    columns.forEach((name, i2) => {
+      if (!numeric[i2]) return;
+      const wrap = el$3("div", "form-check");
+      const input = (
+        /** @type {HTMLInputElement} */
+        el$3("input", "form-check-input")
+      );
+      input.type = "checkbox";
+      input.id = "chart_y_" + i2;
+      input.value = String(i2);
+      input.checked = i2 === (i2 === Number(xSelect.value) ? -1 : firstNumeric);
+      const label = (
+        /** @type {HTMLLabelElement} */
+        el$3("label", "form-check-label", name)
+      );
+      label.htmlFor = input.id;
+      wrap.append(input, label);
+      yBoxes.appendChild(wrap);
+      yInputs.push(input);
+    });
+    if (!yInputs.some((x2) => x2.checked) && yInputs.length) yInputs[0].checked = true;
+    const note = el$3("div", "small text-muted mt-1");
+    const holder = el$3("div", "mt-2");
+    holder.style.cssText = "position:relative;height:50vh;";
+    const canvas = (
+      /** @type {HTMLCanvasElement} */
+      el$3("canvas")
+    );
+    holder.appendChild(canvas);
+    const controls = el$3("div", "d-flex flex-wrap gap-3 align-items-end mb-2");
+    const field = (labelKey, control) => {
+      const w2 = el$3("div");
+      w2.append(el$3("label", "form-label small mb-1", t$1(labelKey)), control);
+      return w2;
+    };
+    controls.append(field("chart.type", typeSelect), field("chart.x_axis", xSelect));
+    root.append(controls, field("chart.y_axis", yBoxes), holder, note);
+    const draw = () => {
+      const type = typeSelect.value;
+      const valueCols = yInputs.filter((x2) => x2.checked).map((x2) => Number(x2.value));
+      if (chart) {
+        chart.destroy();
+        chart = null;
+      }
+      if (valueCols.length === 0) return;
+      const data = buildChartData(rows, Number(xSelect.value), type === "pie" || type === "doughnut" ? valueCols.slice(0, 1) : valueCols, columns);
+      note.textContent = data.truncated ? t$1("chart.truncated", { count: data.labels.length }) : "";
+      const styles = getComputedStyle(document.body);
+      const text = styles.getPropertyValue("--text-primary").trim() || "#444";
+      const grid2 = styles.getPropertyValue("--border-color").trim() || "#ddd";
+      const circular = type === "pie" || type === "doughnut";
+      chart = new Chart(canvas, {
+        type,
+        data: {
+          labels: data.labels,
+          datasets: data.datasets.map((d2, i2) => ({
+            label: d2.label,
+            data: d2.data,
+            backgroundColor: circular ? data.labels.map((_2, k2) => paletteColor(k2)) : paletteColor(i2),
+            borderColor: type === "line" ? paletteColor(i2) : circular ? void 0 : paletteColor(i2),
+            borderWidth: type === "line" ? 2 : 1,
+            pointRadius: type === "line" ? 2 : void 0,
+            tension: 0
+          }))
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          color: text,
+          plugins: { legend: { display: circular || data.datasets.length > 1, labels: { color: text } } },
+          scales: circular ? {} : {
+            x: { ticks: { color: text, maxRotation: 60, autoSkip: true }, grid: { color: grid2 } },
+            y: { ticks: { color: text }, grid: { color: grid2 } }
+          }
+        }
+      });
+    };
+    for (const control of [typeSelect, xSelect, ...yInputs]) control.addEventListener("change", draw);
+    draw();
+    const modal = document.getElementById("modal_message");
+    if (modal) {
+      modal.addEventListener(
+        "hidden.bs.modal",
+        () => {
+          if (chart) {
+            chart.destroy();
+            chart = null;
+          }
+        },
+        { once: true }
+      );
+    }
+  }
   const MAX_CELLS = 4e6;
   function diffLines(before, after) {
     const a2 = before.split("\n");
@@ -22523,7 +22719,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog omnidb__modal--fluid' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>" + escapeHtml(t$1("query.command_history_title")) + "</h5><button id='bt_close_command_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t$1("common.close")) + "'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_local_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("history.button_title")) + '"><i class="fas fa-code-branch fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
+    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_chart_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("chart.button_title")) + '"><i class="fas fa-chart-bar fa-light"></i></button><button id="bt_local_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("history.button_title")) + '"><i class="fas fa-code-branch fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
     v_tab.elementDiv.innerHTML = v_html;
     var v_curr_tabs = createTabControl({ p_div: "query_result_tabs_" + v_tab.id });
     var v_selectDataTabFunc = function() {
@@ -22835,6 +23031,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       /** @type {HTMLElement} */
       document.getElementById("bt_local_history_" + v_tab.id)
     );
+    document.getElementById("bt_chart_" + v_tab.id).addEventListener("click", () => showResultChart(v_tag));
     v_tag.filter_input = v_filter_input;
     v_tag.filter_count = v_filter_count;
     v_filter_input.addEventListener("input", () => applyResultFilter(v_tag));
@@ -42607,6 +42804,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                 columnProperties.push(col);
               }
               var container = v_div_result;
+              p_context.tab_tag.result_columns = v_data.v_col_names;
+              p_context.tab_tag.result_types = v_data.v_col_types || null;
               if (p_context.tab_tag.filter_input) {
                 p_context.tab_tag.filter_input.value = "";
                 p_context.tab_tag.filter_count.textContent = "";

@@ -700,6 +700,8 @@ export function querySQLReturnRender(p_message, p_context) {
 						}
 
 						var container = v_div_result;
+						p_context.tab_tag.result_columns = v_data.v_col_names;
+						p_context.tab_tag.result_types = v_data.v_col_types || null;
 						if (p_context.tab_tag.filter_input) {
 							p_context.tab_tag.filter_input.value = "";
 							p_context.tab_tag.filter_count.textContent = "";

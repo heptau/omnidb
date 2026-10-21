@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Chart of a query result: the new chart button in the query toolbar draws the rows the result grid currently shows (so its
+  filter applies) as a bar, line, pie or doughnut chart. Pick the column for the x axis (categories) and tick the
+  numeric columns to plot (a column counts as numeric by its database type, or by its values when the driver reports
+  none); at most the first 500 rows are drawn, in a colour-blind-safe palette.
 - Generate on a table's context menu (all engines): "SELECT with JOINs (foreign keys)" writes a SELECT of the table's
   columns plus those of every table its foreign keys point at, each as a LEFT JOIN (composite keys supported, a joined
   column whose name is taken is aliased `<table>_<column>`; PostgreSQL follows keys into other schemas), and "CRUD
