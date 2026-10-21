@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Local history of the query editor: what you type is saved as a version (after an 8-second pause in typing and when the
+  editor loses focus; identical consecutive versions are skipped, blank text is never stored), up to 100 per connection and
+  user, kept in the app database. The new history button in the query toolbar lists them, shows the lines that would
+  disappear (red) and come back (green) if you restored the selected one, and "Restore" puts it into the editor —
+  saving the text it replaces first, so a restore can be undone. Versions are removed with their connection or user.
 - Live templates: type an abbreviation in a SQL editor and press Tab to expand it into a statement skeleton, then
   Tab / Shift+Tab through its placeholders (the same number is mirrored). Built in: `sel`, `cnt`, `grp`, `ins`, `upd`,
   `del`, `jn`, `cte`, `crt`. Your own live in the Snippets section as snippets inside a folder named "Live templates" —

@@ -196,6 +196,11 @@ func migrateAppDB(db *sql.DB) error {
 		return fmt.Errorf("create OmniDB_app_bookmark: %w", err)
 	}
 
+	// Editor local history (v5.5.0+) -- see appdb_editorversions.go.
+	if _, err := db.Exec(editorVersionTableDDL); err != nil {
+		return fmt.Errorf("create OmniDB_app_editorversion: %w", err)
+	}
+
 	// Add the read_only flag to OmniDB_app_connection if missing (v5.5.0+) --
 	// see readonly.go.
 	var hasReadOnly string

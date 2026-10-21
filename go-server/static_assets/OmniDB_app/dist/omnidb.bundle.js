@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$4 = document.getElementById("omnidb_bootstrap");
-  if (!el$4) {
+  const el$5 = document.getElementById("omnidb_bootstrap");
+  if (!el$5) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$4.textContent);
+  const cfg = JSON.parse(el$5.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -949,7 +949,7 @@
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$3(id) {
+  function el$4(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -971,7 +971,7 @@
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    var v_modal_message = el$3("modal_message");
+    var v_modal_message = el$4("modal_message");
     v_modal_message.addEventListener("hide.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
@@ -979,7 +979,7 @@
       v_message_modal_animating = true;
     });
     v_modal_message.addEventListener("hidden.bs.modal", function(e2) {
-      el$3("modal_message_content").innerHTML = "";
+      el$4("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -999,21 +999,21 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$3("modal_message_dialog");
+    var v_dialog = el$4("modal_message_dialog");
     var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
     if (v_old_title) v_old_title.remove();
     v_dialog.classList.toggle("modal-xl", p_large === true);
     v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$3("modal_message")).show();
+      bootstrap.Modal.getOrCreateInstance(el$4("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
   }
   function setMessageModalTitle(p_text, p_icon_class = null) {
-    var v_header = el$3("modal_message_dialog").querySelector(".modal-header");
+    var v_header = el$4("modal_message_dialog").querySelector(".modal-header");
     if (!v_header) return;
     var v_title = document.createElement("h5");
     v_title.className = "modal-title";
@@ -1027,11 +1027,11 @@
     v_header.insertBefore(v_title, v_header.firstChild);
   }
   function showError(p_message) {
-    var v_content_div = el$3("modal_message_content");
-    var v_button_yes = el$3("modal_message_yes");
-    var v_button_ok = el$3("modal_message_ok");
-    var v_button_no = el$3("modal_message_no");
-    var v_button_cancel = el$3("modal_message_cancel");
+    var v_content_div = el$4("modal_message_content");
+    var v_button_yes = el$4("modal_message_yes");
+    var v_button_ok = el$4("modal_message_ok");
+    var v_button_no = el$4("modal_message_no");
+    var v_button_cancel = el$4("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_ok.textContent = t$1("common.ok");
     v_button_yes.style.display = "none";
@@ -1045,11 +1045,11 @@
   }
   function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el$3("modal_message_content");
-      var v_button_yes = el$3("modal_message_yes");
-      var v_button_ok = el$3("modal_message_ok");
-      var v_button_no = el$3("modal_message_no");
-      var v_button_cancel = el$3("modal_message_cancel");
+      var v_content_div = el$4("modal_message_content");
+      var v_button_yes = el$4("modal_message_yes");
+      var v_button_ok = el$4("modal_message_ok");
+      var v_button_no = el$4("modal_message_no");
+      var v_button_cancel = el$4("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -1069,11 +1069,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$3("modal_message_content");
-      var v_button_yes = el$3("modal_message_yes");
-      var v_button_ok = el$3("modal_message_ok");
-      var v_button_no = el$3("modal_message_no");
-      var v_button_cancel = el$3("modal_message_cancel");
+      var v_content_div = el$4("modal_message_content");
+      var v_button_yes = el$4("modal_message_yes");
+      var v_button_ok = el$4("modal_message_ok");
+      var v_button_no = el$4("modal_message_no");
+      var v_button_cancel = el$4("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.textContent = p_yes_label || t$1("common.ok");
       v_button_ok.onclick = function() {
@@ -1090,11 +1090,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$3("modal_message_content");
-    var v_button_yes = el$3("modal_message_yes");
-    var v_button_ok = el$3("modal_message_ok");
-    var v_button_no = el$3("modal_message_no");
-    var v_button_cancel = el$3("modal_message_cancel");
+    var v_content_div = el$4("modal_message_content");
+    var v_button_yes = el$4("modal_message_yes");
+    var v_button_ok = el$4("modal_message_ok");
+    var v_button_no = el$4("modal_message_no");
+    var v_button_cancel = el$4("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1113,11 +1113,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$3("modal_message_content");
-    var v_button_yes = el$3("modal_message_yes");
-    var v_button_ok = el$3("modal_message_ok");
-    var v_button_no = el$3("modal_message_no");
-    var v_button_cancel = el$3("modal_message_cancel");
+    var v_content_div = el$4("modal_message_content");
+    var v_button_yes = el$4("modal_message_yes");
+    var v_button_ok = el$4("modal_message_ok");
+    var v_button_no = el$4("modal_message_no");
+    var v_button_cancel = el$4("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1404,7 +1404,7 @@
   }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   var v_pgpass_lookup_info = null;
-  function el$2(id) {
+  function el$3(id) {
     return document.getElementById(id);
   }
   function initPasswordModal() {
@@ -1435,15 +1435,15 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-    if (gv_desktopMode) el$2("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
-    el$2("modal_password_pgpass_button").addEventListener("click", function() {
+    if (gv_desktopMode) el$3("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
+    el$3("modal_password_pgpass_button").addEventListener("click", function() {
       if (gv_desktopMode) {
         grantPgpassAccess(v_pgpass_lookup_info);
       } else {
-        el$2("modal_password_pgpass_input").click();
+        el$3("modal_password_pgpass_input").click();
       }
     });
-    el$2("modal_password_pgpass_input").addEventListener("change", function(e2) {
+    el$3("modal_password_pgpass_input").addEventListener("change", function(e2) {
       var v_file = e2.target.files ? e2.target.files[0] : null;
       e2.target.value = "";
       if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
@@ -1484,12 +1484,12 @@
     return null;
   }
   function showPgpassError(p_message) {
-    var v_error_div = el$2("modal_password_pgpass_error");
+    var v_error_div = el$3("modal_password_pgpass_error");
     v_error_div.textContent = p_message;
     v_error_div.style.display = "block";
   }
   function hidePgpassError() {
-    el$2("modal_password_pgpass_error").style.display = "none";
+    el$3("modal_password_pgpass_error").style.display = "none";
   }
   function readPgpassFileViaInput(p_file, p_lookup_info) {
     var v_reader = new FileReader();
@@ -1629,7 +1629,7 @@
     v_modal_password_input = /** @type {HTMLInputElement} */
     document.getElementById("txt_password_prompt");
     v_pgpass_lookup_info = resolvePgpassLookupInfo(p_database_index);
-    el$2("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
+    el$3("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
     hidePgpassError();
     if (p_message) v_content_div.textContent = p_message;
     bootstrap.Modal.getOrCreateInstance(
@@ -12633,6 +12633,217 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     __proto__: null,
     v_createGraphTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
+  const MAX_CELLS = 4e6;
+  function diffLines(before, after) {
+    const a2 = before.split("\n");
+    const b2 = after.split("\n");
+    let start = 0;
+    while (start < a2.length && start < b2.length && a2[start] === b2[start]) start++;
+    let endA = a2.length;
+    let endB = b2.length;
+    while (endA > start && endB > start && a2[endA - 1] === b2[endB - 1]) {
+      endA--;
+      endB--;
+    }
+    const out = a2.slice(0, start).map((text) => ({ type: " ", text }));
+    const midA = a2.slice(start, endA);
+    const midB = b2.slice(start, endB);
+    if (midA.length * midB.length > MAX_CELLS) {
+      for (const text of midA) out.push({ type: "-", text });
+      for (const text of midB) out.push({ type: "+", text });
+    } else if (midA.length === 0 || midB.length === 0) {
+      for (const text of midA) out.push({ type: "-", text });
+      for (const text of midB) out.push({ type: "+", text });
+    } else {
+      const n2 = midA.length;
+      const m2 = midB.length;
+      const lcs = Array.from({ length: n2 + 1 }, () => new Uint32Array(m2 + 1));
+      for (let i3 = n2 - 1; i3 >= 0; i3--) {
+        for (let j3 = m2 - 1; j3 >= 0; j3--) {
+          lcs[i3][j3] = midA[i3] === midB[j3] ? lcs[i3 + 1][j3 + 1] + 1 : Math.max(lcs[i3 + 1][j3], lcs[i3][j3 + 1]);
+        }
+      }
+      let i2 = 0;
+      let j2 = 0;
+      while (i2 < n2 && j2 < m2) {
+        if (midA[i2] === midB[j2]) {
+          out.push({ type: " ", text: midA[i2] });
+          i2++;
+          j2++;
+        } else if (lcs[i2 + 1][j2] >= lcs[i2][j2 + 1]) {
+          out.push({ type: "-", text: midA[i2++] });
+        } else {
+          out.push({ type: "+", text: midB[j2++] });
+        }
+      }
+      while (i2 < n2) out.push({ type: "-", text: midA[i2++] });
+      while (j2 < m2) out.push({ type: "+", text: midB[j2++] });
+    }
+    for (const text of a2.slice(endA)) out.push({ type: " ", text });
+    return out;
+  }
+  function collapseUnchanged(lines, context) {
+    const out = [];
+    let i2 = 0;
+    while (i2 < lines.length) {
+      if (lines[i2].type !== " ") {
+        out.push(lines[i2++]);
+        continue;
+      }
+      let j2 = i2;
+      while (j2 < lines.length && lines[j2].type === " ") j2++;
+      const run = lines.slice(i2, j2);
+      const atStart = i2 === 0;
+      const atEnd = j2 === lines.length;
+      const keepHead = atStart ? 0 : context;
+      const keepTail = atEnd ? 0 : context;
+      if (run.length > keepHead + keepTail + 1) {
+        out.push(...run.slice(0, keepHead));
+        out.push({ type: "gap", count: run.length - keepHead - keepTail });
+        out.push(...run.slice(run.length - keepTail));
+      } else {
+        out.push(...run);
+      }
+      i2 = j2;
+    }
+    return out;
+  }
+  function hasChanges(lines) {
+    return lines.some((l2) => l2.type !== " ");
+  }
+  const IDLE_MS = 8e3;
+  const CONTEXT_LINES = 3;
+  function el$2(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  function installEditorHistory(p_editor, p_getConnId, p_button) {
+    let lastSaved = "";
+    let timer = 0;
+    const snapshot = () => {
+      clearTimeout(timer);
+      const text = p_editor.getValue();
+      if (!text.trim() || text === lastSaved) return;
+      lastSaved = text;
+      execAjax$2(
+        "/save_editor_version/",
+        JSON.stringify({ p_conn_id: p_getConnId(), p_text: text }),
+        null,
+        // A snapshot that cannot be saved (too large, connection gone) is not worth a dialog.
+        function() {
+          lastSaved = "";
+        },
+        "box",
+        false
+      );
+    };
+    p_editor.on("change", () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(snapshot, IDLE_MS);
+    });
+    p_editor.on("blur", snapshot);
+    p_button.addEventListener("click", () => openHistory(p_editor, p_getConnId(), snapshot));
+  }
+  function openHistory(p_editor, p_connId, p_snapshot) {
+    let selectedId = null;
+    let selectedText = null;
+    const list = el$2("div", "list-group");
+    list.style.cssText = "width:16rem;flex:none;max-height:60vh;overflow:auto;";
+    const diff = el$2("pre", "m-0 p-2");
+    diff.style.cssText = "flex:1;min-width:0;max-height:60vh;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:12px;border:1px solid var(--border-color);";
+    const hint = el$2("div", "mb-2 text-muted", t$1("history.diff_hint"));
+    const showDiff = (versionText) => {
+      diff.innerHTML = "";
+      const lines = diffLines(p_editor.getValue(), versionText);
+      if (!hasChanges(lines)) {
+        diff.textContent = t$1("history.no_changes");
+        return;
+      }
+      for (const item of collapseUnchanged(lines, CONTEXT_LINES)) {
+        const row = el$2("div");
+        if (item.type === "gap") {
+          row.className = "text-muted fst-italic";
+          row.textContent = "… " + t$1("history.unchanged_lines", { count: item.count });
+        } else {
+          row.textContent = item.type + " " + item.text;
+          if (item.type === "+") row.style.cssText = "background:rgba(40,167,69,.25);";
+          if (item.type === "-") row.style.cssText = "background:rgba(220,53,69,.25);";
+        }
+        diff.appendChild(row);
+      }
+    };
+    const select = (version, row) => {
+      list.querySelectorAll(".active").forEach((x2) => x2.classList.remove("active"));
+      row.classList.add("active");
+      selectedId = version.id;
+      selectedText = null;
+      diff.textContent = "";
+      execAjax$2(
+        "/get_editor_version/",
+        JSON.stringify({ p_id: version.id }),
+        function(r2) {
+          if (selectedId !== version.id) return;
+          selectedText = r2.v_data;
+          showDiff(r2.v_data);
+        },
+        null,
+        "box",
+        false
+      );
+    };
+    showConfirm(
+      "",
+      function() {
+        if (selectedText === null) return;
+        p_snapshot();
+        p_editor.setValue(selectedText, -1);
+        p_editor.focus();
+      },
+      null,
+      function() {
+        setMessageModalTitle(t$1("history.title"), "fas node-all fa-code-branch");
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        const body = el$2("div", "d-flex gap-3");
+        const right = el$2("div");
+        right.style.cssText = "flex:1;min-width:0;";
+        right.append(hint, diff);
+        body.append(list, right);
+        content.appendChild(body);
+        execAjax$2(
+          "/get_editor_versions/",
+          JSON.stringify({ p_conn_id: p_connId }),
+          function(r2) {
+            if (r2.v_data.length === 0) {
+              body.replaceChildren(el$2("div", "text-muted", t$1("history.empty")));
+              return;
+            }
+            r2.v_data.forEach((version, index) => {
+              const row = el$2("button", "list-group-item list-group-item-action text-start");
+              row.setAttribute("type", "button");
+              const when = el$2("div", "fw-bold small", new Date(version.date).toLocaleString());
+              const preview = el$2("div", "small text-truncate", version.preview || "—");
+              row.append(when, preview);
+              row.addEventListener("click", () => select(version, row));
+              list.appendChild(row);
+              if (index === 0) select(version, row);
+            });
+          },
+          null,
+          "box",
+          false
+        );
+      },
+      true,
+      t$1("history.restore")
+    );
+  }
   function deleteCommandList() {
     showConfirm(t$1("console.confirm_clear_command_history"), function() {
       execAjax$2(
@@ -22264,7 +22475,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog omnidb__modal--fluid' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>" + escapeHtml(t$1("query.command_history_title")) + "</h5><button id='bt_close_command_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t$1("common.close")) + "'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
+    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_local_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("history.button_title")) + '"><i class="fas fa-code-branch fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
     v_tab.elementDiv.innerHTML = v_html;
     var v_curr_tabs = createTabControl({ p_div: "query_result_tabs_" + v_tab.id });
     var v_selectDataTabFunc = function() {
@@ -22567,6 +22778,15 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     v_tag.selectDataTabFunc = v_selectDataTabFunc;
     v_tag.selectMessageTabFunc = v_selectMessageTabFunc;
     v_tag.selectExplainTabFunc = v_selectExplainTabFunc;
+    var v_owner_conn_tab = v_connTabControl.selectedTab;
+    installEditorHistory(
+      v_editor,
+      function() {
+        return v_owner_conn_tab.tag.selectedDatabaseIndex;
+      },
+      /** @type {HTMLElement} */
+      document.getElementById("bt_local_history_" + v_tab.id)
+    );
     v_tag.filter_input = v_filter_input;
     v_tag.filter_count = v_filter_count;
     v_filter_input.addEventListener("input", () => applyResultFilter(v_tag));
