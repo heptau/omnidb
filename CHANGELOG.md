@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Query editor export: a new "SQL" format writes the result as `INSERT INTO <table> (...) VALUES (...);` statements,
+  one per row, with identifiers and literals quoted for the connection's engine (binary values as hex, backslashes
+  doubled for MySQL/MariaDB, booleans as 1/0 on SQL Server and Oracle). The table is taken from a plain
+  single-table SELECT, `table_name` otherwise. A read-only connection now also refuses to export a non-SELECT
+  statement.
 - Read-only connections: tick "Read-only connection" in the connection form and writes through it are refused (the
   Connections list, the Database tab and the connection menu show a lock). PostgreSQL, MySQL/MariaDB and SQLite
   also switch the session itself to read-only (`default_transaction_read_only`, `transaction_read_only`/

@@ -53,6 +53,7 @@ var exportExtensions = map[string]string{
 	"json": "json",
 	"xml":  "xml",
 	"xlsx": "xlsx",
+	"sql":  "sql",
 }
 
 func exportFormatSupported(format string) bool {
@@ -436,7 +437,7 @@ func (x *xlsxExportWriter) Close() error {
 // labels it "CSV/TSV Encoding" for exactly this reason); csvDelimiter only
 // affects "csv" -- "tsv" always uses an actual tab (see
 // delimitedExportWriter's doc comment).
-func newExportWriter(format, outPath, csvDelimiter, csvEncoding string) (exportWriter, error) {
+func newExportWriter(format, outPath, csvDelimiter, csvEncoding, sqlTable, technology string) (exportWriter, error) {
 	switch format {
 	case "csv":
 		delim := ';'
@@ -454,6 +455,8 @@ func newExportWriter(format, outPath, csvDelimiter, csvEncoding string) (exportW
 		return newXMLExportWriter(outPath)
 	case "xlsx":
 		return newXLSXExportWriter(outPath), nil
+	case "sql":
+		return newSQLInsertExportWriter(outPath, sqlTable, technology)
 	default:
 		return nil, fmt.Errorf("unsupported export format %q", format)
 	}
@@ -462,7 +465,7 @@ func newExportWriter(format, outPath, csvDelimiter, csvEncoding string) (exportW
 // runExportQuery mirrors thread_query's export_csv/export_xlsx branch —
 // fetches the whole result set (no row cap, same as Python's QueryBlock
 // loop) and writes it straight to outPath in the requested format.
-func runExportQuery(db *sql.DB, sqlText, format, outPath, csvDelimiter, csvEncoding string) error {
+func runExportQuery(db *sql.DB, sqlText, format, outPath, csvDelimiter, csvEncoding, technology string) error {
 	rows, err := db.Query(sqlText)
 	if err != nil {
 		return err
@@ -474,7 +477,7 @@ func runExportQuery(db *sql.DB, sqlText, format, outPath, csvDelimiter, csvEncod
 		return err
 	}
 
-	writer, err := newExportWriter(format, outPath, csvDelimiter, csvEncoding)
+	writer, err := newExportWriter(format, outPath, csvDelimiter, csvEncoding, guessSourceTable(sqlText), technology)
 	if err != nil {
 		return err
 	}
@@ -516,6 +519,13 @@ func runQueryExport(upstream *url.URL, cookie string, q queryRequestData, format
 		sqlText = sqlText[:len(sqlText)-1]
 	}
 
+	if info.ReadOnly {
+		if err := checkReadOnlySQL(sqlText); err != nil {
+			queueQueryError(upstream, cookie, contextCode, err)
+			return
+		}
+	}
+
 	tempDir, err := resolveTempDir(upstream)
 	if err != nil {
 		queueQueryError(upstream, cookie, contextCode, err)
@@ -546,7 +556,7 @@ func runQueryExport(upstream *url.URL, cookie string, q queryRequestData, format
 		csvDelimiter = ";"
 	}
 
-	if err := runExportQuery(db, sqlText, format, outPath, csvDelimiter, csvEncoding); err != nil {
+	if err := runExportQuery(db, sqlText, format, outPath, csvDelimiter, csvEncoding, info.Technology); err != nil {
 		queueQueryError(upstream, cookie, contextCode, err)
 		return
 	}

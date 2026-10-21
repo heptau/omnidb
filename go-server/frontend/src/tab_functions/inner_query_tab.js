@@ -213,7 +213,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="' + escapeHtmlAttribute(t("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button>' +
 		'<select id="sel_export_type_' +
 		v_tab.id +
-		'" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select>' +
+		'" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select>' +
 		"</div>" +
 		"</div>" +
 		'<div id="query_resize_line_' +
