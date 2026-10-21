@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { expandLiveTemplate } from "./live_templates.js";
 import { execAjax } from "./ajax_control_bridge.js";
 import { consoleSQL } from "./console.js";
 import { escapeHtml } from "./query.js";
@@ -1305,7 +1306,24 @@ export function autocomplete_keyup(p_event) {
 	}
 }
 
+/**
+ * Tab on a live template's abbreviation expands the template. Does nothing while a
+ * template's tab stops are being walked (Ace's own handler moves between them).
+ * @returns {boolean} whether it expanded one
+ */
+function tryExpandLiveTemplate(p_editor, p_event) {
+	if (p_event.keyCode !== 9 || p_event.shiftKey || p_event.ctrlKey || p_event.altKey || p_event.metaKey) return false;
+	if (p_editor.tabstopManager || !expandLiveTemplate(p_editor)) return false;
+	p_event.preventDefault();
+	p_event.stopPropagation();
+	return true;
+}
+
 export function autocomplete_keydown(p_editor, p_event) {
+	if (tryExpandLiveTemplate(p_editor, p_event)) {
+		if (v_autocomplete_object.active) close_autocomplete();
+		return;
+	}
 	if (/** @type {any} */ (event).ctrlKey == true || /** @type {any} */ (event).altKey == true || /** @type {any} */ (event).metaKey == true) {
 		v_autocomplete_object.alt_shift_meta_pressed = true;
 	} else {
@@ -1361,6 +1379,9 @@ export function autocomplete_keydown(p_editor, p_event) {
 }
 
 export function autocomplete_update_editor_cursor(p_editor, p_event) {
+	if (tryExpandLiveTemplate(p_editor, p_event)) return;
+	// Ace itself walks the tab stops of an expanded template with Tab / Shift-Tab.
+	if (p_editor.tabstopManager && p_event.keyCode === 9) return;
 	// Handle UP or DOWN if autocomplete is not enbled, just move cursor position
 	if (!p_event.shiftKey && !p_event.altKey && !p_event.ctrlKey && !p_event.metaKey) {
 		if (p_event.keyCode === 40 || p_event.keyCode === 38) {

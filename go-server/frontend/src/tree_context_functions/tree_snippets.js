@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { refreshUserTemplates } from "../live_templates.js";
 import { execAjax } from "../ajax_control_bridge.js";
 import { customMenu } from "../custom_menu.js";
 import { t } from "../i18n.js";
@@ -50,6 +51,7 @@ export function getAllSnippets() {
 		JSON.stringify({}),
 		function (p_return) {
 			v_connTabControl.tag.globalSnippets = p_return;
+			refreshUserTemplates(p_return);
 		},
 		null,
 		"box",

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Live templates: type an abbreviation in a SQL editor and press Tab to expand it into a statement skeleton, then
+  Tab / Shift+Tab through its placeholders (the same number is mirrored). Built in: `sel`, `cnt`, `grp`, `ins`, `upd`,
+  `del`, `jn`, `cte`, `crt`. Your own live in the Snippets section as snippets inside a folder named "Live templates" —
+  the snippet's name is the abbreviation, its text the template (`${1:default}` for a placeholder, `$0` for the final
+  cursor position); they override the built-in ones and are re-read whenever the snippets reload. Tab on any other word
+  still indents, and Enter (not Tab) picks an autocomplete suggestion that has the same name as a template.
 - Import data into a table: right-click a table and choose "Import data…" to load a CSV, TSV or JSON file (an array of
   objects or of arrays). The delimiter is detected (or picked), the first row can be the header, file columns are mapped
   onto the table's columns (matched by name where possible, individually skippable) with a preview of the first rows,

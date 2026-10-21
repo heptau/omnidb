@@ -129,6 +129,73 @@
   function jsonPostHeaders(...args) {
     return window.jsonPostHeaders(...args);
   }
+  function flattenSnippets(tree, path = "") {
+    if (!tree) return [];
+    const out = (tree.files || []).map((f2) => ({ id: f2.id, name: f2.name, path }));
+    for (const folder of tree.folders || []) {
+      out.push(...flattenSnippets(folder, path ? path + " / " + folder.name : folder.name));
+    }
+    return out;
+  }
+  const TEMPLATE_FOLDER = "Live templates";
+  const BUILT_IN_TEMPLATES = {
+    sel: "SELECT ${1:*}\nFROM ${2:table}\nWHERE ${3:condition}$0",
+    cnt: "SELECT count(*)\nFROM ${1:table}$0",
+    grp: "SELECT ${1:column}, count(*)\nFROM ${2:table}\nGROUP BY ${1:column}\nORDER BY 2 DESC$0",
+    ins: "INSERT INTO ${1:table} (${2:columns})\nVALUES (${3:values});$0",
+    upd: "UPDATE ${1:table}\nSET ${2:column} = ${3:value}\nWHERE ${4:condition};$0",
+    del: "DELETE FROM ${1:table}\nWHERE ${2:condition};$0",
+    jn: "${1:INNER} JOIN ${2:table} ${3:t} ON ${3:t}.${4:id} = ${5:other}.${6:id}$0",
+    cte: "WITH ${1:name} AS (\n	${2:SELECT 1}\n)\nSELECT *\nFROM ${1:name}$0",
+    crt: "CREATE TABLE ${1:name} (\n	${2:id} ${3:integer} PRIMARY KEY,\n	$0\n);"
+  };
+  let userTemplates = {};
+  function templateFor(word) {
+    const key = word.toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(userTemplates, key)) return userTemplates[key];
+    if (Object.prototype.hasOwnProperty.call(BUILT_IN_TEMPLATES, key)) return BUILT_IN_TEMPLATES[key];
+    return null;
+  }
+  function templateSnippets(tree) {
+    return flattenSnippets(tree).filter((s2) => s2.path === TEMPLATE_FOLDER || s2.path.startsWith(TEMPLATE_FOLDER + " / ")).filter((s2) => /^[\w$]+$/.test(s2.name.trim())).map((s2) => ({ id: s2.id, trigger: s2.name.trim().toLowerCase() }));
+  }
+  function refreshUserTemplates(tree) {
+    const wanted = templateSnippets(tree);
+    const next = {};
+    let pending = wanted.length;
+    if (pending === 0) {
+      userTemplates = {};
+      return;
+    }
+    const done = () => {
+      if (--pending === 0) userTemplates = next;
+    };
+    for (const snippet of wanted) {
+      execAjax$2(
+        "/get_snippet_text/",
+        JSON.stringify({ p_st_id: snippet.id }),
+        function(r2) {
+          next[snippet.trigger] = r2.v_data;
+          done();
+        },
+        done,
+        "box",
+        false
+      );
+    }
+  }
+  function expandLiveTemplate(editor) {
+    if (editor.getReadOnly() || !editor.selection.isEmpty()) return false;
+    const pos = editor.getCursorPosition();
+    const match = /[\w$]+$/.exec(editor.session.getLine(pos.row).slice(0, pos.column));
+    if (!match) return false;
+    const content = templateFor(match[0]);
+    if (content === null) return false;
+    const Range2 = ace.require("ace/range").Range;
+    editor.session.remove(new Range2(pos.row, pos.column - match[0].length, pos.row, pos.column));
+    ace.require("ace/snippets").snippetManager.insertSnippet(editor, content);
+    return true;
+  }
   const CLOSE_ZONE_THRESHOLD_PX = 108;
   const STATUS_ZONE_THRESHOLD_PX = 84;
   const ICON_ONLY_THRESHOLD_PX = 60;
@@ -4690,14 +4757,6 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   }
   function rankEntries(entries, query2) {
     return entries.map((entry, order) => ({ entry, order, rank: matchRank(entry.label, query2) })).filter((x2) => x2.rank >= 0).sort((a2, b2) => a2.rank - b2.rank || a2.order - b2.order).map((x2) => x2.entry);
-  }
-  function flattenSnippets(tree, path = "") {
-    if (!tree) return [];
-    const out = (tree.files || []).map((f2) => ({ id: f2.id, name: f2.name, path }));
-    for (const folder of tree.folders || []) {
-      out.push(...flattenSnippets(folder, path ? path + " / " + folder.name : folder.name));
-    }
-    return out;
   }
   let overlay = null;
   let staticEntries = [];
@@ -11724,7 +11783,18 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     }
   }
+  function tryExpandLiveTemplate(p_editor, p_event) {
+    if (p_event.keyCode !== 9 || p_event.shiftKey || p_event.ctrlKey || p_event.altKey || p_event.metaKey) return false;
+    if (p_editor.tabstopManager || !expandLiveTemplate(p_editor)) return false;
+    p_event.preventDefault();
+    p_event.stopPropagation();
+    return true;
+  }
   function autocomplete_keydown(p_editor, p_event) {
+    if (tryExpandLiveTemplate(p_editor, p_event)) {
+      if (v_autocomplete_object.active) close_autocomplete();
+      return;
+    }
     if (
       /** @type {any} */
       event.ctrlKey == true || /** @type {any} */
@@ -11774,6 +11844,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     }
   }
   function autocomplete_update_editor_cursor(p_editor, p_event) {
+    if (tryExpandLiveTemplate(p_editor, p_event)) return;
+    if (p_editor.tabstopManager && p_event.keyCode === 9) return;
     if (!p_event.shiftKey && !p_event.altKey && !p_event.ctrlKey && !p_event.metaKey) {
       if (p_event.keyCode === 40 || p_event.keyCode === 38) {
         var v_cursor_pos = p_editor.getCursorPosition();
@@ -42450,6 +42522,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       JSON.stringify({}),
       function(p_return) {
         v_connTabControl.tag.globalSnippets = p_return;
+        refreshUserTemplates(p_return);
       },
       null,
       "box",

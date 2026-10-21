@@ -15,6 +15,7 @@ Portions Copyright (c) 2025-2026, Zbyněk Vanžura
 import { execAjax } from "./ajax_control_bridge.js";
 import { t } from "./i18n.js";
 import { getSectionEntries, switchSection } from "./section_switcher.js";
+import { flattenSnippets } from "./snippet_tree.js";
 import { startEditSnippetText } from "./tree_context_functions/tree_snippets.js";
 import { v_startEditData } from "./tree_context_functions/edit_data.js";
 
@@ -58,22 +59,6 @@ export function rankEntries(entries, query) {
 		.filter((x) => x.rank >= 0)
 		.sort((a, b) => a.rank - b.rank || a.order - b.order)
 		.map((x) => x.entry);
-}
-
-/**
- * Snippet files of the (nested) snippet tree get_all_snippets returns.
- * @param {any} tree
- * @param {string} path
- * @returns {Array<{ id: number, name: string, path: string }>}
- */
-export function flattenSnippets(tree, path = "") {
-	if (!tree) return [];
-	/** @type {Array<{ id: number, name: string, path: string }>} */
-	const out = (tree.files || []).map((/** @type {any} */ f) => ({ id: f.id, name: f.name, path }));
-	for (const folder of tree.folders || []) {
-		out.push(...flattenSnippets(folder, path ? path + " / " + folder.name : folder.name));
-	}
-	return out;
 }
 
 /** @type {HTMLElement | null} */
