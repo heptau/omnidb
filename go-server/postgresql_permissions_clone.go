@@ -111,6 +111,13 @@ func buildCloneRolePlan(db *sql.DB, info *ConnectionInfo, source, newName, passw
 		return nil, err
 	}
 	stmts := []string{createStmt}
+	if attrs.Comment != nil && *attrs.Comment != "" {
+		commentStmt, err := buildRoleCommentSQL(db, rawNew, *attrs.Comment)
+		if err != nil {
+			return nil, err
+		}
+		stmts = append(stmts, commentStmt)
+	}
 
 	if copyMemberships {
 		memberships, err := postgresqlRoleMemberships(db, sourceQuoted)

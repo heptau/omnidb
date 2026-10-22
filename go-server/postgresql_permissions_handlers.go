@@ -20,6 +20,8 @@ type pgRoleAttributesFields struct {
 	PBypassRLS   bool    `json:"p_bypass_rls"`
 	PConnLimit   flexInt `json:"p_connection_limit"`
 	PValidUntil  string  `json:"p_valid_until"`
+	// PComment is the role comment; absent (null) leaves it alone.
+	PComment *string `json:"p_comment"`
 }
 
 func (f pgRoleAttributesFields) toAttributes() postgresqlRoleAttributes {
@@ -33,10 +35,15 @@ func (f pgRoleAttributesFields) toAttributes() postgresqlRoleAttributes {
 		BypassRLS:   f.PBypassRLS,
 		ConnLimit:   int64(f.PConnLimit),
 		ValidUntil:  f.PValidUntil,
+		Comment:     f.PComment,
 	}
 }
 
 func roleAttributesEnvelope(attrs postgresqlRoleAttributes) map[string]any {
+	comment := ""
+	if attrs.Comment != nil {
+		comment = *attrs.Comment
+	}
 	return map[string]any{
 		"p_can_login":        attrs.CanLogin,
 		"p_superuser":        attrs.Super,
@@ -47,6 +54,7 @@ func roleAttributesEnvelope(attrs postgresqlRoleAttributes) map[string]any {
 		"p_bypass_rls":       attrs.BypassRLS,
 		"p_connection_limit": attrs.ConnLimit,
 		"p_valid_until":      attrs.ValidUntil,
+		"p_comment":          comment,
 	}
 }
 
@@ -77,8 +85,8 @@ func handleCreateRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.H
 		defer db.Close()
 
 		if reqBody.PPreview {
-			stmt, err := buildCreateRoleSQL(db, reqBody.PName, reqBody.toAttributes(), reqBody.PPassword, true)
-			writePreviewOrError(w, err, stmt)
+			stmts, err := buildCreateRoleStatements(db, reqBody.PName, reqBody.toAttributes(), reqBody.PPassword, true)
+			writePreviewOrError(w, err, stmts...)
 			return
 		}
 		if err := postgresqlCreateRole(db, reqBody.PName, reqBody.toAttributes(), reqBody.PPassword); err != nil {
@@ -201,8 +209,8 @@ func handleAlterRoleAttributesPostgreSQL(upstream *url.URL, fallback http.Handle
 		defer db.Close()
 
 		if reqBody.PPreview {
-			stmt, err := buildAlterRoleAttributesSQL(db, reqBody.PRole, reqBody.toAttributes())
-			writePreviewOrError(w, err, stmt)
+			stmts, err := buildAlterRoleStatements(db, reqBody.PRole, reqBody.toAttributes())
+			writePreviewOrError(w, err, stmts...)
 			return
 		}
 		if err := postgresqlAlterRoleAttributes(db, reqBody.PRole, reqBody.toAttributes()); err != nil {

@@ -2754,7 +2754,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     var fmt = new Intl.DateTimeFormat(window.v_language || "en", { dateStyle: "medium", timeStyle: "short" });
     label.textContent = fmt.format(from) + " - " + fmt.format(to);
   }
-  function setupTimeRangePicker({ button, label, container, fromInput, toInput, onChange }) {
+  function setupTimeRangePicker({ button: button2, label, container, fromInput, toInput, onChange }) {
     label.textContent = t$1("timerange.last_6_hours");
     var panel = null;
     var calendar = null;
@@ -2775,7 +2775,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         /** @type {Node} */
         e2.target
       );
-      if (panel && !panel.contains(target) && !button.contains(target)) close();
+      if (panel && !panel.contains(target) && !button2.contains(target)) close();
     }
     function onKeyDown(e2) {
       if (e2.key === "Escape") close();
@@ -2878,7 +2878,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       document.addEventListener("mousedown", onOutsideMouseDown, true);
       document.addEventListener("keydown", onKeyDown, true);
     }
-    button.addEventListener("click", open);
+    button2.addEventListener("click", open);
   }
   var v_consoleState = {
     Idle: 0,
@@ -4763,7 +4763,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   let staticEntries = [];
   let tableEntries = [];
   let shown = [];
-  let selected = 0;
+  let selected$1 = 0;
   let tableTimer = 0;
   let tableToken = 0;
   function openConnection(connId) {
@@ -4843,7 +4843,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       overlay.querySelector("[role=listbox]")
     );
     shown = rankEntries([...staticEntries, ...tableEntries], input.value).slice(0, MAX_SHOWN);
-    selected = Math.min(selected, Math.max(shown.length - 1, 0));
+    selected$1 = Math.min(selected$1, Math.max(shown.length - 1, 0));
     list.innerHTML = "";
     if (shown.length === 0) {
       const empty = document.createElement("div");
@@ -4853,9 +4853,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     }
     shown.forEach((entry, i2) => {
       const row = document.createElement("div");
-      row.className = "omnidb__search-everywhere__row" + (i2 === selected ? " omnidb__search-everywhere__row--selected" : "");
+      row.className = "omnidb__search-everywhere__row" + (i2 === selected$1 ? " omnidb__search-everywhere__row--selected" : "");
       row.setAttribute("role", "option");
-      row.setAttribute("aria-selected", String(i2 === selected));
+      row.setAttribute("aria-selected", String(i2 === selected$1));
       const icon = document.createElement("i");
       icon.className = "fas " + entry.icon;
       const label = document.createElement("span");
@@ -4930,7 +4930,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     if (overlay) return;
     staticEntries = [];
     tableEntries = [];
-    selected = 0;
+    selected$1 = 0;
     overlay = document.createElement("div");
     overlay.className = "omnidb__search-everywhere";
     const box = document.createElement("div");
@@ -4956,7 +4956,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       if (e2.target === overlay) closeSearchEverywhere();
     });
     input.addEventListener("input", () => {
-      selected = 0;
+      selected$1 = 0;
       render();
       clearTimeout(tableTimer);
       tableTimer = window.setTimeout(searchTables, 200);
@@ -4967,15 +4967,15 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         closeSearchEverywhere();
       } else if (e2.key === "ArrowDown") {
         e2.preventDefault();
-        selected = Math.min(selected + 1, shown.length - 1);
+        selected$1 = Math.min(selected$1 + 1, shown.length - 1);
         render();
       } else if (e2.key === "ArrowUp") {
         e2.preventDefault();
-        selected = Math.max(selected - 1, 0);
+        selected$1 = Math.max(selected$1 - 1, 0);
         render();
       } else if (e2.key === "Enter") {
         e2.preventDefault();
-        choose(selected);
+        choose(selected$1);
       }
     });
     input.focus();
@@ -5617,6 +5617,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   var PERMISSIONS_CONTENT_ID = "permissions_panel_content";
   var v_render_token = 0;
   var PERMISSIONS_PUBLIC_ROLE = { v_name: "PUBLIC", v_oid: 0, v_can_login: false, v_is_public: true };
+  function roleLabel(p_name) {
+    return p_name === "PUBLIC" ? "public" : p_name;
+  }
   var v_createPermissionsPanelFunction = function() {
     var v_html = "<div class='omnidb__permissions'><div id='" + PERMISSIONS_STRIP_SLOT_ID + "' class='omnidb__tab-menu--container omnidb__tab-menu--container--primary omnidb__conn-strip-host'></div><div id='" + PERMISSIONS_CONTENT_ID + "' class='omnidb__permissions__content'></div></div>";
     var v_target = (
@@ -5802,7 +5805,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         v_icon.className = "fas node-all " + (p_role.v_is_public ? "fa-globe" : p_role.v_can_login ? "fa-user" : "fa-user-friends");
         v_row.appendChild(v_icon);
         var v_label = document.createElement("span");
-        v_label.textContent = p_role.v_name;
+        v_label.textContent = roleLabel(p_role.v_name);
+        if (p_role.v_comment) v_label.title = p_role.v_comment;
         v_row.appendChild(v_label);
         var v_badges = [];
         if (p_role.v_superuser) v_badges.push(t$1("permissions.role_badge_superuser"));
@@ -5961,6 +5965,19 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     v_valid_until_hint.textContent = t$1("permissions.valid_until_hint");
     v_valid_until_col.appendChild(v_valid_until_hint);
     p_container.appendChild(v_valid_until_col);
+    var v_comment_col = document.createElement("div");
+    v_comment_col.className = "col-md-12 mb-3";
+    var v_comment_label = document.createElement("label");
+    v_comment_label.setAttribute("for", "perm_role_comment");
+    v_comment_label.textContent = t$1("permissions.role_comment");
+    var v_comment_input = document.createElement("textarea");
+    v_comment_input.id = "perm_role_comment";
+    v_comment_input.className = "form-control";
+    v_comment_input.rows = 2;
+    v_comment_input.value = p_values.comment ?? "";
+    v_comment_col.appendChild(v_comment_label);
+    v_comment_col.appendChild(v_comment_input);
+    p_container.appendChild(v_comment_col);
   }
   function readRoleAttributeFields() {
     return {
@@ -5999,6 +6016,10 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       p_valid_until: (
         /** @type {HTMLInputElement} */
         document.getElementById("perm_role_valid_until").value
+      ),
+      p_comment: (
+        /** @type {HTMLTextAreaElement} */
+        document.getElementById("perm_role_comment").value.trim()
       )
     };
   }
@@ -6423,7 +6444,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
               replication: v_current.p_replication,
               bypass_rls: v_current.p_bypass_rls,
               connection_limit: v_current.p_connection_limit,
-              valid_until: v_current.p_valid_until
+              valid_until: v_current.p_valid_until,
+              comment: v_current.p_comment
             });
             appendSqlPreview(v_content, function() {
               return [
@@ -6562,12 +6584,12 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     var v_is_public_focus = p_role_name === "PUBLIC";
     var v_column = document.createElement("div");
     v_column.className = "omnidb__permissions__column";
-    var v_members_section = buildColumnSection(v_column, t$1("permissions.members_column_title", { role: p_role_name }), {
+    var v_members_section = buildColumnSection(v_column, t$1("permissions.members_column_title", { role: roleLabel(p_role_name) }), {
       addTitle: t$1("permissions.grant_membership_reverse"),
       showAdd: !v_is_public_focus,
       showRemove: !v_is_public_focus
     });
-    var v_membership_section = buildColumnSection(v_column, t$1("permissions.member_of_column_title", { role: p_role_name }), {
+    var v_membership_section = buildColumnSection(v_column, t$1("permissions.member_of_column_title", { role: roleLabel(p_role_name) }), {
       addTitle: t$1("permissions.grant_membership"),
       showAdd: !v_is_public_focus,
       showRemove: !v_is_public_focus
@@ -6705,7 +6727,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         v_icon.className = "fas node-all " + (p_row.v_is_public ? "fa-globe" : "fa-users");
         v_row.appendChild(v_icon);
         var v_label = document.createElement("span");
-        v_label.textContent = p_row.v_name;
+        v_label.textContent = roleLabel(p_row.v_name);
         v_row.appendChild(v_label);
         appendMembershipNotes(v_row, p_row);
         v_row.addEventListener("click", function() {
@@ -6761,7 +6783,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         v_icon.className = "fas node-all " + (p_row.v_can_login === void 0 ? "fa-users" : p_row.v_can_login ? "fa-user" : "fa-user-friends");
         v_row.appendChild(v_icon);
         var v_label = document.createElement("span");
-        v_label.textContent = p_row.v_name;
+        v_label.textContent = roleLabel(p_row.v_name);
         v_row.appendChild(v_label);
         appendMembershipNotes(v_row, p_row);
         v_row.addEventListener("click", function() {
@@ -7717,7 +7739,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     closeObjectsColumn(p_tag);
     var v_column = document.createElement("div");
     v_column.className = "omnidb__permissions__column";
-    var v_section = buildColumnSection(v_column, t$1("permissions.objects_column_title", { role: p_role_name }), {
+    var v_section = buildColumnSection(v_column, t$1("permissions.objects_column_title", { role: roleLabel(p_role_name) }), {
       addTitle: t$1("permissions.add_object_privilege"),
       showAdd: true,
       showRemove: false
@@ -9077,7 +9099,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       if (!managed) rememberDir(folder());
       call$2({ p_action: "status", p_dir: folder() }, showState);
     };
-    const button = (label, onClick) => {
+    const button2 = (label, onClick) => {
       const b2 = (
         /** @type {HTMLButtonElement} */
         el$9("button", "btn btn-sm omnidb__theme__btn--secondary", label)
@@ -9086,14 +9108,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       b2.addEventListener("click", onClick);
       buttons.appendChild(b2);
     };
-    button(t$1("vcs.check"), check);
-    button(t$1("vcs.init"), async () => {
+    button2(t$1("vcs.check"), check);
+    button2(t$1("vcs.init"), async () => {
       await folderReady;
       if (!haveFolder()) return showAlert$1(t$1("vcs.need_dir"));
       if (!managed) rememberDir(folder());
       call$2({ p_action: "init", p_dir: folder() }, showState);
     });
-    button(t$1("vcs.import"), async () => {
+    button2(t$1("vcs.import"), async () => {
       await folderReady;
       if (!haveFolder()) return showAlert$1(t$1("vcs.need_dir"));
       if (selectedKinds().length === 0) return showAlert$1(t$1("vcs.need_kind"));
@@ -9112,7 +9134,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         check();
       })
     );
-    const field = (key, ...controls) => {
+    const field2 = (key, ...controls) => {
       const w2 = el$9("div", "mb-3");
       w2.append(el$9("label", "form-label small fw-bold mb-1", t$1(key)), ...controls);
       return w2;
@@ -9137,7 +9159,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        content.append(field("vcs.dir", folderRow, defaultNote), field("vcs.kinds", kindsRow), buttons, state, field("vcs.message", message), el$9("div", "small text-muted", t$1("vcs.hint")));
+        content.append(field2("vcs.dir", folderRow, defaultNote), field2("vcs.kinds", kindsRow), buttons, state, field2("vcs.message", message), el$9("div", "small text-muted", t$1("vcs.hint")));
         dir.placeholder = t$1("vcs.loading");
         call$2({ p_action: "folder" }, (r2) => {
           dir.placeholder = t$1("vcs.dir_placeholder");
@@ -12852,12 +12874,12 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     if (text.charCodeAt(0) === 65279) text = text.slice(1);
     const rows = [];
     let row = [];
-    let field = "";
+    let field2 = "";
     let inQuotes = false;
     let fieldStarted = false;
     const endField = () => {
-      row.push(field);
-      field = "";
+      row.push(field2);
+      field2 = "";
       fieldStarted = false;
     };
     const endRow = () => {
@@ -12870,13 +12892,13 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       if (inQuotes) {
         if (ch === '"') {
           if (text[i2 + 1] === '"') {
-            field += '"';
+            field2 += '"';
             i2++;
           } else {
             inQuotes = false;
           }
         } else {
-          field += ch;
+          field2 += ch;
         }
       } else if (ch === '"' && !fieldStarted) {
         inQuotes = true;
@@ -12887,11 +12909,11 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         if (ch === "\r" && text[i2 + 1] === "\n") i2++;
         endRow();
       } else {
-        field += ch;
+        field2 += ch;
         fieldStarted = true;
       }
     }
-    if (field !== "" || fieldStarted || row.length > 0) endRow();
+    if (field2 !== "" || fieldStarted || row.length > 0) endRow();
     return rows;
   }
   function detectDelimiter(text) {
@@ -22057,7 +22079,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     const connections2 = (v_connTabControl.tag.connections || []).filter((c2) => c2.v_db_type !== "terminal");
     const label = (c2) => c2.v_alias || c2.v_details1 || String(c2.v_conn_id);
     const sourceLabel = connections2.find((c2) => c2.v_conn_id === sourceConn) || { v_alias: "", v_details1: "" };
-    const field = (key, control) => {
+    const field2 = (key, control) => {
       const w2 = el$7("div", "mb-2");
       w2.append(el$7("label", "form-label small mb-1", t$1(key)), control);
       return w2;
@@ -22116,7 +22138,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     deletesLabel.htmlFor = deletes.id;
     deletesWrap.append(deletes, deletesLabel);
     const dataOnly = el$7("div");
-    dataOnly.append(field("compare.table", table), field("compare.target_table", targetTable), deletesWrap);
+    dataOnly.append(field2("compare.table", table), field2("compare.target_table", targetTable), deletesWrap);
     const sync = () => {
       dataOnly.style.display = kindSelect.value === "data" ? "" : "none";
     };
@@ -22168,7 +22190,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
         const source = el$7("div", "mb-2 fw-bold", t$1("compare.source", { name: label(sourceLabel) }));
-        content.append(field("compare.what", kindSelect), source, field("compare.source_schema", sourceSchema), field("compare.target", targetSelect), field("compare.target_schema", targetSchema), dataOnly);
+        content.append(field2("compare.what", kindSelect), source, field2("compare.source_schema", sourceSchema), field2("compare.target", targetSelect), field2("compare.target_schema", targetSchema), dataOnly);
       },
       "form",
       t$1("compare.run")
@@ -22190,7 +22212,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   function call$1(url, body, done) {
     execAjax$2(url, JSON.stringify(body), (r2) => done(r2.v_data), (r2) => showAlert$1(errorText$1(r2)), "box", false);
   }
-  function renderRuns$1(box, runs) {
+  function renderRuns(box, runs) {
     box.innerHTML = "";
     if (runs.length === 0) {
       box.appendChild(el$6("div", "text-muted small", t$1("schedules.no_runs")));
@@ -22221,7 +22243,7 @@ ${r2.message}`).join("\n\n");
       if (s2.last_status === "error") status.style.color = "var(--bs-danger, #dc3545)";
       const runs = el$6("div", "mt-1");
       const buttons = el$6("div", "mt-1");
-      const button = (label, onClick) => {
+      const button2 = (label, onClick) => {
         const b2 = (
           /** @type {HTMLButtonElement} */
           el$6("button", "btn btn-sm omnidb__theme__btn--secondary me-1", label)
@@ -22230,10 +22252,10 @@ ${r2.message}`).join("\n\n");
         b2.addEventListener("click", onClick);
         buttons.appendChild(b2);
       };
-      button(t$1("schedules.run_now"), () => call$1("/run_schedule_now/", { p_id: s2.id }, refresh));
-      button(s2.enabled ? t$1("schedules.pause") : t$1("schedules.resume"), () => call$1("/set_schedule_enabled/", { p_id: s2.id, p_enabled: !s2.enabled }, refresh));
-      button(t$1("schedules.history"), () => call$1("/get_schedule_runs/", { p_id: s2.id }, (data) => renderRuns$1(runs, data)));
-      button(t$1("schedules.delete"), () => call$1("/delete_schedule/", { p_id: s2.id }, refresh));
+      button2(t$1("schedules.run_now"), () => call$1("/run_schedule_now/", { p_id: s2.id }, refresh));
+      button2(s2.enabled ? t$1("schedules.pause") : t$1("schedules.resume"), () => call$1("/set_schedule_enabled/", { p_id: s2.id, p_enabled: !s2.enabled }, refresh));
+      button2(t$1("schedules.history"), () => call$1("/get_schedule_runs/", { p_id: s2.id }, (data) => renderRuns(runs, data)));
+      button2(t$1("schedules.delete"), () => call$1("/delete_schedule/", { p_id: s2.id }, refresh));
       item.append(title, meta, status, buttons, runs);
       list.appendChild(item);
     }
@@ -22277,7 +22299,7 @@ ${r2.message}`).join("\n\n");
     sql.value = getSql();
     sql.style.fontFamily = "monospace";
     const refresh = () => call$1("/get_schedules/", {}, (rows) => renderList(list, rows, refresh));
-    const field = (key, control) => {
+    const field2 = (key, control) => {
       const w2 = el$6("div", "mb-2");
       w2.append(el$6("label", "form-label small mb-1", t$1(key)), control);
       return w2;
@@ -22303,10 +22325,10 @@ ${r2.message}`).join("\n\n");
         content.append(
           list,
           el$6("div", "fw-bold mb-1", t$1("schedules.new")),
-          field("schedules.name", name),
-          field("schedules.connection", target),
-          field("schedules.interval", interval),
-          field("schedules.sql", sql),
+          field2("schedules.name", name),
+          field2("schedules.connection", target),
+          field2("schedules.interval", interval),
+          field2("schedules.sql", sql),
           el$6("div", "small text-muted", t$1("schedules.hint"))
         );
         refresh();
@@ -22951,13 +22973,13 @@ ${r2.message}`).join("\n\n");
     );
     holder.appendChild(canvas);
     const controls = el$4("div", "d-flex flex-wrap gap-3 align-items-end mb-2");
-    const field = (labelKey, control) => {
+    const field2 = (labelKey, control) => {
       const w2 = el$4("div");
       w2.append(el$4("label", "form-label small mb-1", t$1(labelKey)), control);
       return w2;
     };
-    controls.append(field("chart.type", typeSelect), field("chart.x_axis", xSelect));
-    root.append(controls, field("chart.y_axis", yBoxes), holder, note);
+    controls.append(field2("chart.type", typeSelect), field2("chart.x_axis", xSelect));
+    root.append(controls, field2("chart.y_axis", yBoxes), holder, note);
     const draw = () => {
       const type = typeSelect.value;
       const valueCols = yInputs.filter((x2) => x2.checked).map((x2) => Number(x2.value));
@@ -41912,6 +41934,7 @@ ${r2.message}`).join("\n\n");
     );
   }
   const CONTENT_ID = "omnidb__section_schedules";
+  let selected;
   function el$1(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
@@ -41931,22 +41954,45 @@ ${r2.message}`).join("\n\n");
       false
     );
   }
-  function renderRuns(box, runs) {
-    box.innerHTML = "";
-    if (runs.length === 0) {
-      box.appendChild(el$1("div", "text-muted small", t$1("schedules.no_runs")));
-      return;
-    }
-    const pre = el$1("pre", "p-2 small mb-0");
-    pre.style.cssText = "max-height:24vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
-    pre.textContent = runs.map((r2) => `${when(r2.started)}  ${r2.status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")}  ${r2.duration_ms} ms
-${r2.message}`).join("\n\n");
-    box.appendChild(pre);
+  function button(label, onClick, primary) {
+    const b2 = (
+      /** @type {HTMLButtonElement} */
+      el$1("button", "btn btn-sm " + (primary ? "omnidb__theme__btn--primary" : "omnidb__theme__btn--secondary"), label)
+    );
+    b2.type = "button";
+    b2.addEventListener("click", onClick);
+    return b2;
   }
-  function buildForm(schedule, done) {
-    const form = el$1("div", "p-3 mb-3");
-    form.style.cssText = "border:1px solid var(--border-color);border-radius:4px;";
-    form.appendChild(el$1("div", "fw-bold mb-2", schedule ? t$1("schedules.edit_title") : t$1("schedules.new")));
+  function field(key, control) {
+    const w2 = el$1("div", "mb-3");
+    w2.append(el$1("label", "form-label small fw-bold mb-1", t$1(key)), control);
+    return w2;
+  }
+  function loadRuns(box, id) {
+    call("/get_schedule_runs/", { p_id: id }, (runs) => {
+      box.innerHTML = "";
+      if (runs.length === 0) {
+        box.appendChild(el$1("div", "text-muted small", t$1("schedules.no_runs")));
+        return;
+      }
+      const pre = el$1("pre", "p-2 small mb-0");
+      pre.style.cssText = "max-height:30vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
+      pre.textContent = runs.map((r2) => `${when(r2.started)}  ${r2.status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")}  ${r2.duration_ms} ms
+${r2.message}`).join("\n\n");
+      box.appendChild(pre);
+    });
+  }
+  function buildDetail(schedule, refresh, choose2) {
+    const pane = el$1("div", "omnidb__schedules__form");
+    const head = el$1("div", "d-flex align-items-baseline gap-2 mb-3");
+    head.appendChild(el$1("h5", "m-0", schedule ? schedule.name : t$1("schedules.new")));
+    if (schedule && !schedule.enabled) head.appendChild(el$1("span", "badge text-bg-secondary", t$1("schedules.paused")));
+    pane.appendChild(head);
+    if (schedule) {
+      pane.appendChild(
+        el$1("div", "small text-muted mb-3", t$1("schedules.meta", { interval: schedule.interval, last: when(schedule.last_started), next: schedule.enabled ? when(schedule.next_run) : t$1("schedules.paused") }))
+      );
+    }
     const name = (
       /** @type {HTMLInputElement} */
       el$1("input", "form-control form-control-sm")
@@ -41970,6 +42016,9 @@ ${r2.message}`).join("\n\n");
     if (schedule) {
       target.value = String(schedule.conn_id);
       target.disabled = true;
+    } else {
+      const current = v_connTabControl.selectedTab && v_connTabControl.selectedTab.tag && v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
+      if (current !== void 0 && current !== null) target.value = String(current);
     }
     const interval = (
       /** @type {HTMLInputElement} */
@@ -41979,99 +42028,123 @@ ${r2.message}`).join("\n\n");
     interval.min = "1";
     interval.max = "10080";
     interval.value = schedule ? String(schedule.interval) : "60";
+    interval.style.maxWidth = "160px";
     const sql = (
       /** @type {HTMLTextAreaElement} */
       el$1("textarea", "form-control form-control-sm")
     );
-    sql.rows = 6;
+    sql.rows = 10;
     sql.spellcheck = false;
     sql.style.fontFamily = "monospace";
     sql.value = schedule ? schedule.sql : "";
-    const field = (key, control) => {
-      const w2 = el$1("div", "mb-2");
-      w2.append(el$1("label", "form-label small fw-bold mb-1", t$1(key)), control);
-      return w2;
-    };
-    form.append(field("schedules.name", name), field("schedules.connection", target), field("schedules.interval", interval), field("schedules.sql", sql));
-    const buttons = el$1("div", "d-flex gap-2");
-    const save = (
-      /** @type {HTMLButtonElement} */
-      el$1("button", "btn btn-sm omnidb__theme__btn--primary", t$1("common.save"))
+    pane.append(field("schedules.name", name), field("schedules.connection", target), field("schedules.interval", interval), field("schedules.sql", sql));
+    const actions = el$1("div", "d-flex flex-wrap gap-2 mb-3");
+    actions.appendChild(
+      button(
+        t$1("common.save"),
+        () => {
+          if (schedule) {
+            call("/update_schedule/", { p_id: schedule.id, p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, refresh);
+          } else {
+            call("/add_schedule/", { p_conn_id: Number(target.value), p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, (id) => choose2(id));
+          }
+        },
+        true
+      )
     );
-    save.type = "button";
-    save.addEventListener("click", () => {
-      if (schedule) {
-        call("/update_schedule/", { p_id: schedule.id, p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, done);
-      } else {
-        call("/add_schedule/", { p_conn_id: Number(target.value), p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, done);
-      }
-    });
-    const cancel = (
-      /** @type {HTMLButtonElement} */
-      el$1("button", "btn btn-sm omnidb__theme__btn--secondary", t$1("common.cancel"))
-    );
-    cancel.type = "button";
-    cancel.addEventListener("click", done);
-    buttons.append(save, cancel);
-    form.appendChild(buttons);
-    return form;
-  }
-  function buildCard(s2, refresh, edit) {
-    const card = el$1("div", "mb-3 p-3");
-    card.style.cssText = "border:1px solid var(--border-color);border-radius:4px;";
-    const head = el$1("div", "d-flex align-items-baseline gap-2");
-    head.append(el$1("span", "fw-bold", s2.name), el$1("span", "text-muted small", s2.alias));
-    if (!s2.enabled) head.appendChild(el$1("span", "badge text-bg-secondary", t$1("schedules.paused")));
-    const meta = el$1("div", "small text-muted", t$1("schedules.meta", { interval: s2.interval, last: when(s2.last_started), next: s2.enabled ? when(s2.next_run) : t$1("schedules.paused") }));
-    const status = el$1("div", "small", s2.last_status ? (s2.last_status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")) + ": " + s2.last_message.split("\n").slice(-1)[0] : "");
-    if (s2.last_status === "error") status.style.color = "var(--bs-danger, #dc3545)";
-    const sql = el$1("pre", "p-2 small my-2", s2.sql);
-    sql.style.cssText = "max-height:12vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
-    const runs = el$1("div", "mt-2");
-    const buttons = el$1("div", "d-flex flex-wrap gap-2");
-    const button = (label, onClick) => {
-      const b2 = (
-        /** @type {HTMLButtonElement} */
-        el$1("button", "btn btn-sm omnidb__theme__btn--secondary", label)
+    if (schedule) {
+      const id = schedule.id;
+      actions.append(
+        button(t$1("schedules.run_now"), () => call("/run_schedule_now/", { p_id: id }, refresh)),
+        button(schedule.enabled ? t$1("schedules.pause") : t$1("schedules.resume"), () => call("/set_schedule_enabled/", { p_id: id, p_enabled: !schedule.enabled }, refresh))
       );
-      b2.type = "button";
-      b2.addEventListener("click", onClick);
-      buttons.appendChild(b2);
-    };
-    button(t$1("schedules.run_now"), () => call("/run_schedule_now/", { p_id: s2.id }, refresh));
-    button(s2.enabled ? t$1("schedules.pause") : t$1("schedules.resume"), () => call("/set_schedule_enabled/", { p_id: s2.id, p_enabled: !s2.enabled }, refresh));
-    button(t$1("schedules.history"), () => call("/get_schedule_runs/", { p_id: s2.id }, (data) => renderRuns(runs, data)));
-    button(t$1("common.edit"), () => edit(s2));
-    button(t$1("schedules.delete"), () => showConfirm(t$1("schedules.confirm_delete", { name: s2.name }), () => call("/delete_schedule/", { p_id: s2.id }, refresh)));
-    card.append(head, meta, status, sql, buttons, runs);
-    return card;
+    }
+    pane.appendChild(actions);
+    if (schedule) {
+      pane.appendChild(el$1("div", "fw-bold small mb-1", t$1("schedules.recent_runs")));
+      const runs = el$1("div");
+      pane.appendChild(runs);
+      loadRuns(runs, schedule.id);
+    }
+    return pane;
   }
-  function refreshSchedulesPane(editing) {
+  function refreshSchedulesPane() {
     const root = document.getElementById(CONTENT_ID);
     if (!root) return;
     call("/get_schedules/", {}, (rows) => {
+      if (typeof selected === "number" && !rows.some((r2) => r2.id === selected)) selected = void 0;
       const redraw = () => refreshSchedulesPane();
+      const select = (id) => {
+        selected = id;
+        redraw();
+      };
       root.innerHTML = "";
-      const wrap = el$1("div", "omnidb__schedules p-3");
-      wrap.style.maxWidth = "900px";
-      const title = el$1("div", "d-flex align-items-center justify-content-between mb-3");
-      title.appendChild(el$1("h5", "m-0", t$1("nav.schedules")));
+      const body = el$1("div", "omnidb__section__body");
+      const layout = el$1("div", "omnidb__schedules");
+      const sidebar = el$1("div", "omnidb__schedules__sidebar");
+      const list = el$1("div", "omnidb__schedules__list");
+      if (rows.length === 0 && selected !== null) list.appendChild(el$1("div", "text-muted small p-2", t$1("schedules.none")));
+      for (const s2 of rows) {
+        const item = el$1("div", "omnidb__settings__list-item" + (s2.id === selected ? " omnidb__settings__list-item--selected" : ""));
+        const icon = el$1("i", "fas omnidb__settings__list-item-icon " + (s2.enabled ? "fa-calendar-alt" : "fa-pause-circle"));
+        if (s2.last_status === "error" && s2.id !== selected) icon.style.color = "var(--bs-danger, #dc3545)";
+        const text = el$1("div", "flex-grow-1");
+        text.style.minWidth = "0";
+        const title = el$1("div", "omnidb__settings__list-item-title", s2.name);
+        title.style.cssText = "overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+        const sub = el$1("div", "small", `${s2.alias} · ${t$1("schedules.every", { interval: s2.interval })}`);
+        sub.style.cssText = "opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+        text.append(title, sub);
+        item.append(icon, text);
+        item.addEventListener("click", () => select(s2.id));
+        list.appendChild(item);
+      }
+      const footer = el$1("div", "omnidb__list-footer");
+      const group = el$1("div", "omnidb__addremove");
       const add = (
         /** @type {HTMLButtonElement} */
-        el$1("button", "btn btn-sm omnidb__theme__btn--primary", t$1("schedules.new"))
+        el$1("button")
       );
       add.type = "button";
-      add.addEventListener("click", () => refreshSchedulesPane(null));
-      title.appendChild(add);
-      wrap.appendChild(title);
-      wrap.appendChild(el$1("p", "text-muted small", t$1("schedules.hint")));
-      if (editing !== void 0) wrap.appendChild(buildForm(editing, redraw));
-      if (rows.length === 0 && editing === void 0) wrap.appendChild(el$1("p", "text-muted", t$1("schedules.none")));
-      for (const s2 of rows) {
-        if (editing && editing.id === s2.id) continue;
-        wrap.appendChild(buildCard(s2, redraw, (row) => refreshSchedulesPane(row)));
+      add.title = t$1("schedules.new");
+      add.setAttribute("aria-label", t$1("schedules.new"));
+      add.appendChild(el$1("i", "fas fa-plus"));
+      add.addEventListener("click", () => select(null));
+      const divider = el$1("span", "omnidb__addremove-divider");
+      const remove = (
+        /** @type {HTMLButtonElement} */
+        el$1("button")
+      );
+      remove.type = "button";
+      remove.title = t$1("common.delete");
+      remove.setAttribute("aria-label", t$1("common.delete"));
+      remove.appendChild(el$1("i", "fas fa-minus"));
+      const current = rows.find((r2) => r2.id === selected);
+      remove.disabled = !current;
+      remove.addEventListener("click", () => {
+        if (!current) return;
+        showConfirm(
+          t$1("schedules.confirm_delete", { name: current.name }),
+          () => call("/delete_schedule/", { p_id: current.id }, () => {
+            selected = void 0;
+            redraw();
+          })
+        );
+      });
+      group.append(add, divider, remove);
+      footer.appendChild(group);
+      sidebar.append(list, footer);
+      const detail = el$1("div", "omnidb__schedules__detail");
+      if (current) detail.appendChild(buildDetail(current, redraw, select));
+      else if (selected === null) detail.appendChild(buildDetail(null, redraw, select));
+      else {
+        detail.appendChild(el$1("h5", "mb-2", t$1("nav.schedules")));
+        detail.appendChild(el$1("p", "text-muted small", t$1("schedules.hint")));
+        detail.appendChild(el$1("p", "text-muted", t$1("schedules.select_hint")));
       }
-      root.appendChild(wrap);
+      layout.append(sidebar, detail);
+      body.appendChild(layout);
+      root.appendChild(body);
     });
   }
   const NAV_DIVIDER = "|";

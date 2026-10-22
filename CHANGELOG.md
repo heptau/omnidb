@@ -21,18 +21,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sandboxed macOS app with no setup, but a container is hidden from other apps, so pick your own folder to push it
   with your own git tools. On a multi-user server the folder is typed in and the feature is limited to superusers.
   Pushing and pulling stay with your own git tools.
+- Permissions: a role can now have a comment. The Create Role and Edit Attributes dialogs have a Comment field
+  (`COMMENT ON ROLE`, shown in the SQL preview; clearing it removes the comment), the comment appears as a tooltip over
+  the role's name in the list, and Clone Role and the permissions export carry it over.
 - Navigation panel layout (Settings > Navigation panel): choose which items the left rail shows, reorder them with the
   arrows, and move the divider between its upper and lower part; the Settings icon always stays last. Every change
   shows up at once — the rail is rebuilt in place, no Apply and no reload — and is saved per user in the background.
   Bookmarks moved to the end of the rail's upper part by default.
-- Scheduled queries: a Scheduled queries section in the left rail lists every schedule with its last outcome and SQL,
-  and lets you create, edit, run now, pause or resume, read the last 50 runs of, or delete one. The query toolbar's
-  calendar button saves the editor's SQL (the selection, else the whole text) as a schedule to run on a connection
-  every N minutes (1 minute to a week). Each run records its status, duration and what every statement did (rows
-  returned or affected), or the error it stopped on; a read-only connection still refuses writes. The scheduler lives
-  in the server process, so it runs only while OmniDB is open (a run that came due while it was closed happens once at
-  the next start, not once per missed interval). Connections that use an SSH tunnel or token authentication cannot be
-  scheduled.
+- Scheduled queries: a Scheduled queries section in the left rail, laid out like Snippets and Connections — the
+  schedules in a list on the left with a + / − footer (each with its icon, connection and interval; a paused one is
+  marked), and the selected schedule's settings on the right: name, interval, SQL, Save, Run now, Pause/Resume and its
+  recent runs. + opens an empty form for a new schedule; the connection of an existing schedule is fixed. The query
+  toolbar's calendar button saves the editor's SQL (the selection, else the whole text) as a schedule to run on a
+  connection every N minutes (1 minute to a week). Each run records its status, duration and what every statement did
+  (rows returned or affected), or the error it stopped on, and the last 50 runs are kept; a read-only connection still
+  refuses writes. The scheduler lives in the server process, so it runs only while OmniDB is open (a run that came due
+  while it was closed happens once at the next start, not once per missed interval). Connections that use an SSH
+  tunnel or token authentication cannot be scheduled.
 - Compare (the exchange button in the query toolbar): the schema of the current connection against another
   connection's (tables, columns, column types), or one table's rows by primary key. The result is a summary plus a
   script that makes the target match the source (`CREATE TABLE`, `ADD COLUMN`, type changes; `INSERT`/`UPDATE` for
@@ -234,6 +239,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Permissions: the PUBLIC pseudo-role is now shown in lower case (`public`) in the role lists and column titles.
 - Opening a connection to a host that does not answer (a dead VPN, a firewall that drops packets) now gives up
   after 5 seconds with an error instead of leaving the spinner running for the operating system's own timeout.
 - Monitoring: a custom unit of type Grid broke every dashboard refresh after its first load with "Invalid or missing

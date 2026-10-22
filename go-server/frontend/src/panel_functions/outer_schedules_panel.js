@@ -7,11 +7,11 @@ Portions Copyright (c) 2025-2026, Zbyněk Vanžura
 */
 
 /// <summary>
-/// The Scheduled queries section: every schedule of the user with its latest
-/// outcome, and a form to create or edit one. Each schedule can be run now,
-/// paused or resumed, inspected (its last runs) and deleted. The query tab's
-/// calendar button adds a schedule from the editor's text; this is where they
-/// are managed.
+/// The Scheduled queries section, laid out like Snippets and Connections: a
+/// list of the user's schedules on the left with an add/remove footer, and the
+/// selected schedule's settings on the right -- name, interval, SQL -- which
+/// can be changed and saved, run at once, paused or resumed, with its recent
+/// runs underneath. "+" opens an empty form for a new schedule.
 /// </summary>
 
 import { execAjax } from "../ajax_control_bridge.js";
@@ -24,6 +24,9 @@ const CONTENT_ID = "omnidb__section_schedules";
  * @typedef {{ id: number, conn_id: number, alias: string, name: string, sql: string, interval: number, enabled: boolean, next_run: number, last_started: number, last_status: string, last_message: string }} ScheduleRow
  * @typedef {{ id: number, started: number, duration_ms: number, status: string, message: string }} ScheduleRun
  */
+
+/** The id of the selected schedule; `null` is the new-schedule form, `undefined` nothing. @type {number | null | undefined} */
+let selected;
 
 /**
  * @param {string} tag
@@ -60,33 +63,68 @@ function call(url, body, done) {
 }
 
 /**
- * @param {HTMLElement} box
- * @param {ScheduleRun[]} runs
+ * @param {string} label
+ * @param {() => void} onClick
+ * @param {boolean} [primary]
+ * @returns {HTMLButtonElement}
  */
-function renderRuns(box, runs) {
-	box.innerHTML = "";
-	if (runs.length === 0) {
-		box.appendChild(el("div", "text-muted small", t("schedules.no_runs")));
-		return;
-	}
-	const pre = el("pre", "p-2 small mb-0");
-	pre.style.cssText = "max-height:24vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
-	pre.textContent = runs
-		.map((r) => `${when(r.started)}  ${r.status === "ok" ? t("schedules.status_ok") : t("schedules.status_error")}  ${r.duration_ms} ms\n${r.message}`)
-		.join("\n\n");
-	box.appendChild(pre);
+function button(label, onClick, primary) {
+	const b = /** @type {HTMLButtonElement} */ (el("button", "btn btn-sm " + (primary ? "omnidb__theme__btn--primary" : "omnidb__theme__btn--secondary"), label));
+	b.type = "button";
+	b.addEventListener("click", onClick);
+	return b;
 }
 
 /**
- * The create/edit form. `schedule` null creates a new schedule.
+ * @param {string} key
+ * @param {HTMLElement} control
+ */
+function field(key, control) {
+	const w = el("div", "mb-3");
+	w.append(el("label", "form-label small fw-bold mb-1", t(key)), control);
+	return w;
+}
+
+/**
+ * The last runs of a schedule, newest first.
+ * @param {HTMLElement} box
+ * @param {number} id
+ */
+function loadRuns(box, id) {
+	call("/get_schedule_runs/", { p_id: id }, (/** @type {ScheduleRun[]} */ runs) => {
+		box.innerHTML = "";
+		if (runs.length === 0) {
+			box.appendChild(el("div", "text-muted small", t("schedules.no_runs")));
+			return;
+		}
+		const pre = el("pre", "p-2 small mb-0");
+		pre.style.cssText = "max-height:30vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
+		pre.textContent = runs
+			.map((r) => `${when(r.started)}  ${r.status === "ok" ? t("schedules.status_ok") : t("schedules.status_error")}  ${r.duration_ms} ms\n${r.message}`)
+			.join("\n\n");
+		box.appendChild(pre);
+	});
+}
+
+/**
+ * The right-hand pane: the settings of `schedule`, or an empty form for a new one.
  * @param {ScheduleRow | null} schedule
- * @param {() => void} done  called after a save, to redraw the section
+ * @param {() => void} refresh  redraws the whole section (keeping the selection)
+ * @param {(id: number) => void} choose  selects a schedule by id (after creating one)
  * @returns {HTMLElement}
  */
-function buildForm(schedule, done) {
-	const form = el("div", "p-3 mb-3");
-	form.style.cssText = "border:1px solid var(--border-color);border-radius:4px;";
-	form.appendChild(el("div", "fw-bold mb-2", schedule ? t("schedules.edit_title") : t("schedules.new")));
+function buildDetail(schedule, refresh, choose) {
+	const pane = el("div", "omnidb__schedules__form");
+
+	const head = el("div", "d-flex align-items-baseline gap-2 mb-3");
+	head.appendChild(el("h5", "m-0", schedule ? schedule.name : t("schedules.new")));
+	if (schedule && !schedule.enabled) head.appendChild(el("span", "badge text-bg-secondary", t("schedules.paused")));
+	pane.appendChild(head);
+	if (schedule) {
+		pane.appendChild(
+			el("div", "small text-muted mb-3", t("schedules.meta", { interval: schedule.interval, last: when(schedule.last_started), next: schedule.enabled ? when(schedule.next_run) : t("schedules.paused") })),
+		);
+	}
 
 	const name = /** @type {HTMLInputElement} */ (el("input", "form-control form-control-sm"));
 	name.type = "text";
@@ -103,9 +141,12 @@ function buildForm(schedule, done) {
 	}
 	if (schedule) {
 		target.value = String(schedule.conn_id);
-		// The connection of an existing schedule is fixed: moving it would
-		// change where its SQL runs without any review of that SQL.
+		// Where a schedule's SQL runs is fixed once it exists: moving it would
+		// aim reviewed SQL at another database without anyone looking at it.
 		target.disabled = true;
+	} else {
+		const current = v_connTabControl.selectedTab && v_connTabControl.selectedTab.tag && v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
+		if (current !== undefined && current !== null) target.value = String(current);
 	}
 
 	const interval = /** @type {HTMLInputElement} */ (el("input", "form-control form-control-sm"));
@@ -113,107 +154,127 @@ function buildForm(schedule, done) {
 	interval.min = "1";
 	interval.max = "10080";
 	interval.value = schedule ? String(schedule.interval) : "60";
+	interval.style.maxWidth = "160px";
 
 	const sql = /** @type {HTMLTextAreaElement} */ (el("textarea", "form-control form-control-sm"));
-	sql.rows = 6;
+	sql.rows = 10;
 	sql.spellcheck = false;
 	sql.style.fontFamily = "monospace";
 	sql.value = schedule ? schedule.sql : "";
 
-	/**
-	 * @param {string} key
-	 * @param {HTMLElement} control
-	 */
-	const field = (key, control) => {
-		const w = el("div", "mb-2");
-		w.append(el("label", "form-label small fw-bold mb-1", t(key)), control);
-		return w;
-	};
-	form.append(field("schedules.name", name), field("schedules.connection", target), field("schedules.interval", interval), field("schedules.sql", sql));
+	pane.append(field("schedules.name", name), field("schedules.connection", target), field("schedules.interval", interval), field("schedules.sql", sql));
 
-	const buttons = el("div", "d-flex gap-2");
-	const save = /** @type {HTMLButtonElement} */ (el("button", "btn btn-sm omnidb__theme__btn--primary", t("common.save")));
-	save.type = "button";
-	save.addEventListener("click", () => {
-		if (schedule) {
-			call("/update_schedule/", { p_id: schedule.id, p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, done);
-		} else {
-			call("/add_schedule/", { p_conn_id: Number(target.value), p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, done);
-		}
-	});
-	const cancel = /** @type {HTMLButtonElement} */ (el("button", "btn btn-sm omnidb__theme__btn--secondary", t("common.cancel")));
-	cancel.type = "button";
-	cancel.addEventListener("click", done);
-	buttons.append(save, cancel);
-	form.appendChild(buttons);
-	return form;
-}
+	const actions = el("div", "d-flex flex-wrap gap-2 mb-3");
+	actions.appendChild(
+		button(
+			t("common.save"),
+			() => {
+				if (schedule) {
+					call("/update_schedule/", { p_id: schedule.id, p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, refresh);
+				} else {
+					call("/add_schedule/", { p_conn_id: Number(target.value), p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, (/** @type {number} */ id) => choose(id));
+				}
+			},
+			true,
+		),
+	);
+	if (schedule) {
+		const id = schedule.id;
+		actions.append(
+			button(t("schedules.run_now"), () => call("/run_schedule_now/", { p_id: id }, refresh)),
+			button(schedule.enabled ? t("schedules.pause") : t("schedules.resume"), () => call("/set_schedule_enabled/", { p_id: id, p_enabled: !schedule.enabled }, refresh)),
+		);
+	}
+	pane.appendChild(actions);
 
-/**
- * @param {ScheduleRow} s
- * @param {() => void} refresh
- * @param {(s: ScheduleRow) => void} edit
- * @returns {HTMLElement}
- */
-function buildCard(s, refresh, edit) {
-	const card = el("div", "mb-3 p-3");
-	card.style.cssText = "border:1px solid var(--border-color);border-radius:4px;";
-	const head = el("div", "d-flex align-items-baseline gap-2");
-	head.append(el("span", "fw-bold", s.name), el("span", "text-muted small", s.alias));
-	if (!s.enabled) head.appendChild(el("span", "badge text-bg-secondary", t("schedules.paused")));
-	const meta = el("div", "small text-muted", t("schedules.meta", { interval: s.interval, last: when(s.last_started), next: s.enabled ? when(s.next_run) : t("schedules.paused") }));
-	const status = el("div", "small", s.last_status ? (s.last_status === "ok" ? t("schedules.status_ok") : t("schedules.status_error")) + ": " + s.last_message.split("\n").slice(-1)[0] : "");
-	if (s.last_status === "error") status.style.color = "var(--bs-danger, #dc3545)";
-	const sql = el("pre", "p-2 small my-2", s.sql);
-	sql.style.cssText = "max-height:12vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
-	const runs = el("div", "mt-2");
-	const buttons = el("div", "d-flex flex-wrap gap-2");
-	/**
-	 * @param {string} label
-	 * @param {() => void} onClick
-	 */
-	const button = (label, onClick) => {
-		const b = /** @type {HTMLButtonElement} */ (el("button", "btn btn-sm omnidb__theme__btn--secondary", label));
-		b.type = "button";
-		b.addEventListener("click", onClick);
-		buttons.appendChild(b);
-	};
-	button(t("schedules.run_now"), () => call("/run_schedule_now/", { p_id: s.id }, refresh));
-	button(s.enabled ? t("schedules.pause") : t("schedules.resume"), () => call("/set_schedule_enabled/", { p_id: s.id, p_enabled: !s.enabled }, refresh));
-	button(t("schedules.history"), () => call("/get_schedule_runs/", { p_id: s.id }, (/** @type {ScheduleRun[]} */ data) => renderRuns(runs, data)));
-	button(t("common.edit"), () => edit(s));
-	button(t("schedules.delete"), () => showConfirm(t("schedules.confirm_delete", { name: s.name }), () => call("/delete_schedule/", { p_id: s.id }, refresh)));
-	card.append(head, meta, status, sql, buttons, runs);
-	return card;
+	if (schedule) {
+		pane.appendChild(el("div", "fw-bold small mb-1", t("schedules.recent_runs")));
+		const runs = el("div");
+		pane.appendChild(runs);
+		loadRuns(runs, schedule.id);
+	}
+	return pane;
 }
 
 /**
  * Re-reads the schedules and redraws the section. Called whenever the section is shown.
- * @param {ScheduleRow | null | undefined} [editing]  a schedule to edit; `null` opens the new-schedule form
  */
-export function refreshSchedulesPane(editing) {
+export function refreshSchedulesPane() {
 	const root = document.getElementById(CONTENT_ID);
 	if (!root) return;
 	call("/get_schedules/", {}, (/** @type {ScheduleRow[]} */ rows) => {
+		if (typeof selected === "number" && !rows.some((r) => r.id === selected)) selected = undefined;
 		const redraw = () => refreshSchedulesPane();
-		root.innerHTML = "";
-		const wrap = el("div", "omnidb__schedules p-3");
-		wrap.style.maxWidth = "900px";
-		const title = el("div", "d-flex align-items-center justify-content-between mb-3");
-		title.appendChild(el("h5", "m-0", t("nav.schedules")));
-		const add = /** @type {HTMLButtonElement} */ (el("button", "btn btn-sm omnidb__theme__btn--primary", t("schedules.new")));
-		add.type = "button";
-		add.addEventListener("click", () => refreshSchedulesPane(null));
-		title.appendChild(add);
-		wrap.appendChild(title);
-		wrap.appendChild(el("p", "text-muted small", t("schedules.hint")));
+		/** @param {number | null | undefined} id */
+		const select = (id) => {
+			selected = id;
+			redraw();
+		};
 
-		if (editing !== undefined) wrap.appendChild(buildForm(editing, redraw));
-		if (rows.length === 0 && editing === undefined) wrap.appendChild(el("p", "text-muted", t("schedules.none")));
+		root.innerHTML = "";
+		const body = el("div", "omnidb__section__body");
+		const layout = el("div", "omnidb__schedules");
+
+		// Left: the list and its add/remove footer.
+		const sidebar = el("div", "omnidb__schedules__sidebar");
+		const list = el("div", "omnidb__schedules__list");
+		if (rows.length === 0 && selected !== null) list.appendChild(el("div", "text-muted small p-2", t("schedules.none")));
 		for (const s of rows) {
-			if (editing && editing.id === s.id) continue;
-			wrap.appendChild(buildCard(s, redraw, (row) => refreshSchedulesPane(row)));
+			const item = el("div", "omnidb__settings__list-item" + (s.id === selected ? " omnidb__settings__list-item--selected" : ""));
+			const icon = el("i", "fas omnidb__settings__list-item-icon " + (s.enabled ? "fa-calendar-alt" : "fa-pause-circle"));
+			if (s.last_status === "error" && s.id !== selected) icon.style.color = "var(--bs-danger, #dc3545)";
+			const text = el("div", "flex-grow-1");
+			text.style.minWidth = "0";
+			const title = el("div", "omnidb__settings__list-item-title", s.name);
+			title.style.cssText = "overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+			const sub = el("div", "small", `${s.alias} · ${t("schedules.every", { interval: s.interval })}`);
+			sub.style.cssText = "opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
+			text.append(title, sub);
+			item.append(icon, text);
+			item.addEventListener("click", () => select(s.id));
+			list.appendChild(item);
 		}
-		root.appendChild(wrap);
+		const footer = el("div", "omnidb__list-footer");
+		const group = el("div", "omnidb__addremove");
+		const add = /** @type {HTMLButtonElement} */ (el("button"));
+		add.type = "button";
+		add.title = t("schedules.new");
+		add.setAttribute("aria-label", t("schedules.new"));
+		add.appendChild(el("i", "fas fa-plus"));
+		add.addEventListener("click", () => select(null));
+		const divider = el("span", "omnidb__addremove-divider");
+		const remove = /** @type {HTMLButtonElement} */ (el("button"));
+		remove.type = "button";
+		remove.title = t("common.delete");
+		remove.setAttribute("aria-label", t("common.delete"));
+		remove.appendChild(el("i", "fas fa-minus"));
+		const current = rows.find((r) => r.id === selected);
+		remove.disabled = !current;
+		remove.addEventListener("click", () => {
+			if (!current) return;
+			showConfirm(t("schedules.confirm_delete", { name: current.name }), () =>
+				call("/delete_schedule/", { p_id: current.id }, () => {
+					selected = undefined;
+					redraw();
+				}),
+			);
+		});
+		group.append(add, divider, remove);
+		footer.appendChild(group);
+		sidebar.append(list, footer);
+
+		// Right: the selected schedule's settings.
+		const detail = el("div", "omnidb__schedules__detail");
+		if (current) detail.appendChild(buildDetail(current, redraw, select));
+		else if (selected === null) detail.appendChild(buildDetail(null, redraw, select));
+		else {
+			detail.appendChild(el("h5", "mb-2", t("nav.schedules")));
+			detail.appendChild(el("p", "text-muted small", t("schedules.hint")));
+			detail.appendChild(el("p", "text-muted", t("schedules.select_hint")));
+		}
+
+		layout.append(sidebar, detail);
+		body.appendChild(layout);
+		root.appendChild(body);
 	});
 }

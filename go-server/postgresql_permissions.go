@@ -35,6 +35,10 @@ type postgresqlRoleAttributes struct {
 	// "infinity" on ALTER (see postgresqlAlterRoleAttributes) since that form
 	// always submits the role's full, current attribute set.
 	ValidUntil string
+	// Comment is the role's COMMENT ON ROLE text. nil means "leave the
+	// comment alone" (a caller that does not deal with comments); a pointer
+	// to "" clears it.
+	Comment *string
 }
 
 // roleAttributeClauses renders the WITH-clause booleans/connection-limit
@@ -104,8 +108,51 @@ func postgresqlCreateRole(db *sql.DB, name string, attrs postgresqlRoleAttribute
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec(stmt)
+	if _, err = db.Exec(stmt); err != nil {
+		return err
+	}
+	// A new role has no comment to clear, so only a non-empty one is set.
+	if attrs.Comment == nil || *attrs.Comment == "" {
+		return nil
+	}
+	comment, err := buildRoleCommentSQL(db, strings.TrimSpace(name), *attrs.Comment)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(comment)
 	return err
+}
+
+// buildRoleCommentSQL renders COMMENT ON ROLE for a role name as stored (not
+// yet quoted); an empty comment clears it (IS NULL). Both the identifier and
+// the literal are quoted by the server.
+func buildRoleCommentSQL(db *sql.DB, roleName, comment string) (string, error) {
+	var quoted, literal string
+	if err := db.QueryRow(`select quote_ident($1), quote_literal($2)`, roleName, comment).Scan(&quoted, &literal); err != nil {
+		return "", err
+	}
+	if comment == "" {
+		literal = "NULL"
+	}
+	return "COMMENT ON ROLE " + quoted + " IS " + literal, nil
+}
+
+// buildCreateRoleStatements is the CREATE ROLE plus, when a comment was given,
+// the COMMENT ON ROLE that follows it -- what the SQL preview shows.
+func buildCreateRoleStatements(db *sql.DB, name string, attrs postgresqlRoleAttributes, password string, maskPassword bool) ([]string, error) {
+	stmt, err := buildCreateRoleSQL(db, name, attrs, password, maskPassword)
+	if err != nil {
+		return nil, err
+	}
+	out := []string{stmt}
+	if attrs.Comment != nil && *attrs.Comment != "" {
+		comment, err := buildRoleCommentSQL(db, strings.TrimSpace(name), *attrs.Comment)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, comment)
+	}
+	return out, nil
 }
 
 // buildCreateRoleSQL renders the CREATE ROLE statement postgresqlCreateRole
@@ -155,12 +202,38 @@ func buildCreateRoleSQL(db *sql.DB, name string, attrs postgresqlRoleAttributes,
 // own "no expiration" value) rather than being omitted, which would leave a
 // previously-set expiration untouched instead of clearing it.
 func postgresqlAlterRoleAttributes(db *sql.DB, name string, attrs postgresqlRoleAttributes) error {
-	stmt, err := buildAlterRoleAttributesSQL(db, name, attrs)
+	stmts, err := buildAlterRoleStatements(db, name, attrs)
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec(stmt)
-	return err
+	for _, stmt := range stmts {
+		if _, err := db.Exec(stmt); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// buildAlterRoleStatements is ALTER ROLE plus, when the caller handles
+// comments (attrs.Comment non-nil), the COMMENT ON ROLE that sets or clears it.
+func buildAlterRoleStatements(db *sql.DB, name string, attrs postgresqlRoleAttributes) ([]string, error) {
+	stmt, err := buildAlterRoleAttributesSQL(db, name, attrs)
+	if err != nil {
+		return nil, err
+	}
+	out := []string{stmt}
+	if attrs.Comment != nil {
+		verified, err := postgresVerifiedRoleName(db, unquotePostgresIdentifier(name))
+		if err != nil {
+			return nil, err
+		}
+		comment, err := buildRoleCommentSQL(db, verified, *attrs.Comment)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, comment)
+	}
+	return out, nil
 }
 
 func buildAlterRoleAttributesSQL(db *sql.DB, name string, attrs postgresqlRoleAttributes) (string, error) {
@@ -518,6 +591,11 @@ func postgresqlRoleAttributesFor(db *sql.DB, name string) (postgresqlRoleAttribu
 	if validUntil.Valid {
 		attrs.ValidUntil = validUntil.String
 	}
+	var comment string
+	if err := db.QueryRow(`select coalesce(shobj_description(oid, 'pg_authid'), '') from pg_roles where quote_ident(rolname) = $1`, name).Scan(&comment); err != nil {
+		return postgresqlRoleAttributes{}, err
+	}
+	attrs.Comment = &comment
 	return attrs, nil
 }
 

@@ -199,6 +199,17 @@ var v_render_token = 0;
 // own object privileges can be managed the same way any real role's can.
 var PERMISSIONS_PUBLIC_ROLE = { v_name: "PUBLIC", v_oid: 0, v_can_login: false, v_is_public: true };
 
+/**
+ * How a role is named on screen. PUBLIC stays "PUBLIC" internally (it is the
+ * SQL keyword the grant statements are built from) but is shown in lower
+ * case, like any other role name.
+ * @param {string} p_name
+ * @returns {string}
+ */
+function roleLabel(p_name) {
+	return p_name === "PUBLIC" ? "public" : p_name;
+}
+
 export var v_createPermissionsPanelFunction = function () {
 	var v_html =
 		"<div class='omnidb__permissions'>" +
@@ -436,7 +447,7 @@ function fetchRoles(p_tag) {
 
 /**
  * @param {any} p_tag
- * @param {Array<{v_name: string, v_oid: number, v_can_login: boolean, v_is_public?: boolean, v_superuser?: boolean, v_expired?: boolean}>} p_roles
+ * @param {Array<{v_name: string, v_oid: number, v_can_login: boolean, v_is_public?: boolean, v_superuser?: boolean, v_expired?: boolean, v_comment?: string}>} p_roles
  */
 function renderRolesList(p_tag, p_roles) {
 	p_tag.roles = p_roles;
@@ -479,7 +490,9 @@ function renderRolesList(p_tag, p_roles) {
 			v_row.appendChild(v_icon);
 
 			var v_label = document.createElement("span");
-			v_label.textContent = p_role.v_name;
+			v_label.textContent = roleLabel(p_role.v_name);
+			// The role's comment (COMMENT ON ROLE) shows as a tooltip on its name.
+			if (p_role.v_comment) v_label.title = p_role.v_comment;
 			v_row.appendChild(v_label);
 
 			// Risky/inactive states worth seeing without opening the role.
@@ -613,7 +626,7 @@ function openRoleContextMenu(p_tag, p_role_name, p_event) {
  * Alter Role Attributes -- appended into whatever container the caller
  * already built (name/password fields, for Create, go above these).
  * @param {HTMLElement} p_container
- * @param {{can_login?: boolean, superuser?: boolean, createdb?: boolean, createrole?: boolean, inherit?: boolean, replication?: boolean, bypass_rls?: boolean, connection_limit?: number, valid_until?: string}} p_values
+ * @param {{can_login?: boolean, superuser?: boolean, createdb?: boolean, createrole?: boolean, inherit?: boolean, replication?: boolean, bypass_rls?: boolean, connection_limit?: number, valid_until?: string, comment?: string}} p_values
  */
 function appendRoleAttributeFields(p_container, p_values) {
 	/**
@@ -682,10 +695,25 @@ function appendRoleAttributeFields(p_container, p_values) {
 	v_valid_until_hint.textContent = t("permissions.valid_until_hint");
 	v_valid_until_col.appendChild(v_valid_until_hint);
 	p_container.appendChild(v_valid_until_col);
+
+	// COMMENT ON ROLE; shown as a tooltip over the role's name in the list.
+	var v_comment_col = document.createElement("div");
+	v_comment_col.className = "col-md-12 mb-3";
+	var v_comment_label = document.createElement("label");
+	v_comment_label.setAttribute("for", "perm_role_comment");
+	v_comment_label.textContent = t("permissions.role_comment");
+	var v_comment_input = document.createElement("textarea");
+	v_comment_input.id = "perm_role_comment";
+	v_comment_input.className = "form-control";
+	v_comment_input.rows = 2;
+	v_comment_input.value = p_values.comment ?? "";
+	v_comment_col.appendChild(v_comment_label);
+	v_comment_col.appendChild(v_comment_input);
+	p_container.appendChild(v_comment_col);
 }
 
 /**
- * @returns {{p_can_login: boolean, p_superuser: boolean, p_createdb: boolean, p_createrole: boolean, p_inherit: boolean, p_replication: boolean, p_bypass_rls: boolean, p_connection_limit: number, p_valid_until: string}}
+ * @returns {{p_can_login: boolean, p_superuser: boolean, p_createdb: boolean, p_createrole: boolean, p_inherit: boolean, p_replication: boolean, p_bypass_rls: boolean, p_connection_limit: number, p_valid_until: string, p_comment: string}}
  */
 function readRoleAttributeFields() {
 	return {
@@ -698,6 +726,7 @@ function readRoleAttributeFields() {
 		p_bypass_rls: /** @type {HTMLInputElement} */ (document.getElementById("perm_role_bypassrls")).checked,
 		p_connection_limit: Number(/** @type {HTMLInputElement} */ (document.getElementById("perm_role_connlimit")).value || -1),
 		p_valid_until: /** @type {HTMLInputElement} */ (document.getElementById("perm_role_valid_until")).value,
+		p_comment: /** @type {HTMLTextAreaElement} */ (document.getElementById("perm_role_comment")).value.trim(),
 	};
 }
 
@@ -1157,6 +1186,7 @@ function openAlterRoleAttributesDialog(p_tag, p_role_name) {
 						bypass_rls: v_current.p_bypass_rls,
 						connection_limit: v_current.p_connection_limit,
 						valid_until: v_current.p_valid_until,
+						comment: v_current.p_comment,
 					});
 
 					appendSqlPreview(v_content, function () {
@@ -1347,12 +1377,12 @@ function renderRoleDetailColumn(p_tag, p_role_name) {
 	var v_column = document.createElement("div");
 	v_column.className = "omnidb__permissions__column";
 
-	var v_members_section = buildColumnSection(v_column, t("permissions.members_column_title", { role: p_role_name }), {
+	var v_members_section = buildColumnSection(v_column, t("permissions.members_column_title", { role: roleLabel(p_role_name) }), {
 		addTitle: t("permissions.grant_membership_reverse"),
 		showAdd: !v_is_public_focus,
 		showRemove: !v_is_public_focus,
 	});
-	var v_membership_section = buildColumnSection(v_column, t("permissions.member_of_column_title", { role: p_role_name }), {
+	var v_membership_section = buildColumnSection(v_column, t("permissions.member_of_column_title", { role: roleLabel(p_role_name) }), {
 		addTitle: t("permissions.grant_membership"),
 		showAdd: !v_is_public_focus,
 		showRemove: !v_is_public_focus,
@@ -1534,7 +1564,7 @@ function renderAncestorsList(p_tag, p_col_state, p_ancestors) {
 			v_row.appendChild(v_icon);
 
 			var v_label = document.createElement("span");
-			v_label.textContent = p_row.v_name;
+			v_label.textContent = roleLabel(p_row.v_name);
 			v_row.appendChild(v_label);
 
 			appendMembershipNotes(v_row, p_row);
@@ -1621,7 +1651,7 @@ function renderDescendantsList(p_tag, p_col_state, p_descendants) {
 			v_row.appendChild(v_icon);
 
 			var v_label = document.createElement("span");
-			v_label.textContent = p_row.v_name;
+			v_label.textContent = roleLabel(p_row.v_name);
 			v_row.appendChild(v_label);
 			appendMembershipNotes(v_row, p_row);
 
@@ -2940,7 +2970,7 @@ function renderObjectsColumn(p_tag, p_role_name) {
 	var v_column = document.createElement("div");
 	v_column.className = "omnidb__permissions__column";
 
-	var v_section = buildColumnSection(v_column, t("permissions.objects_column_title", { role: p_role_name }), {
+	var v_section = buildColumnSection(v_column, t("permissions.objects_column_title", { role: roleLabel(p_role_name) }), {
 		addTitle: t("permissions.add_object_privilege"),
 		showAdd: true,
 		showRemove: false,

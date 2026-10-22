@@ -136,6 +136,13 @@ func buildPermissionsExport(db *sql.DB, info *ConnectionInfo, role string, opts 
 				return "", err
 			}
 			b.WriteString(stmt + ";\n")
+			if attrs.Comment != nil && *attrs.Comment != "" {
+				comment, err := buildRoleCommentSQL(db, n, *attrs.Comment)
+				if err != nil {
+					return "", err
+				}
+				b.WriteString(comment + ";\n")
+			}
 		}
 	}
 

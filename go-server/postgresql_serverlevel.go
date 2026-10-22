@@ -70,11 +70,13 @@ type postgresqlRole struct {
 	CanLogin  bool
 	Superuser bool
 	Expired   bool
+	// Comment is the role's COMMENT ON ROLE text ("" when none).
+	Comment string
 }
 
 // postgresqlRoles mirrors PostgreSQL.py's QueryRoles.
 func postgresqlRoles(db *sql.DB) ([]postgresqlRole, error) {
-	rows, err := db.Query(`select quote_ident(rolname) as name, oid, rolcanlogin, rolsuper, coalesce(rolvaliduntil < now(), false) from pg_roles order by rolname`)
+	rows, err := db.Query(`select quote_ident(rolname) as name, oid, rolcanlogin, rolsuper, coalesce(rolvaliduntil < now(), false), coalesce(shobj_description(oid, 'pg_authid'), '') from pg_roles order by rolname`)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +84,7 @@ func postgresqlRoles(db *sql.DB) ([]postgresqlRole, error) {
 	out := make([]postgresqlRole, 0)
 	for rows.Next() {
 		var r postgresqlRole
-		if err := rows.Scan(&r.Name, &r.OID, &r.CanLogin, &r.Superuser, &r.Expired); err != nil {
+		if err := rows.Scan(&r.Name, &r.OID, &r.CanLogin, &r.Superuser, &r.Expired, &r.Comment); err != nil {
 			return nil, err
 		}
 		out = append(out, r)

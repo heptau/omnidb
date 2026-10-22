@@ -1810,3 +1810,55 @@
 }
 
 /*# sourceMappingURL=../css/omnidb.min.css.map */
+
+/* Scheduled queries section: master-detail like Snippets/Connections -- the
+ * schedules in a list with an add/remove footer on the left, the selected one's
+ * settings on the right. Rows reuse the Settings list item look. */
+#omnidb__section_schedules .omnidb__section__body {
+	padding: 0;
+	display: flex;
+	overflow: hidden;
+}
+
+.omnidb__schedules {
+	display: flex;
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
+}
+
+.omnidb__schedules__sidebar {
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 280px;
+	width: 280px;
+	min-width: 200px;
+	height: 100%;
+	background-color: var(--panel-bg);
+	border-right: 1px solid var(--border-color);
+}
+
+.omnidb__schedules__list {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	padding: 8px 8px 8px 8px;
+}
+
+.omnidb__schedules__detail {
+	flex: 1 1 auto;
+	min-width: 0;
+	height: 100%;
+	overflow-y: auto;
+	background-color: var(--app-bg);
+	padding: 20px 28px;
+}
+
+.omnidb__schedules__form {
+	max-width: 720px;
+}
+
+/* Bootstrap's .text-muted is too dim on the dark theme; use the app's own
+ * secondary text colour for the hints in this section. */
+#omnidb__section_schedules .text-muted {
+	color: var(--text-secondary) !important;
+}
