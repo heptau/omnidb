@@ -1722,6 +1722,25 @@ button.close {
 	font-size: 12px;
 }
 
+// Underline of an editor inspection (editor_inspections.js).
+.omnidb__inspection {
+	position: absolute;
+	border-bottom: 2px dotted;
+	box-sizing: border-box;
+
+	&--error {
+		border-color: #d32f2f;
+	}
+
+	&--warning {
+		border-color: #e69f00;
+	}
+
+	&--info {
+		border-color: #6e6e73;
+	}
+}
+
 .omnidb__form-check .form-check-label {
 	cursor: pointer;
 	padding-left: 0.25rem;

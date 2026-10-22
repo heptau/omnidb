@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- SQL inspections in the query editor: after a pause in typing, the statement text is checked and problems are marked
+  with a gutter annotation (hover for the message) and a dotted underline — `UPDATE` / `DELETE` without `WHERE`,
+  comparisons with NULL (`= NULL`, `<> NULL`, `!= NULL` in WHERE / ON / HAVING), a `JOIN` with neither `ON` nor `USING`
+  (`CROSS` / `NATURAL` and `LATERAL` are left alone), an alias nothing refers to, and a table or view the database does
+  not know (probed with a zero-row query, only "does not exist" style errors count, results cached for 30 seconds; CTE
+  names, subqueries and `SELECT ... INTO` targets are skipped). Works on every engine; messages are translated. The
+  completion scanner now also ignores `FROM` that is not a table source (`EXTRACT(year FROM d)`, `IS DISTINCT FROM`).
 - Context-aware SQL completion, on every engine (it used to give nothing but the old `alias.` lookup outside PostgreSQL):
   the statement being edited is scanned for the clause the cursor is in and for the tables, subqueries and CTEs it reads
   from. `alias.`, `table.` and `cte.` now list that reference's columns (`FROM t AS a`, `WITH x AS (...)` with column lists,

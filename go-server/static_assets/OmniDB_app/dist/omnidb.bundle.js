@@ -12633,6 +12633,55 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     __proto__: null,
     v_createGraphTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
+  const IDLE_MS$1 = 1200;
+  function installEditorInspections(p_editor, p_getConnId, p_getTabId) {
+    const Range2 = ace.require("ace/range").Range;
+    let timer = 0;
+    let token = 0;
+    let lastText = null;
+    let markers = [];
+    const clear = () => {
+      for (const id of markers) p_editor.session.removeMarker(id);
+      markers = [];
+      p_editor.session.setAnnotations([]);
+    };
+    const show = (diagnostics) => {
+      clear();
+      p_editor.session.setAnnotations(
+        diagnostics.map((d2) => ({ row: d2.row, column: d2.column, type: d2.severity, text: t$1("inspect." + d2.code, { name: d2.arg }) }))
+      );
+      for (const d2 of diagnostics) {
+        markers.push(p_editor.session.addMarker(new Range2(d2.row, d2.column, d2.end_row, d2.end_column), "omnidb__inspection omnidb__inspection--" + d2.severity, "text"));
+      }
+    };
+    const run = () => {
+      const text = p_editor.getValue();
+      if (text === lastText) return;
+      lastText = text;
+      const mine = ++token;
+      if (!text.trim()) {
+        clear();
+        return;
+      }
+      execAjax$2(
+        "/inspect_sql/",
+        JSON.stringify({ p_database_index: p_getConnId(), p_tab_id: p_getTabId(), p_sql: text, p_check_tables: true }),
+        function(r2) {
+          if (mine === token && p_editor.getValue() === text) show(r2.v_data);
+        },
+        // A failing check (no connection yet, a password prompt pending) is no reason to bother the user.
+        function() {
+          lastText = null;
+        },
+        "box",
+        false
+      );
+    };
+    p_editor.on("change", () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(run, IDLE_MS$1);
+    });
+  }
   const MAX_SCRIPT_BYTES = 48 * 1024 * 1024;
   function formatSize(bytes) {
     if (bytes < 1024) return bytes + " B";
@@ -23118,6 +23167,15 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     installScriptRestore(
       /** @type {HTMLElement} */
       document.getElementById("bt_run_script_" + v_tab.id),
+      function() {
+        return v_owner_conn_tab.tag.selectedDatabaseIndex;
+      },
+      function() {
+        return v_owner_conn_tab.id;
+      }
+    );
+    installEditorInspections(
+      v_editor,
       function() {
         return v_owner_conn_tab.tag.selectedDatabaseIndex;
       },

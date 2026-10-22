@@ -2182,6 +2182,21 @@ button.close {
   font-size: 12px;
 }
 
+.omnidb__inspection {
+  position: absolute;
+  border-bottom: 2px dotted;
+  box-sizing: border-box;
+}
+.omnidb__inspection--error {
+  border-color: #d32f2f;
+}
+.omnidb__inspection--warning {
+  border-color: #e69f00;
+}
+.omnidb__inspection--info {
+  border-color: #6e6e73;
+}
+
 .omnidb__form-check .form-check-label {
   cursor: pointer;
   padding-left: 0.25rem;

@@ -164,6 +164,7 @@ type tableRef struct {
 	Subquery string // "(select ...)" including the parentheses
 	Alias    string // unquoted; "" when none
 	Start    int    // byte offset of the reference in the text
+	Kind     string // the keyword that introduced it, lower case: from, join, update, into
 }
 
 // Label is how the reference is named in the statement: its alias, else the
@@ -243,9 +244,15 @@ func tableRefs(text string, toks []ctxTok) []tableRef {
 			continue
 		}
 		isFrom := toks[i].isKeyword("FROM")
+		// FROM that is not a table source: EXTRACT(year FROM d), TRIM(x FROM y),
+		// a IS DISTINCT FROM b -- no clause of its own is open there.
+		if isFrom && (clauseAt(toks, toks[i].start) == "" || i > 0 && toks[i-1].isKeyword("DISTINCT")) {
+			continue
+		}
+		kind := strings.ToLower(toks[i].text)
 		j := i + 1
 		for j < len(toks) {
-			ref := tableRef{}
+			ref := tableRef{Kind: kind}
 			if toks[j].isPunct("(") {
 				k := matchingParen(toks, j)
 				if k < 0 {
@@ -387,6 +394,8 @@ func clauseAt(toks []ctxTok, wordStart int) string {
 				stack[top] = "set"
 			case "VALUES":
 				stack[top] = "values"
+			case "DELETE":
+				stack[top] = "delete"
 			case "UPDATE":
 				stack[top] = "update"
 			case "INTO":

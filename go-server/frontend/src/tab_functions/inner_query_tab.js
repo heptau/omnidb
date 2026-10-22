@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { installEditorInspections } from "../editor_inspections.js";
 import { installScriptRestore } from "../script_restore.js";
 import { showResultChart } from "../result_chart.js";
 import { installEditorHistory } from "../editor_history.js";
@@ -660,6 +661,15 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	/** @type {HTMLElement} */ (document.getElementById("bt_chart_" + v_tab.id)).addEventListener("click", () => showResultChart(v_tag));
 	installScriptRestore(
 		/** @type {HTMLElement} */ (document.getElementById("bt_run_script_" + v_tab.id)),
+		function () {
+			return v_owner_conn_tab.tag.selectedDatabaseIndex;
+		},
+		function () {
+			return v_owner_conn_tab.id;
+		},
+	);
+	installEditorInspections(
+		v_editor,
 		function () {
 			return v_owner_conn_tab.tag.selectedDatabaseIndex;
 		},
