@@ -39,6 +39,12 @@
      (wails-app/savedialog.go, wails-app/legacydata.go) need write access to
      wherever the user picks, and read access to whatever legacy data
      folder they pick during the one-time import flow.
+   - (version control) the repository folder chosen for versioning snippets,
+     monitoring units and schedules (wails-app/vcsfolder.go) is reached the same
+     way: picked once in a native folder panel, covered by
+     files.user-selected.read-write plus the bookmark below, and all file and
+     git work in it happens in this process (in-process go-git), because the
+     access a pick grants is not handed on to the omnidb-server child.
    - files.bookmarks.app-scope: lets a security-scoped bookmark to a
      user-picked file be persisted across launches, so a location the user
      chose once keeps working instead of being re-prompted for on every

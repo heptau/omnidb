@@ -68,7 +68,7 @@ func openMySQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 		return nil, err
 	}
 	db := sql.OpenDB(connector)
-	if err := db.Ping(); err != nil {
+	if err := pingWithTimeout(db); err != nil {
 		db.Close()
 		return nil, err
 	}

@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$9 = document.getElementById("omnidb_bootstrap");
-  if (!el$9) {
+  const el$a = document.getElementById("omnidb_bootstrap");
+  if (!el$a) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$9.textContent);
+  const cfg = JSON.parse(el$a.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -949,7 +949,7 @@
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$8(id) {
+  function el$9(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -971,7 +971,7 @@
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    var v_modal_message = el$8("modal_message");
+    var v_modal_message = el$9("modal_message");
     v_modal_message.addEventListener("hide.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
@@ -979,7 +979,7 @@
       v_message_modal_animating = true;
     });
     v_modal_message.addEventListener("hidden.bs.modal", function(e2) {
-      el$8("modal_message_content").innerHTML = "";
+      el$9("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -999,21 +999,21 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$8("modal_message_dialog");
+    var v_dialog = el$9("modal_message_dialog");
     var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
     if (v_old_title) v_old_title.remove();
     v_dialog.classList.toggle("modal-xl", p_large === true);
     v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$8("modal_message")).show();
+      bootstrap.Modal.getOrCreateInstance(el$9("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
   }
   function setMessageModalTitle(p_text, p_icon_class = null) {
-    var v_header = el$8("modal_message_dialog").querySelector(".modal-header");
+    var v_header = el$9("modal_message_dialog").querySelector(".modal-header");
     if (!v_header) return;
     var v_title = document.createElement("h5");
     v_title.className = "modal-title";
@@ -1027,11 +1027,11 @@
     v_header.insertBefore(v_title, v_header.firstChild);
   }
   function showError(p_message) {
-    var v_content_div = el$8("modal_message_content");
-    var v_button_yes = el$8("modal_message_yes");
-    var v_button_ok = el$8("modal_message_ok");
-    var v_button_no = el$8("modal_message_no");
-    var v_button_cancel = el$8("modal_message_cancel");
+    var v_content_div = el$9("modal_message_content");
+    var v_button_yes = el$9("modal_message_yes");
+    var v_button_ok = el$9("modal_message_ok");
+    var v_button_no = el$9("modal_message_no");
+    var v_button_cancel = el$9("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_ok.textContent = t$1("common.ok");
     v_button_yes.style.display = "none";
@@ -1045,11 +1045,11 @@
   }
   function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el$8("modal_message_content");
-      var v_button_yes = el$8("modal_message_yes");
-      var v_button_ok = el$8("modal_message_ok");
-      var v_button_no = el$8("modal_message_no");
-      var v_button_cancel = el$8("modal_message_cancel");
+      var v_content_div = el$9("modal_message_content");
+      var v_button_yes = el$9("modal_message_yes");
+      var v_button_ok = el$9("modal_message_ok");
+      var v_button_no = el$9("modal_message_no");
+      var v_button_cancel = el$9("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -1069,11 +1069,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$8("modal_message_content");
-      var v_button_yes = el$8("modal_message_yes");
-      var v_button_ok = el$8("modal_message_ok");
-      var v_button_no = el$8("modal_message_no");
-      var v_button_cancel = el$8("modal_message_cancel");
+      var v_content_div = el$9("modal_message_content");
+      var v_button_yes = el$9("modal_message_yes");
+      var v_button_ok = el$9("modal_message_ok");
+      var v_button_no = el$9("modal_message_no");
+      var v_button_cancel = el$9("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.textContent = p_yes_label || t$1("common.ok");
       v_button_ok.onclick = function() {
@@ -1090,11 +1090,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$8("modal_message_content");
-    var v_button_yes = el$8("modal_message_yes");
-    var v_button_ok = el$8("modal_message_ok");
-    var v_button_no = el$8("modal_message_no");
-    var v_button_cancel = el$8("modal_message_cancel");
+    var v_content_div = el$9("modal_message_content");
+    var v_button_yes = el$9("modal_message_yes");
+    var v_button_ok = el$9("modal_message_ok");
+    var v_button_no = el$9("modal_message_no");
+    var v_button_cancel = el$9("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1113,11 +1113,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$8("modal_message_content");
-    var v_button_yes = el$8("modal_message_yes");
-    var v_button_ok = el$8("modal_message_ok");
-    var v_button_no = el$8("modal_message_no");
-    var v_button_cancel = el$8("modal_message_cancel");
+    var v_content_div = el$9("modal_message_content");
+    var v_button_yes = el$9("modal_message_yes");
+    var v_button_ok = el$9("modal_message_ok");
+    var v_button_no = el$9("modal_message_no");
+    var v_button_cancel = el$9("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1404,7 +1404,7 @@
   }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   var v_pgpass_lookup_info = null;
-  function el$7(id) {
+  function el$8(id) {
     return document.getElementById(id);
   }
   function initPasswordModal() {
@@ -1435,15 +1435,15 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-    if (gv_desktopMode) el$7("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
-    el$7("modal_password_pgpass_button").addEventListener("click", function() {
+    if (gv_desktopMode) el$8("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
+    el$8("modal_password_pgpass_button").addEventListener("click", function() {
       if (gv_desktopMode) {
         grantPgpassAccess(v_pgpass_lookup_info);
       } else {
-        el$7("modal_password_pgpass_input").click();
+        el$8("modal_password_pgpass_input").click();
       }
     });
-    el$7("modal_password_pgpass_input").addEventListener("change", function(e2) {
+    el$8("modal_password_pgpass_input").addEventListener("change", function(e2) {
       var v_file = e2.target.files ? e2.target.files[0] : null;
       e2.target.value = "";
       if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
@@ -1484,12 +1484,12 @@
     return null;
   }
   function showPgpassError(p_message) {
-    var v_error_div = el$7("modal_password_pgpass_error");
+    var v_error_div = el$8("modal_password_pgpass_error");
     v_error_div.textContent = p_message;
     v_error_div.style.display = "block";
   }
   function hidePgpassError() {
-    el$7("modal_password_pgpass_error").style.display = "none";
+    el$8("modal_password_pgpass_error").style.display = "none";
   }
   function readPgpassFileViaInput(p_file, p_lookup_info) {
     var v_reader = new FileReader();
@@ -1629,7 +1629,7 @@
     v_modal_password_input = /** @type {HTMLInputElement} */
     document.getElementById("txt_password_prompt");
     v_pgpass_lookup_info = resolvePgpassLookupInfo(p_database_index);
-    el$7("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
+    el$8("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
     hidePgpassError();
     if (p_message) v_content_div.textContent = p_message;
     bootstrap.Modal.getOrCreateInstance(
@@ -8972,6 +8972,190 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       "fas node-all fa-times"
     );
   }
+  const STORAGE_KEY = "omnidb.vcs_dir";
+  const KINDS = ["snippets", "monitoring", "schedules"];
+  function el$7(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  function savedDir() {
+    try {
+      return localStorage.getItem(STORAGE_KEY) || "";
+    } catch {
+      return "";
+    }
+  }
+  function rememberDir(dir) {
+    try {
+      localStorage.setItem(STORAGE_KEY, dir);
+    } catch {
+    }
+  }
+  function call$1(body, done, failed) {
+    execAjax$2(
+      "/vcs/",
+      JSON.stringify(body),
+      (r2) => done(r2.v_data),
+      (r2) => {
+        const text = typeof r2.v_data === "string" ? r2.v_data : r2.v_data && r2.v_data.message || t$1("errors.request_error");
+        showAlert$1(text.charAt(0).toUpperCase() + text.slice(1));
+        if (failed) failed();
+      },
+      "box",
+      false
+    );
+  }
+  function openVcsDialog(snippetsRoot) {
+    const dir = (
+      /** @type {HTMLInputElement} */
+      el$7("input", "form-control form-control-sm")
+    );
+    dir.type = "text";
+    dir.placeholder = t$1("vcs.dir_placeholder");
+    dir.value = savedDir();
+    const choose2 = (
+      /** @type {HTMLButtonElement} */
+      el$7("button", "btn btn-sm omnidb__theme__btn--secondary flex-shrink-0", t$1("vcs.choose"))
+    );
+    choose2.type = "button";
+    choose2.style.display = "none";
+    const folderRow = el$7("div", "d-flex gap-2 align-items-center");
+    dir.classList.add("flex-grow-1");
+    folderRow.append(dir, choose2);
+    const message = (
+      /** @type {HTMLInputElement} */
+      el$7("input", "form-control form-control-sm")
+    );
+    message.type = "text";
+    message.placeholder = t$1("vcs.message_placeholder");
+    const state = el$7("pre", "p-2 small mb-3");
+    state.style.cssText = "max-height:24vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
+    const buttons = el$7("div", "d-flex flex-wrap gap-2 mb-3");
+    const defaultNote = el$7("div", "small text-muted mt-1", t$1("vcs.default_folder"));
+    defaultNote.style.display = "none";
+    let managed = false;
+    let folderKnown = () => {
+    };
+    const folderReady = new Promise((resolve2) => {
+      folderKnown = () => resolve2(void 0);
+    });
+    const kindBoxes = {};
+    const kindsRow = el$7("div", "d-flex flex-column gap-1");
+    for (const kind of KINDS) {
+      const wrap = el$7("label", "d-flex align-items-center gap-2");
+      const box = (
+        /** @type {HTMLInputElement} */
+        el$7("input", "form-check-input m-0")
+      );
+      box.type = "checkbox";
+      box.checked = true;
+      kindBoxes[kind] = box;
+      wrap.append(box, document.createTextNode(t$1("vcs.kind_" + kind)));
+      kindsRow.appendChild(wrap);
+    }
+    const selectedKinds = () => KINDS.filter((k2) => kindBoxes[k2].checked);
+    const folder = () => managed ? "" : dir.value.trim();
+    const haveFolder = () => managed || dir.value.trim() !== "";
+    const showState = (st2) => {
+      if (!st2.is_repo) {
+        state.textContent = t$1("vcs.not_repo");
+        return;
+      }
+      const lines = [t$1("vcs.branch", { branch: st2.branch }), ""];
+      lines.push(st2.changes.length ? t$1("vcs.changes", { count: st2.changes.length }) : t$1("vcs.clean"));
+      lines.push(...st2.changes, "", t$1("vcs.log"), ...st2.log);
+      state.textContent = lines.join("\n");
+    };
+    const check = () => {
+      if (!haveFolder()) {
+        state.textContent = t$1("vcs.folder_none");
+        return;
+      }
+      if (!managed) rememberDir(folder());
+      call$1({ p_action: "status", p_dir: folder() }, showState);
+    };
+    const button = (label, onClick) => {
+      const b2 = (
+        /** @type {HTMLButtonElement} */
+        el$7("button", "btn btn-sm omnidb__theme__btn--secondary", label)
+      );
+      b2.type = "button";
+      b2.addEventListener("click", onClick);
+      buttons.appendChild(b2);
+    };
+    button(t$1("vcs.check"), check);
+    button(t$1("vcs.init"), async () => {
+      await folderReady;
+      if (!haveFolder()) return showAlert$1(t$1("vcs.need_dir"));
+      if (!managed) rememberDir(folder());
+      call$1({ p_action: "init", p_dir: folder() }, showState);
+    });
+    button(t$1("vcs.import"), async () => {
+      await folderReady;
+      if (!haveFolder()) return showAlert$1(t$1("vcs.need_dir"));
+      if (selectedKinds().length === 0) return showAlert$1(t$1("vcs.need_kind"));
+      if (!managed) rememberDir(folder());
+      call$1({ p_action: "import", p_dir: folder(), p_kinds: selectedKinds() }, (r2) => {
+        state.textContent = Object.entries(r2).map(([name, res]) => t$1("vcs.imported", { name: t$1("vcs.kind_" + name), ...res })).join("\n");
+        if (snippetsRoot && r2.snippets) refreshTreeSnippets(snippetsRoot);
+      });
+    });
+    choose2.addEventListener(
+      "click",
+      () => call$1({ p_action: "choose_folder" }, (r2) => {
+        if (r2.cancelled) return;
+        dir.value = r2.path || "";
+        defaultNote.style.display = "none";
+        check();
+      })
+    );
+    const field = (key, ...controls) => {
+      const w2 = el$7("div", "mb-3");
+      w2.append(el$7("label", "form-label small fw-bold mb-1", t$1(key)), ...controls);
+      return w2;
+    };
+    showConfirm(
+      "",
+      async function() {
+        await folderReady;
+        if (!haveFolder()) return showAlert$1(t$1("vcs.need_dir"));
+        if (selectedKinds().length === 0) return showAlert$1(t$1("vcs.need_kind"));
+        if (!managed) rememberDir(folder());
+        call$1({ p_action: "commit", p_dir: folder(), p_kinds: selectedKinds(), p_message: message.value }, (r2) => {
+          showAlert$1(r2.result === "nothing to commit" ? t$1("vcs.nothing") : t$1("vcs.committed", { commit: r2.result }));
+        });
+      },
+      null,
+      function() {
+        setMessageModalTitle(t$1("vcs.title"));
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        content.append(field("vcs.dir", folderRow, defaultNote), field("vcs.kinds", kindsRow), buttons, state, field("vcs.message", message), el$7("div", "small text-muted", t$1("vcs.hint")));
+        dir.placeholder = t$1("vcs.loading");
+        call$1({ p_action: "folder" }, (r2) => {
+          dir.placeholder = t$1("vcs.dir_placeholder");
+          managed = r2.managed;
+          if (managed) {
+            dir.readOnly = true;
+            dir.value = r2.path || "";
+            dir.placeholder = t$1("vcs.folder_none");
+            choose2.style.display = "";
+            defaultNote.style.display = r2.default ? "" : "none";
+          }
+          folderKnown();
+          check();
+        }, folderKnown);
+      },
+      true,
+      t$1("vcs.commit")
+    );
+  }
   var v_createNewMonitorUnitTabFunction = function() {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     let v_name_html = '<span id="tab_title">' + t$1("monitoring.monitor_unit_tab") + "</span>";
@@ -10472,7 +10656,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     if (!monitoringSupportedDbType(v_db_type)) return;
     var v_root = document.createElement("div");
     v_root.className = "omnidb__monitoring-result-tabs";
-    v_root.innerHTML = "<div class='omnidb__monitor-unit-panel omnidb__monitor-unit-panel--collapsed' id='monitor_unit_panel_" + v_id + "'><div id='monitoring_units_grid_" + v_id + "' class='omnidb__monitor-unit-list'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button id='bt_new_unit_" + v_id + "' type='button' title='" + t$1("modals.monitoring.new_unit") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='bt_delete_unit_" + v_id + "' type='button' title='" + t$1("common.delete") + "' disabled><i class='fas fa-minus'></i></button></div></div></div><div class='omnidb__monitor-unit-panel-resize' id='monitor_unit_resize_" + v_id + "'><div class='resize_line_vertical omnidb__resize-line__container' style='height: 100%;'></div></div><div class='omnidb__monitor-unit-dashboard'><div class='omnidb__monitor-unit-toolbar'><button id='bt_toggle_manage_units_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2' title='" + t$1("monitoring.manage_units") + "'><i class='fas fa-sidebar'></i></button><button id='bt_refresh_dashboard_" + v_id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>" + t$1("monitoring.refresh_all") + "</button><button id='bt_enable_all_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2'><i class='fas fa-play me-2'></i>" + t$1("monitoring.enable_all") + "</button><button id='bt_pause_all_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2'><i class='fas fa-pause me-2'></i>" + t$1("monitoring.pause_all") + "</button><select id='select_monitor_unit_width_" + v_id + "' class='form-select form-select-sm omnidb__monitor-unit-width-select my-2' title='" + t$1("monitoring.card_size_label") + "'><option value='small'>" + t$1("monitoring.card_size_small") + "</option><option value='medium'>" + t$1("monitoring.card_size_medium") + "</option><option value='large'>" + t$1("monitoring.card_size_large") + "</option><option value='full'>" + t$1("monitoring.card_size_full") + "</option></select></div><div id='dashboard_" + v_id + "' class='dashboard_all'></div></div>";
+    v_root.innerHTML = "<div class='omnidb__monitor-unit-panel omnidb__monitor-unit-panel--collapsed' id='monitor_unit_panel_" + v_id + "'><div id='monitoring_units_grid_" + v_id + "' class='omnidb__monitor-unit-list'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button id='bt_new_unit_" + v_id + "' type='button' title='" + t$1("modals.monitoring.new_unit") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='bt_delete_unit_" + v_id + "' type='button' title='" + t$1("common.delete") + "' disabled><i class='fas fa-minus'></i></button><span class='omnidb__addremove-divider'></span><button id='bt_vcs_units_" + v_id + "' type='button' title='" + t$1("vcs.menu") + "'><i class='fas fa-code-branch'></i></button></div></div></div><div class='omnidb__monitor-unit-panel-resize' id='monitor_unit_resize_" + v_id + "'><div class='resize_line_vertical omnidb__resize-line__container' style='height: 100%;'></div></div><div class='omnidb__monitor-unit-dashboard'><div class='omnidb__monitor-unit-toolbar'><button id='bt_toggle_manage_units_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2' title='" + t$1("monitoring.manage_units") + "'><i class='fas fa-sidebar'></i></button><button id='bt_refresh_dashboard_" + v_id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>" + t$1("monitoring.refresh_all") + "</button><button id='bt_enable_all_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2'><i class='fas fa-play me-2'></i>" + t$1("monitoring.enable_all") + "</button><button id='bt_pause_all_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2'><i class='fas fa-pause me-2'></i>" + t$1("monitoring.pause_all") + "</button><select id='select_monitor_unit_width_" + v_id + "' class='form-select form-select-sm omnidb__monitor-unit-width-select my-2' title='" + t$1("monitoring.card_size_label") + "'><option value='small'>" + t$1("monitoring.card_size_small") + "</option><option value='medium'>" + t$1("monitoring.card_size_medium") + "</option><option value='large'>" + t$1("monitoring.card_size_large") + "</option><option value='full'>" + t$1("monitoring.card_size_full") + "</option></select></div><div id='dashboard_" + v_id + "' class='dashboard_all'></div></div>";
     v_tag.rootDiv = v_root;
     v_tag.dashboard_div = v_root.querySelector("#dashboard_" + v_id);
     v_tag.unitListDiv = v_root.querySelector("#monitoring_units_grid_" + v_id);
@@ -10491,6 +10675,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     );
     v_resize_line.addEventListener("mousedown", (event2) => resizeMonitorUnitPanelHorizontal(event2, v_panel_div, v_root));
     v_root.querySelector("#bt_new_unit_" + v_id).addEventListener("click", () => editMonitorUnit());
+    v_root.querySelector("#bt_vcs_units_" + v_id).addEventListener("click", () => openVcsDialog());
     v_root.querySelector("#bt_delete_unit_" + v_id).addEventListener(
       "click",
       () => deleteSelectedMonitorUnit(v_tag)
@@ -10599,7 +10784,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   }
   var SNIPPET_PANEL_ID = "snippets_panel";
   var v_createSnippetPanelFunction = function(p_index) {
-    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0; position: relative;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button id='button_new_snippet' type='button' title='" + t$1("snippets.add_snippet") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='button_delete_snippet' type='button' title='" + t$1("common.delete") + "' disabled><i class='fas fa-minus'></i></button></div></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
+    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0; position: relative;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button id='button_new_snippet' type='button' title='" + t$1("snippets.add_snippet") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='button_delete_snippet' type='button' title='" + t$1("common.delete") + "' disabled><i class='fas fa-minus'></i></button><span class='omnidb__addremove-divider'></span><button id='button_vcs' type='button' title='" + t$1("vcs.menu") + "'><i class='fas fa-code-branch'></i></button></div></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
     var v_target = (
       /** @type {HTMLElement} */
       document.getElementById("omnidb__section_snippets")
@@ -10614,6 +10799,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       var v_selected = v_tree.selectedNode;
       var v_target_node = v_selected && v_selected.tag && v_selected.tag.type === "node" ? v_selected : v_tree.childNodes[0];
       newNodeSnippet(v_target_node, "snippet");
+    });
+    document.getElementById("button_vcs").addEventListener("click", function() {
+      openVcsDialog(v_connTabControl.snippet_tree.childNodes[0]);
     });
     document.getElementById("button_delete_snippet").addEventListener("click", function() {
       var v_selected = v_connTabControl.snippet_tree.selectedNode;

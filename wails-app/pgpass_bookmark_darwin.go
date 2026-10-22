@@ -125,3 +125,32 @@ func resolveSecurityScopedBookmark(data []byte) (resolvedBookmark, error) {
 	}
 	return result, nil
 }
+
+// pickVCSFolder is pickAWSConfigDir's counterpart for the version-control
+// repository folder (see vcsfolder.go): a folder picker with a
+// security-scoped bookmark for the pick.
+func pickVCSFolder(ctx context.Context) (path string, bookmark []byte, cancelled bool, err error) {
+	title := C.CString("Select the folder for version control")
+	defer C.free(unsafe.Pointer(title))
+
+	var outPath *C.char
+	var outBookmark *C.uchar
+	var outBookmarkLen C.int
+	var outCancelled C.int
+	var outErr *C.char
+
+	ok := C.omnidb_pick_and_bookmark(title, nil, 1, nil, &outPath, &outBookmark, &outBookmarkLen, &outCancelled, &outErr)
+	if outCancelled != 0 {
+		return "", nil, true, nil
+	}
+	if ok == 0 {
+		defer C.free(unsafe.Pointer(outErr))
+		return "", nil, false, errors.New(C.GoString(outErr))
+	}
+	defer C.free(unsafe.Pointer(outPath))
+	if outBookmark == nil {
+		return C.GoString(outPath), nil, false, nil
+	}
+	defer C.free(unsafe.Pointer(outBookmark))
+	return C.GoString(outPath), C.GoBytes(unsafe.Pointer(outBookmark), outBookmarkLen), false, nil
+}

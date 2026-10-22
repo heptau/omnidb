@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { openVcsDialog } from "../vcs_dialog.js";
 import { createTabControl } from "../tabs.js";
 import { deleteNodeSnippet, getTreeSnippets, newNodeSnippet } from "../tree_context_functions/tree_snippets.js";
 import { switchSection } from "../section_switcher.js";
@@ -75,6 +76,8 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"<button id='button_new_snippet' type='button' title='" + t("snippets.add_snippet") + "'><i class='fas fa-plus'></i></button>" +
 		"<span class='omnidb__addremove-divider'></span>" +
 		"<button id='button_delete_snippet' type='button' title='" + t("common.delete") + "' disabled><i class='fas fa-minus'></i></button>" +
+		"<span class='omnidb__addremove-divider'></span>" +
+		"<button id='button_vcs' type='button' title='" + t("vcs.menu") + "'><i class='fas fa-code-branch'></i></button>" +
 		"</div>" +
 		"</div>" +
 		"</div>" +
@@ -122,6 +125,9 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		var v_selected = v_tree.selectedNode;
 		var v_target_node = v_selected && v_selected.tag && v_selected.tag.type === "node" ? v_selected : v_tree.childNodes[0];
 		newNodeSnippet(v_target_node, "snippet");
+	});
+	/** @type {HTMLElement} */ (document.getElementById("button_vcs")).addEventListener("click", function () {
+		openVcsDialog(v_connTabControl.snippet_tree.childNodes[0]);
 	});
 	/** @type {HTMLElement} */ (document.getElementById("button_delete_snippet")).addEventListener("click", function () {
 		var v_selected = v_connTabControl.snippet_tree.selectedNode;

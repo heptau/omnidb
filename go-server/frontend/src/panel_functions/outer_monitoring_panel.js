@@ -62,6 +62,7 @@ SOFTWARE.
 
 import { execAjax } from "../ajax_control_bridge.js";
 import { t } from "../i18n.js";
+import { openVcsDialog } from "../vcs_dialog.js";
 import {
 	buildMonitorUnit,
 	deleteSelectedMonitorUnit,
@@ -283,6 +284,12 @@ export function startMonitoringForConnTab(p_conn_tab) {
 		"' type='button' title='" +
 		t("common.delete") +
 		"' disabled><i class='fas fa-minus'></i></button>" +
+		"<span class='omnidb__addremove-divider'></span>" +
+		"<button id='bt_vcs_units_" +
+		v_id +
+		"' type='button' title='" +
+		t("vcs.menu") +
+		"'><i class='fas fa-code-branch'></i></button>" +
 		"</div>" +
 		"</div>" +
 		"</div>" +
@@ -343,6 +350,7 @@ export function startMonitoringForConnTab(p_conn_tab) {
 	var v_resize_line = /** @type {HTMLElement} */ (v_root.querySelector("#monitor_unit_resize_" + v_id));
 	v_resize_line.addEventListener("mousedown", (event) => resizeMonitorUnitPanelHorizontal(event, v_panel_div, v_root));
 	/** @type {HTMLElement} */ (v_root.querySelector("#bt_new_unit_" + v_id)).addEventListener("click", () => editMonitorUnit());
+	/** @type {HTMLElement} */ (v_root.querySelector("#bt_vcs_units_" + v_id)).addEventListener("click", () => openVcsDialog());
 	/** @type {HTMLElement} */ (v_root.querySelector("#bt_delete_unit_" + v_id)).addEventListener("click", () =>
 		deleteSelectedMonitorUnit(v_tag),
 	);

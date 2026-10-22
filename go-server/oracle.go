@@ -38,7 +38,7 @@ func openOracleTarget(info *ConnectionInfo) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := db.Ping(); err != nil {
+	if err := pingWithTimeout(db); err != nil {
 		db.Close()
 		return nil, err
 	}

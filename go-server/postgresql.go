@@ -40,7 +40,7 @@ func openPostgreSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 		}))
 	}
 	db := stdlib.OpenDB(*cfg, opts...)
-	if err := db.Ping(); err != nil {
+	if err := pingWithTimeout(db); err != nil {
 		db.Close()
 		return nil, err
 	}

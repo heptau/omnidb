@@ -82,6 +82,7 @@ func (a *App) startSaveDialogServer() error {
 	mux.HandleFunc("/aws-token", a.handleAWSTokenRequest)
 	mux.HandleFunc("/aws-config-status", a.handleAWSConfigStatusRequest)
 	mux.HandleFunc("/aws-config-grant", a.handleAWSConfigGrantRequest)
+	mux.HandleFunc("/vcs", a.handleVCSRequest)
 	mux.HandleFunc("/notify-language", a.handleNotifyLanguageRequest)
 	mux.HandleFunc("/notify-title", a.handleNotifyTitleRequest)
 
@@ -108,6 +109,10 @@ func newRelayToken() (string, error) {
 // sends small JSON payloads here.
 const relayMaxBodyBytes = 64 << 10
 
+// relayMaxVCSBodyBytes is the larger cap of /vcs, which carries whole
+// snippet and definition files.
+const relayMaxVCSBodyBytes = 64 << 20
+
 // requireRelayAuth rejects anything that isn't a POST to exactly this
 // listener's host:port carrying "Authorization: Bearer <token>". The custom
 // header also forces a CORS preflight for any browser-originated request,
@@ -121,7 +126,11 @@ func requireRelayAuth(addr, token string, next http.Handler) http.Handler {
 			http.Error(w, "forbidden", http.StatusForbidden)
 			return
 		}
-		r.Body = http.MaxBytesReader(w, r.Body, relayMaxBodyBytes)
+		limit := int64(relayMaxBodyBytes)
+		if r.URL.Path == "/vcs" {
+			limit = relayMaxVCSBodyBytes
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, limit)
 		next.ServeHTTP(w, r)
 	})
 }

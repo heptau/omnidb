@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Version control (the branch button under the snippets tree): writes your snippets, custom monitoring units and
+  scheduled queries to a git repository folder as plain files (`snippets/`, `monitoring/<engine>/`,
+  `schedules/<connection alias>/`; schedules carry the alias and SQL only, never an address or credential), removes
+  the `.sql`/`.json` files there that no longer match anything, and commits them. Committing into a folder that is not
+  yet a repository initializes it (a folder inside another repository is refused); the dialog shows its branch,
+  uncommitted changes and recent commits. Importing reads the files back, creating or updating definitions and never
+  deleting any; an imported schedule is created paused so nothing runs unattended. Git runs inside OmniDB (no `git`
+  install needed). In the desktop app the repository lives in a folder inside OmniDB's own home until you pick another
+  one with a native folder picker (remembered between launches); the built-in folder is what makes it work in the
+  sandboxed macOS app with no setup, but a container is hidden from other apps, so pick your own folder to push it
+  with your own git tools. On a multi-user server the folder is typed in and the feature is limited to superusers.
+  Pushing and pulling stay with your own git tools.
 - Scheduled queries (the calendar button in the query toolbar): saves the editor's SQL (the selection, else the whole
   text) to run on a connection every N minutes (1 minute to a week). The dialog lists the schedules with their last
   outcome and lets you run one now, pause or resume it, read its last 50 runs, or delete it. Each run records its
@@ -217,6 +229,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Opening a connection to a host that does not answer (a dead VPN, a firewall that drops packets) now gives up
+  after 5 seconds with an error instead of leaving the spinner running for the operating system's own timeout.
 - Monitoring: a custom unit of type Grid broke every dashboard refresh after its first load with "Invalid or missing
   request data." (for all units refreshed in the same request, not just the grid) — the refresh request now accepts
   the grid's echoed row data instead of rejecting it.

@@ -77,6 +77,7 @@ func (a *App) startBackend() {
 			"OMNIDB_AWS_TOKEN_URL=http://"+a.saveDialogAddr+"/aws-token",
 			"OMNIDB_AWS_STATUS_URL=http://"+a.saveDialogAddr+"/aws-config-status",
 			"OMNIDB_AWS_GRANT_URL=http://"+a.saveDialogAddr+"/aws-config-grant",
+			"OMNIDB_VCS_URL=http://"+a.saveDialogAddr+"/vcs",
 			"OMNIDB_NOTIFY_LANGUAGE_URL=http://"+a.saveDialogAddr+"/notify-language",
 			"OMNIDB_NOTIFY_TITLE_URL=http://"+a.saveDialogAddr+"/notify-title",
 			"OMNIDB_RELAY_TOKEN="+a.relayToken,

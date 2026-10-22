@@ -462,6 +462,7 @@ func run() error {
 	mux.Handle("/get_bookmarks/", handleGetBookmarks(upstream))
 	mux.Handle("/add_bookmark/", handleAddBookmark(upstream))
 	mux.Handle("/delete_bookmark/", handleDeleteBookmark(upstream))
+	mux.Handle("/vcs/", handleVCS(upstream))
 	mux.Handle("/get_schedules/", handleGetSchedules(upstream))
 	mux.Handle("/add_schedule/", handleAddSchedule(upstream))
 	mux.Handle("/set_schedule_enabled/", handleSetScheduleEnabled(upstream))

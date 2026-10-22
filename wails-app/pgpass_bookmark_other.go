@@ -66,3 +66,18 @@ func (b resolvedBookmark) Stop() {}
 func resolveSecurityScopedBookmark(data []byte) (resolvedBookmark, error) {
 	return resolvedBookmark{}, errors.New("security-scoped bookmarks are only needed on macOS")
 }
+
+// pickVCSFolder mirrors pickAWSConfigDir for the version-control repository
+// folder (see vcsfolder.go).
+func pickVCSFolder(ctx context.Context) (path string, bookmark []byte, cancelled bool, err error) {
+	path, err = wailsruntime.OpenDirectoryDialog(ctx, wailsruntime.OpenDialogOptions{
+		Title: "Select the folder for version control",
+	})
+	if err != nil {
+		return "", nil, false, err
+	}
+	if path == "" {
+		return "", nil, true, nil
+	}
+	return path, nil, false, nil
+}
