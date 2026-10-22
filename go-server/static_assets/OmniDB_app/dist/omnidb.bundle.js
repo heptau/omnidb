@@ -11593,7 +11593,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   }
   function renew_autocomplete(p_new_value) {
     var v_search_regex = null;
-    v_search_regex = new RegExp("^(" + p_new_value + ")", "i");
+    v_search_regex = new RegExp("^(" + p_new_value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "i");
     var v_num_results = 0;
     for (var i2 = v_autocomplete_object.elements.length - 1; i2 >= 0; i2--) {
       var v_group = v_autocomplete_object.elements[i2];
@@ -12633,6 +12633,54 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     __proto__: null,
     v_createGraphTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
+  const MAX_SCRIPT_BYTES = 48 * 1024 * 1024;
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+  function installScriptRestore(p_button, p_getConnId, p_getTabId) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".sql,.txt,text/plain,application/sql";
+    input.style.display = "none";
+    p_button.after(input);
+    p_button.addEventListener("click", () => {
+      input.value = "";
+      input.click();
+    });
+    input.addEventListener("change", async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      if (file.size > MAX_SCRIPT_BYTES) {
+        showAlert$1(t$1("script.too_large", { mb: Math.round(MAX_SCRIPT_BYTES / (1024 * 1024)) }));
+        return;
+      }
+      const script = await file.text();
+      showConfirm(
+        t$1("script.confirm", { file: file.name, size: formatSize(file.size) }),
+        function() {
+          execAjax$2(
+            "/restore_script/",
+            JSON.stringify({ p_database_index: p_getConnId(), p_tab_id: p_getTabId(), p_script: script }),
+            function(r2) {
+              showAlert$1(t$1("script.done", { count: r2.v_data.v_statements }));
+            },
+            function(r2) {
+              const v_data = r2.v_data;
+              showAlert$1(typeof v_data === "string" ? v_data : v_data && v_data.message || t$1("errors.request_error"));
+            },
+            "box",
+            true
+          );
+        },
+        null,
+        null,
+        null,
+        t$1("script.run")
+      );
+    });
+  }
   const MAX_POINTS = 500;
   const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|OID|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)\b/i;
   const NUMBER_TEXT = /^\s*-?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?\s*$/;
@@ -13763,6 +13811,27 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       false
     );
   }
+  function dump(p_with_data, p_node) {
+    execAjax$2(
+      "/dump_table/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: p_node.tag && p_node.tag.schema || "",
+        p_table: p_node.text,
+        p_with_data
+      }),
+      function(r2) {
+        deliverExportFile(r2.v_data);
+      },
+      function(r2) {
+        var v_data = r2.v_data;
+        showAlert$1(typeof v_data === "string" ? v_data : v_data && v_data.message || t$1("errors.request_error"));
+      },
+      "box",
+      true
+    );
+  }
   function addGenerateMenu(p_context_menu) {
     var v_menu = p_context_menu.cm_table;
     if (!v_menu || !v_menu.elements) return;
@@ -13783,6 +13852,20 @@ ${t2 ? `    <#ArrowNext [${t2}] />
             icon: "fas cm-all fa-list-alt",
             action: function(node) {
               generate("crud", node);
+            }
+          },
+          {
+            text: t$1("generate.dump_with_data"),
+            icon: "fas cm-all fa-file-export",
+            action: function(node) {
+              dump(true, node);
+            }
+          },
+          {
+            text: t$1("generate.dump_structure"),
+            icon: "fas cm-all fa-file-export",
+            action: function(node) {
+              dump(false, node);
             }
           }
         ]
@@ -22719,7 +22802,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog omnidb__modal--fluid' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>" + escapeHtml(t$1("query.command_history_title")) + "</h5><button id='bt_close_command_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t$1("common.close")) + "'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_chart_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("chart.button_title")) + '"><i class="fas fa-chart-bar fa-light"></i></button><button id="bt_local_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("history.button_title")) + '"><i class="fas fa-code-branch fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
+    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_run_script_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("script.button_title")) + '"><i class="fas fa-file-import fa-light"></i></button><button id="bt_chart_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("chart.button_title")) + '"><i class="fas fa-chart-bar fa-light"></i></button><button id="bt_local_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("history.button_title")) + '"><i class="fas fa-code-branch fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
     v_tab.elementDiv.innerHTML = v_html;
     var v_curr_tabs = createTabControl({ p_div: "query_result_tabs_" + v_tab.id });
     var v_selectDataTabFunc = function() {
@@ -23032,6 +23115,16 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       document.getElementById("bt_local_history_" + v_tab.id)
     );
     document.getElementById("bt_chart_" + v_tab.id).addEventListener("click", () => showResultChart(v_tag));
+    installScriptRestore(
+      /** @type {HTMLElement} */
+      document.getElementById("bt_run_script_" + v_tab.id),
+      function() {
+        return v_owner_conn_tab.tag.selectedDatabaseIndex;
+      },
+      function() {
+        return v_owner_conn_tab.id;
+      }
+    );
     v_tag.filter_input = v_filter_input;
     v_tag.filter_count = v_filter_count;
     v_filter_input.addEventListener("input", () => applyResultFilter(v_tag));

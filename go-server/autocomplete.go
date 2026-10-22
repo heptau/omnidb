@@ -73,24 +73,37 @@ func handleGetAutocompleteResults(upstream *url.URL, fallback http.Handler) http
 			}
 		}
 
+		ctx := analyzeCompletion(req.PSQL, req.PPos, req.PValue)
+
 		aliasHandled := false
 		if req.PValue != "" && strings.HasSuffix(req.PValue, ".") {
 			alias := strings.TrimSuffix(req.PValue, ".")
-			if tableRef, found := findTableReferenceForCompletion(req.PSQL, alias, req.PPos); found {
-				cols, err := columnMetadataForExpression(db, tableRef)
-				if err == nil {
-					group := autocompleteGroup{Type: "column"}
-					for _, c := range cols {
-						val := req.PValue + c.Name
-						group.Elements = append(group.Elements, autocompleteElement{Value: val, SelectValue: val, Complement: c.DataType})
-						trackMax(val, c.DataType)
-					}
-					if len(group.Elements) > 0 {
-						groups = append(groups, group)
-						aliasHandled = true
+			// 1. The statement's own references (aliases, table names, CTEs).
+			if !strings.Contains(alias, ".") {
+				if group := qualifiedColumnGroup(db, ctx, req.PValue, alias); group != nil {
+					groups = append(groups, *group)
+					aliasHandled = true
+				}
+			}
+			// 2. The older backward text scan, for what the statement scan does not understand.
+			if !aliasHandled {
+				if tableRef, found := findTableReferenceForCompletion(req.PSQL, alias, req.PPos); found {
+					cols, err := columnMetadataForExpression(db, tableRef)
+					if err == nil {
+						group := autocompleteGroup{Type: "column"}
+						for _, c := range cols {
+							val := req.PValue + c.Name
+							group.Elements = append(group.Elements, autocompleteElement{Value: val, SelectValue: val, Complement: c.DataType})
+						}
+						if len(group.Elements) > 0 {
+							groups = append(groups, group)
+							aliasHandled = true
+						}
 					}
 				}
 			}
+		} else if !strings.Contains(req.PValue, ".") {
+			groups = append(groups, contextualGroups(db, info, ctx, req.PValue)...)
 		}
 
 		if !aliasHandled && info.Technology == "postgresql" {
@@ -134,6 +147,11 @@ func handleGetAutocompleteResults(upstream *url.URL, fallback http.Handler) http
 			}
 		}
 
+		for _, g := range groups {
+			for _, e := range g.Elements {
+				trackMax(e.Value, e.Complement)
+			}
+		}
 		if groups == nil {
 			groups = []autocompleteGroup{}
 		}

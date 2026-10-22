@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -17,7 +18,7 @@ import (
 // per row, quoting identifiers and literals for the connection's engine so
 // the file can be replayed against a database of the same kind.
 type sqlInsertExportWriter struct {
-	file       *os.File
+	file       *os.File // nil when writing to a caller-owned io.Writer
 	buf        *bufio.Writer
 	technology string
 	table      string
@@ -122,6 +123,12 @@ func sqlExportString(s, technology string) string {
 	return "'" + strings.ReplaceAll(s, "'", "''") + "'"
 }
 
+// newSQLInsertWriter writes to a writer the caller owns (and closes itself);
+// Close only flushes.
+func newSQLInsertWriter(out io.Writer, table, technology string) *sqlInsertExportWriter {
+	return &sqlInsertExportWriter{buf: bufio.NewWriter(out), technology: technology, table: table}
+}
+
 func (w *sqlInsertExportWriter) WriteHeader(cols []string) error {
 	quoted := make([]string, len(cols))
 	for i, c := range cols {
@@ -142,8 +149,13 @@ func (w *sqlInsertExportWriter) WriteRow(values []any) error {
 
 func (w *sqlInsertExportWriter) Close() error {
 	if err := w.buf.Flush(); err != nil {
-		w.file.Close()
+		if w.file != nil {
+			w.file.Close()
+		}
 		return err
+	}
+	if w.file == nil {
+		return nil
 	}
 	return w.file.Close()
 }

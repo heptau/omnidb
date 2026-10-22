@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { installScriptRestore } from "../script_restore.js";
 import { showResultChart } from "../result_chart.js";
 import { installEditorHistory } from "../editor_history.js";
 import { autocomplete_keydown, autocomplete_start, autocomplete_update_editor_cursor } from "../autocomplete.js";
@@ -179,6 +180,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<button id="bt_history_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button>' +
+		'<button id="bt_run_script_' +
+		v_tab.id +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("script.button_title")) + '"><i class="fas fa-file-import fa-light"></i></button>' +
 		'<button id="bt_chart_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("chart.button_title")) + '"><i class="fas fa-chart-bar fa-light"></i></button>' +
@@ -654,6 +658,15 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		/** @type {HTMLElement} */ (document.getElementById("bt_local_history_" + v_tab.id)),
 	);
 	/** @type {HTMLElement} */ (document.getElementById("bt_chart_" + v_tab.id)).addEventListener("click", () => showResultChart(v_tag));
+	installScriptRestore(
+		/** @type {HTMLElement} */ (document.getElementById("bt_run_script_" + v_tab.id)),
+		function () {
+			return v_owner_conn_tab.tag.selectedDatabaseIndex;
+		},
+		function () {
+			return v_owner_conn_tab.id;
+		},
+	);
 	v_tag.filter_input = v_filter_input;
 	v_tag.filter_count = v_filter_count;
 	v_filter_input.addEventListener("input", () => applyResultFilter(v_tag));

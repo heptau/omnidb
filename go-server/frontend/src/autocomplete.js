@@ -1053,7 +1053,8 @@ export function renew_autocomplete(p_new_value) {
 	/** @type {RegExp|null} */
 	var v_search_regex = null;
 
-	v_search_regex = new RegExp("^(" + p_new_value + ")", "i");
+	// The typed word is literal text, not a pattern (it may hold "(", "+", "*" ...).
+	v_search_regex = new RegExp("^(" + p_new_value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "i");
 
 	//v_search_regex = new RegExp('^' + p_new_value.split('').join('.*'), 'i');
 

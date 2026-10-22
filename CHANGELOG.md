@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Context-aware SQL completion, on every engine (it used to give nothing but the old `alias.` lookup outside PostgreSQL):
+  the statement being edited is scanned for the clause the cursor is in and for the tables, subqueries and CTEs it reads
+  from. `alias.`, `table.` and `cte.` now list that reference's columns (`FROM t AS a`, `WITH x AS (...)` with column lists,
+  `MATERIALIZED` and recursive CTEs included, and an alias of another statement in the same script no longer leaks in); a
+  bare word in SELECT, WHERE, GROUP BY, ORDER BY, HAVING, SET, RETURNING or an INSERT column list offers the columns of
+  those references (a column present in several shows where it comes from); after ON, the foreign-key conditions between the
+  table being joined and the ones before it (`c.region_id = r.id`) lead the list; after FROM, JOIN, UPDATE or INTO, the
+  statement's CTE names and — outside PostgreSQL, which keeps its catalog search — the connection's tables. A CTE that
+  modifies data is never probed, and the typed word is no longer taken as a regular expression when the popup filters.
+- Dump and restore of a table, without any external program: "Dump table (structure and data) / (structure only) to SQL
+  file" in a table's Generate menu writes the table's DDL (as the DDL panel shows it) followed by one INSERT per row —
+  quoted for the engine, binary values as hex — and hands it over like an export (native Save dialog in the desktop app,
+  download in a browser). The new "Run an SQL script from a file" button in the query toolbar restores it: the file is
+  read in the browser and run statement by statement in one transaction (so a failing statement, named in the error,
+  undoes the rest wherever the database has transactional DDL), refused on a read-only connection; up to 48 MB and
+  1,000,000 statements. Because it is plain SQL it also serves to run any script file.
 - Chart of a query result: the new chart button in the query toolbar draws the rows the result grid currently shows (so its
   filter applies) as a bar, line, pie or doughnut chart. Pick the column for the x axis (categories) and tick the
   numeric columns to plot (a column counts as numeric by its database type, or by its values when the driver reports

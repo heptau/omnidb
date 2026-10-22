@@ -22,7 +22,14 @@ type completionColumn struct {
 // go-sql-driver/mysql, sijms/go-ora, modernc.org/sqlite), so this needs no
 // per-engine dispatch at all, unlike editDataColumns.
 func columnMetadataForExpression(db *sql.DB, tableRef string) ([]completionColumn, error) {
-	rows, err := db.Query("select x.* from " + tableRef + " x where 1 = 0")
+	return columnMetadataWithPrefix(db, "", tableRef)
+}
+
+// columnMetadataWithPrefix is columnMetadataForExpression with text in front of
+// the probing query -- the WITH clause of the statement being completed, so a
+// CTE can be selected from.
+func columnMetadataWithPrefix(db *sql.DB, prefix, tableRef string) ([]completionColumn, error) {
+	rows, err := db.Query(prefix + "select x.* from " + tableRef + " x where 1 = 0")
 	if err != nil {
 		return nil, err
 	}

@@ -447,6 +447,8 @@ func run() error {
 	mux.Handle("/search_tables/", handleSearchTables(upstream, proxy))
 	mux.Handle("/import_rows/", handleImportRows(upstream, proxy))
 	mux.Handle("/generate_sql/", handleGenerateSQL(upstream, proxy))
+	mux.Handle("/dump_table/", handleDumpTable(upstream, proxy))
+	mux.Handle("/restore_script/", handleRestoreScript(upstream, proxy))
 	mux.Handle("/save_editor_version/", handleSaveEditorVersion(upstream))
 	mux.Handle("/get_editor_versions/", handleGetEditorVersions(upstream))
 	mux.Handle("/get_editor_version/", handleGetEditorVersion(upstream))
