@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$6 = document.getElementById("omnidb_bootstrap");
-  if (!el$6) {
+  const el$7 = document.getElementById("omnidb_bootstrap");
+  if (!el$7) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$6.textContent);
+  const cfg = JSON.parse(el$7.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -949,7 +949,7 @@
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$5(id) {
+  function el$6(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -971,7 +971,7 @@
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    var v_modal_message = el$5("modal_message");
+    var v_modal_message = el$6("modal_message");
     v_modal_message.addEventListener("hide.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
@@ -979,7 +979,7 @@
       v_message_modal_animating = true;
     });
     v_modal_message.addEventListener("hidden.bs.modal", function(e2) {
-      el$5("modal_message_content").innerHTML = "";
+      el$6("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -999,21 +999,21 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$5("modal_message_dialog");
+    var v_dialog = el$6("modal_message_dialog");
     var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
     if (v_old_title) v_old_title.remove();
     v_dialog.classList.toggle("modal-xl", p_large === true);
     v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$5("modal_message")).show();
+      bootstrap.Modal.getOrCreateInstance(el$6("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
   }
   function setMessageModalTitle(p_text, p_icon_class = null) {
-    var v_header = el$5("modal_message_dialog").querySelector(".modal-header");
+    var v_header = el$6("modal_message_dialog").querySelector(".modal-header");
     if (!v_header) return;
     var v_title = document.createElement("h5");
     v_title.className = "modal-title";
@@ -1027,11 +1027,11 @@
     v_header.insertBefore(v_title, v_header.firstChild);
   }
   function showError(p_message) {
-    var v_content_div = el$5("modal_message_content");
-    var v_button_yes = el$5("modal_message_yes");
-    var v_button_ok = el$5("modal_message_ok");
-    var v_button_no = el$5("modal_message_no");
-    var v_button_cancel = el$5("modal_message_cancel");
+    var v_content_div = el$6("modal_message_content");
+    var v_button_yes = el$6("modal_message_yes");
+    var v_button_ok = el$6("modal_message_ok");
+    var v_button_no = el$6("modal_message_no");
+    var v_button_cancel = el$6("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_ok.textContent = t$1("common.ok");
     v_button_yes.style.display = "none";
@@ -1045,11 +1045,11 @@
   }
   function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el$5("modal_message_content");
-      var v_button_yes = el$5("modal_message_yes");
-      var v_button_ok = el$5("modal_message_ok");
-      var v_button_no = el$5("modal_message_no");
-      var v_button_cancel = el$5("modal_message_cancel");
+      var v_content_div = el$6("modal_message_content");
+      var v_button_yes = el$6("modal_message_yes");
+      var v_button_ok = el$6("modal_message_ok");
+      var v_button_no = el$6("modal_message_no");
+      var v_button_cancel = el$6("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -1069,11 +1069,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$5("modal_message_content");
-      var v_button_yes = el$5("modal_message_yes");
-      var v_button_ok = el$5("modal_message_ok");
-      var v_button_no = el$5("modal_message_no");
-      var v_button_cancel = el$5("modal_message_cancel");
+      var v_content_div = el$6("modal_message_content");
+      var v_button_yes = el$6("modal_message_yes");
+      var v_button_ok = el$6("modal_message_ok");
+      var v_button_no = el$6("modal_message_no");
+      var v_button_cancel = el$6("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.textContent = p_yes_label || t$1("common.ok");
       v_button_ok.onclick = function() {
@@ -1090,11 +1090,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$5("modal_message_content");
-    var v_button_yes = el$5("modal_message_yes");
-    var v_button_ok = el$5("modal_message_ok");
-    var v_button_no = el$5("modal_message_no");
-    var v_button_cancel = el$5("modal_message_cancel");
+    var v_content_div = el$6("modal_message_content");
+    var v_button_yes = el$6("modal_message_yes");
+    var v_button_ok = el$6("modal_message_ok");
+    var v_button_no = el$6("modal_message_no");
+    var v_button_cancel = el$6("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1113,11 +1113,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$5("modal_message_content");
-    var v_button_yes = el$5("modal_message_yes");
-    var v_button_ok = el$5("modal_message_ok");
-    var v_button_no = el$5("modal_message_no");
-    var v_button_cancel = el$5("modal_message_cancel");
+    var v_content_div = el$6("modal_message_content");
+    var v_button_yes = el$6("modal_message_yes");
+    var v_button_ok = el$6("modal_message_ok");
+    var v_button_no = el$6("modal_message_no");
+    var v_button_cancel = el$6("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1404,7 +1404,7 @@
   }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   var v_pgpass_lookup_info = null;
-  function el$4(id) {
+  function el$5(id) {
     return document.getElementById(id);
   }
   function initPasswordModal() {
@@ -1435,15 +1435,15 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-    if (gv_desktopMode) el$4("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
-    el$4("modal_password_pgpass_button").addEventListener("click", function() {
+    if (gv_desktopMode) el$5("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
+    el$5("modal_password_pgpass_button").addEventListener("click", function() {
       if (gv_desktopMode) {
         grantPgpassAccess(v_pgpass_lookup_info);
       } else {
-        el$4("modal_password_pgpass_input").click();
+        el$5("modal_password_pgpass_input").click();
       }
     });
-    el$4("modal_password_pgpass_input").addEventListener("change", function(e2) {
+    el$5("modal_password_pgpass_input").addEventListener("change", function(e2) {
       var v_file = e2.target.files ? e2.target.files[0] : null;
       e2.target.value = "";
       if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
@@ -1484,12 +1484,12 @@
     return null;
   }
   function showPgpassError(p_message) {
-    var v_error_div = el$4("modal_password_pgpass_error");
+    var v_error_div = el$5("modal_password_pgpass_error");
     v_error_div.textContent = p_message;
     v_error_div.style.display = "block";
   }
   function hidePgpassError() {
-    el$4("modal_password_pgpass_error").style.display = "none";
+    el$5("modal_password_pgpass_error").style.display = "none";
   }
   function readPgpassFileViaInput(p_file, p_lookup_info) {
     var v_reader = new FileReader();
@@ -1629,7 +1629,7 @@
     v_modal_password_input = /** @type {HTMLInputElement} */
     document.getElementById("txt_password_prompt");
     v_pgpass_lookup_info = resolvePgpassLookupInfo(p_database_index);
-    el$4("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
+    el$5("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
     hidePgpassError();
     if (p_message) v_content_div.textContent = p_message;
     bootstrap.Modal.getOrCreateInstance(
@@ -12795,7 +12795,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       rows: rows.map((r2) => r2.concat(Array(width - r2.length).fill("")))
     };
   }
-  function el$3(tag, className, text) {
+  function el$4(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -12833,14 +12833,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     const fileInput = (
       /** @type {HTMLInputElement} */
-      el$3("input", "form-control mb-2")
+      el$4("input", "form-control mb-2")
     );
     fileInput.type = "file";
     fileInput.accept = ".csv,.tsv,.txt,.json,text/csv,application/json";
     fileInput.setAttribute("aria-label", t$1("import.file"));
     const delimiterSelect = (
       /** @type {HTMLSelectElement} */
-      el$3("select", "form-select form-select-sm")
+      el$4("select", "form-select form-select-sm")
     );
     for (const [value, key] of [
       ["auto", "import.delim_auto"],
@@ -12851,23 +12851,23 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     ]) {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$3("option", void 0, t$1(key))
+        el$4("option", void 0, t$1(key))
       );
       o2.value = value;
       delimiterSelect.appendChild(o2);
     }
     const checkbox = (labelKey, checked) => {
-      const wrap = el$3("div", "form-check form-check-inline");
+      const wrap = el$4("div", "form-check form-check-inline");
       const input = (
         /** @type {HTMLInputElement} */
-        el$3("input", "form-check-input")
+        el$4("input", "form-check-input")
       );
       input.type = "checkbox";
       input.checked = checked;
       input.id = "import_opt_" + labelKey.replace(/\W/g, "_");
       const label = (
         /** @type {HTMLLabelElement} */
-        el$3("label", "form-check-label", t$1(labelKey))
+        el$4("label", "form-check-label", t$1(labelKey))
       );
       label.htmlFor = input.id;
       wrap.append(input, label);
@@ -12876,8 +12876,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     const header = checkbox("import.header", true);
     const emptyNullBox = checkbox("import.empty_null", true);
     const emptyNull = emptyNullBox.input;
-    const status = el$3("div", "my-2");
-    const table = el$3("div", "mt-2");
+    const status = el$4("div", "my-2");
+    const table = el$4("div", "mt-2");
     table.style.maxHeight = "45vh";
     table.style.overflow = "auto";
     const render2 = () => {
@@ -12895,29 +12895,29 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
       if (mapping.length !== parsed.width) mapping = suggestMapping(parsed.fileColumns, parsed.width, p_columns);
       status.textContent = t$1("import.rows_found", { count: parsed.rows.length });
-      const grid = el$3("table", "table table-sm mb-0");
+      const grid = el$4("table", "table table-sm mb-0");
       grid.style.setProperty("--bs-table-bg", "transparent");
       grid.style.setProperty("--bs-table-color", "inherit");
-      const head = el$3("tr");
-      const sel = el$3("tr");
+      const head = el$4("tr");
+      const sel = el$4("tr");
       for (let i2 = 0; i2 < parsed.width; i2++) {
-        head.appendChild(el$3("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
-        const cell = el$3("td");
+        head.appendChild(el$4("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
+        const cell = el$4("td");
         const select = (
           /** @type {HTMLSelectElement} */
-          el$3("select", "form-select form-select-sm")
+          el$4("select", "form-select form-select-sm")
         );
         select.setAttribute("aria-label", t$1("import.col_target"));
         const skip = (
           /** @type {HTMLOptionElement} */
-          el$3("option", void 0, t$1("import.map_skip"))
+          el$4("option", void 0, t$1("import.map_skip"))
         );
         skip.value = "";
         select.appendChild(skip);
         for (const c2 of p_columns) {
           const o2 = (
             /** @type {HTMLOptionElement} */
-            el$3("option", void 0, c2)
+            el$4("option", void 0, c2)
           );
           o2.value = c2;
           select.appendChild(o2);
@@ -12929,14 +12929,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         cell.appendChild(select);
         sel.appendChild(cell);
       }
-      const thead = el$3("thead");
+      const thead = el$4("thead");
       thead.append(head, sel);
-      const tbody = el$3("tbody");
+      const tbody = el$4("tbody");
       for (const row of parsed.rows.slice(0, PREVIEW_ROWS)) {
-        const tr = el$3("tr");
+        const tr = el$4("tr");
         for (let i2 = 0; i2 < parsed.width; i2++) {
           const v2 = row[i2];
-          const td = el$3("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
+          const td = el$4("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
           td.style.maxWidth = "14rem";
           td.style.overflow = "hidden";
           td.style.textOverflow = "ellipsis";
@@ -12976,8 +12976,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        const options = el$3("div", "d-flex flex-wrap align-items-center gap-2");
-        const delimiterLabel = el$3("label", "me-1", t$1("import.delimiter"));
+        const options = el$4("div", "d-flex flex-wrap align-items-center gap-2");
+        const delimiterLabel = el$4("label", "me-1", t$1("import.delimiter"));
         options.append(delimiterLabel, delimiterSelect, header.wrap, emptyNullBox.wrap);
         delimiterSelect.style.width = "auto";
         content.append(fileInput, options, status, table);
@@ -21998,6 +21998,209 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
     ];
   }
+  const NAME_PATTERN = /^[\p{L}_][\p{L}\p{N}_$]{0,99}$/u;
+  function el$3(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  function askNewName(p_oldName, p_done, p_okLabel) {
+    const input = (
+      /** @type {HTMLInputElement} */
+      el$3("input", "form-control")
+    );
+    input.type = "text";
+    input.value = p_oldName;
+    input.setAttribute("aria-label", t$1("rename.new_name"));
+    const problem = el$3("div", "text-danger small mt-1");
+    showConfirm(
+      "",
+      function() {
+        const name = input.value.trim();
+        if (!NAME_PATTERN.test(name)) {
+          showAlert$1(t$1("rename.invalid"));
+          return;
+        }
+        if (name !== p_oldName) p_done(name);
+      },
+      null,
+      function() {
+        setMessageModalTitle(t$1("rename.prompt_title", { name: p_oldName }));
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        content.append(el$3("label", "form-label", t$1("rename.new_name")), input, problem);
+        input.focus();
+        input.select();
+        input.addEventListener("keydown", (e2) => {
+          if (e2.key === "Enter") {
+            e2.preventDefault();
+            document.getElementById("modal_message_ok")?.click();
+          }
+        });
+      },
+      "form",
+      p_okLabel || t$1("common.ok")
+    );
+  }
+  function renameInEditor(p_editor, p_info) {
+    askNewName(p_info.name, (name) => {
+      const ranges = [...p_info.usages].sort((a2, b2) => b2.row - a2.row || b2.column - a2.column);
+      for (const r2 of ranges) {
+        const range = toRange(r2);
+        const old = p_editor.session.getTextRange(range);
+        const quote = old.charAt(0) === '"' || old.charAt(0) === "`" ? old.charAt(0) : "";
+        p_editor.session.replace(range, quote + name + quote);
+      }
+      p_editor.focus();
+    });
+  }
+  function renameInDatabase(p_editor, p_table, p_column, p_connId, p_tabId, p_oldName) {
+    askNewName(
+      p_oldName,
+      (name) => {
+        execAjax$2(
+          "/rename_plan/",
+          JSON.stringify({
+            p_database_index: p_connId,
+            p_tab_id: p_tabId,
+            p_table,
+            p_column,
+            p_new_name: name,
+            p_text: p_column ? "" : p_editor.getValue()
+          }),
+          function(r2) {
+            showPlan(p_editor, r2.v_data, name);
+          },
+          function(r2) {
+            const v2 = r2.v_data;
+            showAlert$1(typeof v2 === "string" ? v2 : v2 && v2.message || t$1("errors.request_error"));
+          },
+          "box",
+          true
+        );
+      },
+      t$1("rename.preview")
+    );
+  }
+  function showPlan(p_editor, p_plan, p_newName) {
+    const snippetBoxes = /* @__PURE__ */ new Map();
+    const editorBox = (
+      /** @type {HTMLInputElement} */
+      el$3("input", "form-check-input")
+    );
+    editorBox.type = "checkbox";
+    editorBox.checked = true;
+    showConfirm(
+      "",
+      function() {
+        const ids = [...snippetBoxes.entries()].filter(([, box]) => box.checked).map(([id]) => id);
+        if (p_plan.editor_text !== void 0 && p_plan.editor_count && editorBox.checked) {
+          p_editor.setValue(p_plan.editor_text, -1);
+        }
+        if (ids.length > 0) {
+          execAjax$2(
+            "/apply_snippet_rename/",
+            JSON.stringify({ p_old: p_plan.old_name, p_new: p_plan.new_name, p_ids: ids }),
+            function() {
+              getAllSnippets();
+            },
+            function() {
+            },
+            "box",
+            false
+          );
+        }
+        tabSQLTemplate(t$1("rename.script_tab", { old: p_plan.old_name }), p_plan.sql);
+      },
+      null,
+      function() {
+        setMessageModalTitle(t$1("rename.plan_title", { old: p_plan.old_name, new: p_newName }));
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        const pre = el$3("pre", "p-2 mb-2", p_plan.sql);
+        pre.style.cssText = "white-space:pre-wrap;border:1px solid var(--border-color);";
+        content.append(pre, el$3("div", "small text-muted mb-2", t$1("rename.script_hint")));
+        if (p_plan.editor_count) {
+          const wrap = el$3("div", "form-check mb-2");
+          editorBox.id = "rename_editor_box";
+          const label = (
+            /** @type {HTMLLabelElement} */
+            el$3("label", "form-check-label", t$1("rename.editor_mentions", { count: p_plan.editor_count }))
+          );
+          label.htmlFor = editorBox.id;
+          wrap.append(editorBox, label);
+          content.appendChild(wrap);
+        }
+        if (p_plan.snippets.length > 0) {
+          content.appendChild(el$3("h6", "mt-3", t$1("rename.snippets", { name: p_plan.old_name })));
+          const list = el$3("div");
+          list.style.cssText = "max-height:30vh;overflow:auto;";
+          for (const s2 of p_plan.snippets) {
+            const wrap = el$3("div", "form-check mb-2");
+            const box = (
+              /** @type {HTMLInputElement} */
+              el$3("input", "form-check-input")
+            );
+            box.type = "checkbox";
+            box.checked = true;
+            box.id = "rename_snippet_" + s2.id;
+            snippetBoxes.set(s2.id, box);
+            const label = (
+              /** @type {HTMLLabelElement} */
+              el$3("label", "form-check-label", s2.title)
+            );
+            label.htmlFor = box.id;
+            wrap.append(box, label);
+            for (const l2 of s2.lines) {
+              const line = el$3("div", "small");
+              line.style.cssText = "font-family:monospace;white-space:pre-wrap;";
+              line.append(el$3("span", "text-danger", "- " + l2.before), document.createElement("br"), el$3("span", "text-success", "+ " + l2.after));
+              wrap.appendChild(line);
+            }
+            list.appendChild(wrap);
+          }
+          content.appendChild(list);
+        }
+      },
+      true,
+      t$1("rename.open_script")
+    );
+  }
+  function renameSymbol(p_editor, p_pos, p_getConnId, p_getTabId) {
+    resolve(p_editor, p_pos, (info) => {
+      if ((info.kind === "alias" || info.kind === "cte") && info.usages.length > 0) {
+        renameInEditor(p_editor, info);
+      } else if (info.kind === "table" && info.table) {
+        renameInDatabase(p_editor, info.table, "", p_getConnId(), p_getTabId(), (info.table.split(".").pop() || info.table).replace(/^["`]|["`]$/g, ""));
+      } else if (info.kind === "column" && info.table) {
+        renameInDatabase(p_editor, info.table, info.name, p_getConnId(), p_getTabId(), info.name);
+      }
+    });
+  }
+  function installEditorRename(p_editor, p_getConnId, p_getTabId) {
+    p_editor.commands.addCommand({
+      name: "omnidbRename",
+      bindKey: { win: "Shift-F6", mac: "Shift-F6" },
+      exec: () => renameSymbol(p_editor, p_editor.getCursorPosition(), p_getConnId, p_getTabId)
+    });
+  }
+  function renameMenuEntry(p_editor, p_clientX, p_clientY, p_getConnId, p_getTabId) {
+    const coords = p_editor.renderer.screenToTextCoordinates(p_clientX, p_clientY);
+    return {
+      text: t$1("rename.menu"),
+      icon: "fas cm-all fa-edit",
+      action: () => renameSymbol(p_editor, { row: coords.row, column: coords.column }, p_getConnId, p_getTabId)
+    };
+  }
   const IDLE_MS$1 = 1200;
   function installEditorInspections(p_editor, p_getConnId, p_getTabId) {
     const Range2 = ace.require("ace/range").Range;
@@ -23178,6 +23381,17 @@ ${t2 ? `    <#ArrowNext [${t2}] />
           }
         });
       v_option_list.push(
+        renameMenuEntry(
+          v_editor,
+          event2.clientX,
+          event2.clientY,
+          function() {
+            return v_owner_conn_tab.tag.selectedDatabaseIndex;
+          },
+          function() {
+            return v_owner_conn_tab.id;
+          }
+        ),
         ...navigationMenuEntries(
           v_editor,
           event2.clientX,
@@ -23384,6 +23598,15 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     installScriptRestore(
       /** @type {HTMLElement} */
       document.getElementById("bt_run_script_" + v_tab.id),
+      function() {
+        return v_owner_conn_tab.tag.selectedDatabaseIndex;
+      },
+      function() {
+        return v_owner_conn_tab.id;
+      }
+    );
+    installEditorRename(
+      v_editor,
       function() {
         return v_owner_conn_tab.tag.selectedDatabaseIndex;
       },

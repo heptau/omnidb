@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Rename (Shift+F6, or "Rename…" in the editor's right-click menu) for the name under the cursor. An alias or CTE is
+  renamed in the whole statement at once. A table or column opens a preview instead: the `ALTER`/`RENAME` statement for
+  the engine (`ALTER TABLE … RENAME TO`, `RENAME TABLE`, `sp_rename`, `RENAME COLUMN`, Firebird's `ALTER COLUMN … TO`; Firebird
+  cannot rename a table) is written into a new tab for you to run — nothing in the database changes by itself — and, for
+  a table, the lines of your snippets that mention the old name are shown as a diff, each snippet with a checkbox,
+  together with the mentions in the current editor. Only code is rewritten, never strings or comments; the new name is
+  checked (valid identifier, not already taken, table exists, not on a read-only connection) before anything is offered.
 - Go to definition and find usages in the SQL editor, on every engine. Ctrl/Cmd+click (or Ctrl/Cmd+B, or "Go to
   definition" in the editor's right-click menu) on a name: an alias or CTE jumps to where it is defined, a table, view or
   a column's table opens its DDL in a new tab (on the definition of an alias, its table's). Alt+F7 (or "Find usages")

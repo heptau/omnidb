@@ -39,7 +39,7 @@ function errorText(r) {
  * @param {{ row: number, column: number }} p_pos
  * @param {(info: SymbolInfo) => void} p_done
  */
-function resolve(p_editor, p_pos, p_done) {
+export function resolve(p_editor, p_pos, p_done) {
 	execAjax(
 		"/resolve_symbol/",
 		JSON.stringify({ p_sql: p_editor.getValue(), p_pos: p_editor.session.doc.positionToIndex(p_pos) }),
@@ -53,7 +53,7 @@ function resolve(p_editor, p_pos, p_done) {
 }
 
 /** @param {SymbolRange} r */
-function toRange(r) {
+export function toRange(r) {
 	return new (ace.require("ace/range").Range)(r.row, r.column, r.end_row, r.end_column);
 }
 

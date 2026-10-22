@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { installEditorRename, renameMenuEntry } from "../editor_rename.js";
 import { installEditorNavigation, navigationMenuEntries } from "../editor_navigation.js";
 import { installEditorInspections } from "../editor_inspections.js";
 import { installScriptRestore } from "../script_restore.js";
@@ -426,6 +427,17 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 				},
 			});
 		v_option_list.push(
+			renameMenuEntry(
+				v_editor,
+				event.clientX,
+				event.clientY,
+				function () {
+					return v_owner_conn_tab.tag.selectedDatabaseIndex;
+				},
+				function () {
+					return v_owner_conn_tab.id;
+				},
+			),
 			...navigationMenuEntries(
 				v_editor,
 				event.clientX,
@@ -675,6 +687,15 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	/** @type {HTMLElement} */ (document.getElementById("bt_chart_" + v_tab.id)).addEventListener("click", () => showResultChart(v_tag));
 	installScriptRestore(
 		/** @type {HTMLElement} */ (document.getElementById("bt_run_script_" + v_tab.id)),
+		function () {
+			return v_owner_conn_tab.tag.selectedDatabaseIndex;
+		},
+		function () {
+			return v_owner_conn_tab.id;
+		},
+	);
+	installEditorRename(
+		v_editor,
 		function () {
 			return v_owner_conn_tab.tag.selectedDatabaseIndex;
 		},
