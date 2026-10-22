@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Go to definition and find usages in the SQL editor, on every engine. Ctrl/Cmd+click (or Ctrl/Cmd+B, or "Go to
+  definition" in the editor's right-click menu) on a name: an alias or CTE jumps to where it is defined, a table, view or
+  a column's table opens its DDL in a new tab (on the definition of an alias, its table's). Alt+F7 (or "Find usages")
+  selects every mention of an alias or CTE in the statement at once, and for a table lists where it appears: in the
+  editor, in your snippets and in your query history, each one clickable (a snippet opens, a history entry opens in a
+  new tab). Ctrl/Cmd+click on a name no longer adds a text cursor.
 - SQL inspections in the query editor: after a pause in typing, the statement text is checked and problems are marked
   with a gutter annotation (hover for the message) and a dotted underline — `UPDATE` / `DELETE` without `WHERE`,
   comparisons with NULL (`= NULL`, `<> NULL`, `!= NULL` in WHERE / ON / HAVING), a `JOIN` with neither `ON` nor `USING`

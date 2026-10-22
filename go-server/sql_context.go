@@ -288,7 +288,8 @@ func tableRefs(text string, toks []ctxTok) []tableRef {
 
 // cteDef is one "name AS (body)" of a WITH clause.
 type cteDef struct {
-	Name string
+	Name       string
+	Start, End int // byte offsets of the name in the text
 }
 
 // cteClause reads a leading WITH clause. It returns the CTEs and the text of
@@ -308,6 +309,7 @@ func cteClause(text string, toks []ctxTok) (defs []cteDef, clause string) {
 			break
 		}
 		name := unquoteIdent(toks[i].text)
+		nameTok := toks[i]
 		i++
 		if i < len(toks) && toks[i].isPunct("(") { // column list
 			k := matchingParen(toks, i)
@@ -330,7 +332,7 @@ func cteClause(text string, toks []ctxTok) (defs []cteDef, clause string) {
 		if k < 0 {
 			break
 		}
-		defs = append(defs, cteDef{Name: name})
+		defs = append(defs, cteDef{Name: name, Start: nameTok.start, End: nameTok.end})
 		lastEnd = toks[k].end
 		i = k + 1
 		if i < len(toks) && toks[i].isPunct(",") {

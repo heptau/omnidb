@@ -12633,828 +12633,6 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     __proto__: null,
     v_createGraphTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
-  const IDLE_MS$1 = 1200;
-  function installEditorInspections(p_editor, p_getConnId, p_getTabId) {
-    const Range2 = ace.require("ace/range").Range;
-    let timer = 0;
-    let token = 0;
-    let lastText = null;
-    let markers = [];
-    const clear = () => {
-      for (const id of markers) p_editor.session.removeMarker(id);
-      markers = [];
-      p_editor.session.setAnnotations([]);
-    };
-    const show = (diagnostics) => {
-      clear();
-      p_editor.session.setAnnotations(
-        diagnostics.map((d2) => ({ row: d2.row, column: d2.column, type: d2.severity, text: t$1("inspect." + d2.code, { name: d2.arg }) }))
-      );
-      for (const d2 of diagnostics) {
-        markers.push(p_editor.session.addMarker(new Range2(d2.row, d2.column, d2.end_row, d2.end_column), "omnidb__inspection omnidb__inspection--" + d2.severity, "text"));
-      }
-    };
-    const run = () => {
-      const text = p_editor.getValue();
-      if (text === lastText) return;
-      lastText = text;
-      const mine = ++token;
-      if (!text.trim()) {
-        clear();
-        return;
-      }
-      execAjax$2(
-        "/inspect_sql/",
-        JSON.stringify({ p_database_index: p_getConnId(), p_tab_id: p_getTabId(), p_sql: text, p_check_tables: true }),
-        function(r2) {
-          if (mine === token && p_editor.getValue() === text) show(r2.v_data);
-        },
-        // A failing check (no connection yet, a password prompt pending) is no reason to bother the user.
-        function() {
-          lastText = null;
-        },
-        "box",
-        false
-      );
-    };
-    p_editor.on("change", () => {
-      clearTimeout(timer);
-      timer = window.setTimeout(run, IDLE_MS$1);
-    });
-  }
-  const MAX_SCRIPT_BYTES = 48 * 1024 * 1024;
-  function formatSize(bytes) {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-  }
-  function installScriptRestore(p_button, p_getConnId, p_getTabId) {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".sql,.txt,text/plain,application/sql";
-    input.style.display = "none";
-    p_button.after(input);
-    p_button.addEventListener("click", () => {
-      input.value = "";
-      input.click();
-    });
-    input.addEventListener("change", async () => {
-      const file = input.files && input.files[0];
-      if (!file) return;
-      if (file.size > MAX_SCRIPT_BYTES) {
-        showAlert$1(t$1("script.too_large", { mb: Math.round(MAX_SCRIPT_BYTES / (1024 * 1024)) }));
-        return;
-      }
-      const script = await file.text();
-      showConfirm(
-        t$1("script.confirm", { file: file.name, size: formatSize(file.size) }),
-        function() {
-          execAjax$2(
-            "/restore_script/",
-            JSON.stringify({ p_database_index: p_getConnId(), p_tab_id: p_getTabId(), p_script: script }),
-            function(r2) {
-              showAlert$1(t$1("script.done", { count: r2.v_data.v_statements }));
-            },
-            function(r2) {
-              const v_data = r2.v_data;
-              showAlert$1(typeof v_data === "string" ? v_data : v_data && v_data.message || t$1("errors.request_error"));
-            },
-            "box",
-            true
-          );
-        },
-        null,
-        null,
-        null,
-        t$1("script.run")
-      );
-    });
-  }
-  const MAX_POINTS = 500;
-  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|OID|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)\b/i;
-  const NUMBER_TEXT = /^\s*-?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?\s*$/;
-  function toNumber(value) {
-    if (value === null || value === void 0 || value === "") return null;
-    if (typeof value === "number") return Number.isFinite(value) ? value : null;
-    const text = String(value);
-    return NUMBER_TEXT.test(text) ? Number(text) : null;
-  }
-  function numericColumns(types, rows, width) {
-    return Array.from({ length: width }, (_2, i2) => {
-      const type = types && types[i2];
-      if (type && NUMERIC_TYPE.test(type)) return true;
-      if (type) return false;
-      let seen = 0;
-      for (const row of rows) {
-        const v2 = row[i2];
-        if (v2 === null || v2 === void 0 || v2 === "") continue;
-        if (toNumber(v2) === null) return false;
-        seen++;
-      }
-      return seen > 0;
-    });
-  }
-  function buildChartData(rows, labelCol, valueCols, columnNames) {
-    const shown2 = rows.slice(0, MAX_POINTS);
-    return {
-      labels: shown2.map((row) => {
-        const v2 = row[labelCol];
-        return v2 === null || v2 === void 0 ? "NULL" : String(v2);
-      }),
-      datasets: valueCols.map((col) => ({
-        label: columnNames[col],
-        data: shown2.map((row) => toNumber(row[col]))
-      })),
-      truncated: rows.length > MAX_POINTS
-    };
-  }
-  const PALETTE = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999"];
-  function paletteColor(index) {
-    return PALETTE[index % PALETTE.length];
-  }
-  const CHART_TYPES = ["bar", "line", "pie", "doughnut"];
-  function el$3(tag, className, text) {
-    const e2 = document.createElement(tag);
-    if (className) e2.className = className;
-    if (text !== void 0) e2.textContent = text;
-    return e2;
-  }
-  let chart = null;
-  function showResultChart(p_tab_tag) {
-    const grid = p_tab_tag.ht;
-    if (!grid || !p_tab_tag.result_columns || p_tab_tag.result_columns.length === 0) {
-      showAlert$1(t$1("chart.no_result"));
-      return;
-    }
-    const columns = p_tab_tag.result_columns;
-    const rows = grid.getVisibleData();
-    if (rows.length === 0) {
-      showAlert$1(t$1("chart.no_rows"));
-      return;
-    }
-    const numeric = numericColumns(p_tab_tag.result_types || null, rows, columns.length);
-    const firstNumeric = numeric.indexOf(true);
-    if (firstNumeric < 0) {
-      showAlert$1(t$1("chart.no_numeric"));
-      return;
-    }
-    showAlert$1('<div id="result_chart_root"></div>', null, true, true);
-    const root = (
-      /** @type {HTMLElement} */
-      document.getElementById("result_chart_root")
-    );
-    document.getElementById("modal_message_content").style.whiteSpace = "normal";
-    const typeSelect = (
-      /** @type {HTMLSelectElement} */
-      el$3("select", "form-select form-select-sm")
-    );
-    for (const type of CHART_TYPES) {
-      const o2 = (
-        /** @type {HTMLOptionElement} */
-        el$3("option", void 0, t$1("chart.type_" + type))
-      );
-      o2.value = type;
-      typeSelect.appendChild(o2);
-    }
-    const xSelect = (
-      /** @type {HTMLSelectElement} */
-      el$3("select", "form-select form-select-sm")
-    );
-    columns.forEach((name, i2) => {
-      const o2 = (
-        /** @type {HTMLOptionElement} */
-        el$3("option", void 0, name)
-      );
-      o2.value = String(i2);
-      xSelect.appendChild(o2);
-    });
-    const firstText = numeric.indexOf(false);
-    xSelect.value = String(firstText >= 0 ? firstText : 0);
-    const yBoxes = el$3("div", "d-flex flex-wrap gap-3");
-    const yInputs = [];
-    columns.forEach((name, i2) => {
-      if (!numeric[i2]) return;
-      const wrap = el$3("div", "form-check");
-      const input = (
-        /** @type {HTMLInputElement} */
-        el$3("input", "form-check-input")
-      );
-      input.type = "checkbox";
-      input.id = "chart_y_" + i2;
-      input.value = String(i2);
-      input.checked = i2 === (i2 === Number(xSelect.value) ? -1 : firstNumeric);
-      const label = (
-        /** @type {HTMLLabelElement} */
-        el$3("label", "form-check-label", name)
-      );
-      label.htmlFor = input.id;
-      wrap.append(input, label);
-      yBoxes.appendChild(wrap);
-      yInputs.push(input);
-    });
-    if (!yInputs.some((x2) => x2.checked) && yInputs.length) yInputs[0].checked = true;
-    const note = el$3("div", "small text-muted mt-1");
-    const holder = el$3("div", "mt-2");
-    holder.style.cssText = "position:relative;height:50vh;";
-    const canvas = (
-      /** @type {HTMLCanvasElement} */
-      el$3("canvas")
-    );
-    holder.appendChild(canvas);
-    const controls = el$3("div", "d-flex flex-wrap gap-3 align-items-end mb-2");
-    const field = (labelKey, control) => {
-      const w2 = el$3("div");
-      w2.append(el$3("label", "form-label small mb-1", t$1(labelKey)), control);
-      return w2;
-    };
-    controls.append(field("chart.type", typeSelect), field("chart.x_axis", xSelect));
-    root.append(controls, field("chart.y_axis", yBoxes), holder, note);
-    const draw = () => {
-      const type = typeSelect.value;
-      const valueCols = yInputs.filter((x2) => x2.checked).map((x2) => Number(x2.value));
-      if (chart) {
-        chart.destroy();
-        chart = null;
-      }
-      if (valueCols.length === 0) return;
-      const data = buildChartData(rows, Number(xSelect.value), type === "pie" || type === "doughnut" ? valueCols.slice(0, 1) : valueCols, columns);
-      note.textContent = data.truncated ? t$1("chart.truncated", { count: data.labels.length }) : "";
-      const styles = getComputedStyle(document.body);
-      const text = styles.getPropertyValue("--text-primary").trim() || "#444";
-      const grid2 = styles.getPropertyValue("--border-color").trim() || "#ddd";
-      const circular = type === "pie" || type === "doughnut";
-      chart = new Chart(canvas, {
-        type,
-        data: {
-          labels: data.labels,
-          datasets: data.datasets.map((d2, i2) => ({
-            label: d2.label,
-            data: d2.data,
-            backgroundColor: circular ? data.labels.map((_2, k2) => paletteColor(k2)) : paletteColor(i2),
-            borderColor: type === "line" ? paletteColor(i2) : circular ? void 0 : paletteColor(i2),
-            borderWidth: type === "line" ? 2 : 1,
-            pointRadius: type === "line" ? 2 : void 0,
-            tension: 0
-          }))
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: false,
-          color: text,
-          plugins: { legend: { display: circular || data.datasets.length > 1, labels: { color: text } } },
-          scales: circular ? {} : {
-            x: { ticks: { color: text, maxRotation: 60, autoSkip: true }, grid: { color: grid2 } },
-            y: { ticks: { color: text }, grid: { color: grid2 } }
-          }
-        }
-      });
-    };
-    for (const control of [typeSelect, xSelect, ...yInputs]) control.addEventListener("change", draw);
-    draw();
-    const modal = document.getElementById("modal_message");
-    if (modal) {
-      modal.addEventListener(
-        "hidden.bs.modal",
-        () => {
-          if (chart) {
-            chart.destroy();
-            chart = null;
-          }
-        },
-        { once: true }
-      );
-    }
-  }
-  const MAX_CELLS = 4e6;
-  function diffLines(before, after) {
-    const a2 = before.split("\n");
-    const b2 = after.split("\n");
-    let start = 0;
-    while (start < a2.length && start < b2.length && a2[start] === b2[start]) start++;
-    let endA = a2.length;
-    let endB = b2.length;
-    while (endA > start && endB > start && a2[endA - 1] === b2[endB - 1]) {
-      endA--;
-      endB--;
-    }
-    const out = a2.slice(0, start).map((text) => ({ type: " ", text }));
-    const midA = a2.slice(start, endA);
-    const midB = b2.slice(start, endB);
-    if (midA.length * midB.length > MAX_CELLS) {
-      for (const text of midA) out.push({ type: "-", text });
-      for (const text of midB) out.push({ type: "+", text });
-    } else if (midA.length === 0 || midB.length === 0) {
-      for (const text of midA) out.push({ type: "-", text });
-      for (const text of midB) out.push({ type: "+", text });
-    } else {
-      const n2 = midA.length;
-      const m2 = midB.length;
-      const lcs = Array.from({ length: n2 + 1 }, () => new Uint32Array(m2 + 1));
-      for (let i3 = n2 - 1; i3 >= 0; i3--) {
-        for (let j3 = m2 - 1; j3 >= 0; j3--) {
-          lcs[i3][j3] = midA[i3] === midB[j3] ? lcs[i3 + 1][j3 + 1] + 1 : Math.max(lcs[i3 + 1][j3], lcs[i3][j3 + 1]);
-        }
-      }
-      let i2 = 0;
-      let j2 = 0;
-      while (i2 < n2 && j2 < m2) {
-        if (midA[i2] === midB[j2]) {
-          out.push({ type: " ", text: midA[i2] });
-          i2++;
-          j2++;
-        } else if (lcs[i2 + 1][j2] >= lcs[i2][j2 + 1]) {
-          out.push({ type: "-", text: midA[i2++] });
-        } else {
-          out.push({ type: "+", text: midB[j2++] });
-        }
-      }
-      while (i2 < n2) out.push({ type: "-", text: midA[i2++] });
-      while (j2 < m2) out.push({ type: "+", text: midB[j2++] });
-    }
-    for (const text of a2.slice(endA)) out.push({ type: " ", text });
-    return out;
-  }
-  function collapseUnchanged(lines, context) {
-    const out = [];
-    let i2 = 0;
-    while (i2 < lines.length) {
-      if (lines[i2].type !== " ") {
-        out.push(lines[i2++]);
-        continue;
-      }
-      let j2 = i2;
-      while (j2 < lines.length && lines[j2].type === " ") j2++;
-      const run = lines.slice(i2, j2);
-      const atStart = i2 === 0;
-      const atEnd = j2 === lines.length;
-      const keepHead = atStart ? 0 : context;
-      const keepTail = atEnd ? 0 : context;
-      if (run.length > keepHead + keepTail + 1) {
-        out.push(...run.slice(0, keepHead));
-        out.push({ type: "gap", count: run.length - keepHead - keepTail });
-        out.push(...run.slice(run.length - keepTail));
-      } else {
-        out.push(...run);
-      }
-      i2 = j2;
-    }
-    return out;
-  }
-  function hasChanges(lines) {
-    return lines.some((l2) => l2.type !== " ");
-  }
-  const IDLE_MS = 8e3;
-  const CONTEXT_LINES = 3;
-  function el$2(tag, className, text) {
-    const e2 = document.createElement(tag);
-    if (className) e2.className = className;
-    if (text !== void 0) e2.textContent = text;
-    return e2;
-  }
-  function installEditorHistory(p_editor, p_getConnId, p_button) {
-    let lastSaved = "";
-    let timer = 0;
-    const snapshot = () => {
-      clearTimeout(timer);
-      const text = p_editor.getValue();
-      if (!text.trim() || text === lastSaved) return;
-      lastSaved = text;
-      execAjax$2(
-        "/save_editor_version/",
-        JSON.stringify({ p_conn_id: p_getConnId(), p_text: text }),
-        null,
-        // A snapshot that cannot be saved (too large, connection gone) is not worth a dialog.
-        function() {
-          lastSaved = "";
-        },
-        "box",
-        false
-      );
-    };
-    p_editor.on("change", () => {
-      clearTimeout(timer);
-      timer = window.setTimeout(snapshot, IDLE_MS);
-    });
-    p_editor.on("blur", snapshot);
-    p_button.addEventListener("click", () => openHistory(p_editor, p_getConnId(), snapshot));
-  }
-  function openHistory(p_editor, p_connId, p_snapshot) {
-    let selectedId = null;
-    let selectedText = null;
-    const list = el$2("div", "list-group");
-    list.style.cssText = "width:16rem;flex:none;max-height:60vh;overflow:auto;";
-    const diff = el$2("pre", "m-0 p-2");
-    diff.style.cssText = "flex:1;min-width:0;max-height:60vh;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:12px;border:1px solid var(--border-color);";
-    const hint = el$2("div", "mb-2 text-muted", t$1("history.diff_hint"));
-    const showDiff = (versionText) => {
-      diff.innerHTML = "";
-      const lines = diffLines(p_editor.getValue(), versionText);
-      if (!hasChanges(lines)) {
-        diff.textContent = t$1("history.no_changes");
-        return;
-      }
-      for (const item of collapseUnchanged(lines, CONTEXT_LINES)) {
-        const row = el$2("div");
-        if (item.type === "gap") {
-          row.className = "text-muted fst-italic";
-          row.textContent = "… " + t$1("history.unchanged_lines", { count: item.count });
-        } else {
-          row.textContent = item.type + " " + item.text;
-          if (item.type === "+") row.style.cssText = "background:rgba(40,167,69,.25);";
-          if (item.type === "-") row.style.cssText = "background:rgba(220,53,69,.25);";
-        }
-        diff.appendChild(row);
-      }
-    };
-    const select = (version, row) => {
-      list.querySelectorAll(".active").forEach((x2) => x2.classList.remove("active"));
-      row.classList.add("active");
-      selectedId = version.id;
-      selectedText = null;
-      diff.textContent = "";
-      execAjax$2(
-        "/get_editor_version/",
-        JSON.stringify({ p_id: version.id }),
-        function(r2) {
-          if (selectedId !== version.id) return;
-          selectedText = r2.v_data;
-          showDiff(r2.v_data);
-        },
-        null,
-        "box",
-        false
-      );
-    };
-    showConfirm(
-      "",
-      function() {
-        if (selectedText === null) return;
-        p_snapshot();
-        p_editor.setValue(selectedText, -1);
-        p_editor.focus();
-      },
-      null,
-      function() {
-        setMessageModalTitle(t$1("history.title"), "fas node-all fa-code-branch");
-        const content = (
-          /** @type {HTMLElement} */
-          document.getElementById("modal_message_content")
-        );
-        content.style.whiteSpace = "normal";
-        content.innerHTML = "";
-        const body = el$2("div", "d-flex gap-3");
-        const right = el$2("div");
-        right.style.cssText = "flex:1;min-width:0;";
-        right.append(hint, diff);
-        body.append(list, right);
-        content.appendChild(body);
-        execAjax$2(
-          "/get_editor_versions/",
-          JSON.stringify({ p_conn_id: p_connId }),
-          function(r2) {
-            if (r2.v_data.length === 0) {
-              body.replaceChildren(el$2("div", "text-muted", t$1("history.empty")));
-              return;
-            }
-            r2.v_data.forEach((version, index) => {
-              const row = el$2("button", "list-group-item list-group-item-action text-start");
-              row.setAttribute("type", "button");
-              const when = el$2("div", "fw-bold small", new Date(version.date).toLocaleString());
-              const preview = el$2("div", "small text-truncate", version.preview || "—");
-              row.append(when, preview);
-              row.addEventListener("click", () => select(version, row));
-              list.appendChild(row);
-              if (index === 0) select(version, row);
-            });
-          },
-          null,
-          "box",
-          false
-        );
-      },
-      true,
-      t$1("history.restore")
-    );
-  }
-  function deleteCommandList() {
-    showConfirm(t$1("console.confirm_clear_command_history"), function() {
-      execAjax$2(
-        "/clear_command_list/",
-        JSON.stringify({
-          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-          p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
-          p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
-          p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value
-        }),
-        function(p_return) {
-          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
-          refreshCommandList();
-        }
-      );
-    });
-  }
-  function showCommandList() {
-    v_connTabControl.selectedTab.tag;
-    var v_tabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 d-flex flex-column gap-2'><div class='d-flex align-items-center gap-2'><span>" + escapeHtml(t$1("console.time_range")) + "</span><div class='position-relative' id='command_history_timerange_container_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t$1("common.start_time")) + "' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t$1("common.end_time")) + "' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span></span> <i class='fa fa-caret-down'></i></button></div></div><div class='d-flex align-items-center gap-2'><label for='cl_input_contains_" + v_tabTag.tab_id + "' class='text-nowrap'>" + escapeHtml(t$1("console.search_commands")) + "</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='form-control form-control-sm' /></div></div><div class='mb-2 d-flex align-items-center gap-1'><button id='bt_refresh_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary' title='" + escapeHtmlAttribute(t$1("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t$1("common.refresh")) + "</button><button id='bt_clear_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm btn-danger' title='" + escapeHtmlAttribute(t$1("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t$1("console.clear_list")) + "</button><div class='d-flex align-items-center gap-1 ms-auto'><button id='bt_first_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.first")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.first")) + "'><i class='fas fa-angle-double-left'></i></button><button id='bt_previous_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.previous")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.previous")) + "'><i class='fas fa-angle-left'></i></button><span class='mx-1'><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span></span><button id='bt_next_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.next")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.next")) + "'><i class='fas fa-angle-right'></i></button><button id='bt_last_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.last")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.last")) + "'><i class='fas fa-angle-double-right'></i></button></div></div>";
-    var v_gridDiv = v_tabTag.commandHistory.gridDiv;
-    v_gridDiv.innerHTML = "";
-    if (v_tabTag.commandHistory.grid != null) {
-      v_tabTag.commandHistory.grid.destroy();
-    }
-    var v_columnProperties = [];
-    var v_column = {};
-    v_column.title = t$1("common.start_time");
-    v_column.readOnly = true;
-    v_column.fitContent = true;
-    v_columnProperties.push(v_column);
-    var v_column = {};
-    v_column.title = t$1("common.end_time");
-    v_column.readOnly = true;
-    v_column.fitContent = true;
-    v_columnProperties.push(v_column);
-    var v_column = {};
-    v_column.title = t$1("common.duration");
-    v_column.readOnly = true;
-    v_column.fitContent = true;
-    v_columnProperties.push(v_column);
-    var v_column = {};
-    v_column.title = t$1("console.column_command");
-    v_column.readOnly = true;
-    v_column.grow = true;
-    v_columnProperties.push(v_column);
-    var v_column = {};
-    v_column.title = t$1("common.status");
-    v_column.readOnly = true;
-    v_column.fitContent = true;
-    v_column.renderer = "html";
-    v_columnProperties.push(v_column);
-    v_tabTag.commandHistory.grid = new Handsontable(v_gridDiv, {
-      licenseKey: "non-commercial-and-evaluation",
-      data: [],
-      columns: v_columnProperties,
-      colHeaders: true,
-      rowHeaders: false,
-      stretchH: "last",
-      copyPaste: {
-        pasteMode: "",
-        rowsLimit: 1e9,
-        columnsLimit: 1e9
-      },
-      manualColumnResize: true,
-      fillHandle: false,
-      contextMenu: {
-        callback: function(p_key, p_options) {
-          if (p_key === "view_data") {
-            commandHistoryOpenCmd(p_options[0].start.row);
-          }
-        },
-        items: {
-          view_data: {
-            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t$1("console.copy_to_query_tab")) + "</div>"
-          }
-        }
-      },
-      cells: function(p_row, p_col, p_prop) {
-        var v_cellProperties = {};
-        if (p_row % 2 == 0) {
-          v_cellProperties.renderer = blueHtmlRenderer;
-        } else {
-          v_cellProperties.renderer = whiteHtmlRenderer;
-        }
-        return v_cellProperties;
-      }
-    });
-    bootstrap.Modal.getOrCreateInstance(v_tabTag.commandHistory.modal).show();
-    v_tabTag.commandHistory.div.style.display = "block";
-    v_tabTag.commandHistory.currentPage = 1;
-    v_tabTag.commandHistory.pages = 1;
-    v_tabTag.commandHistory.spanNumPages = document.getElementById("cl_num_pages_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.spanNumPages.innerHTML = 1;
-    v_tabTag.commandHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.spanCurrPage.innerHTML = 1;
-    v_tabTag.commandHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.inputStartedFrom.value = new Date(Date.now() - 6 * 3600 * 1e3).toISOString();
-    v_tabTag.commandHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.inputStartedTo.value = (/* @__PURE__ */ new Date()).toISOString();
-    v_tabTag.commandHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.inputCommandContains.value = v_tabTag.commandHistory.inputCommandContainsLastValue;
-    v_tabTag.commandHistory.inputCommandContains.addEventListener("change", () => refreshCommandList());
-    var v_headerButtonHandlers = [
-      ["bt_first_", commandHistoryFirstPage],
-      ["bt_previous_", commandHistoryPreviousPage],
-      ["bt_next_", commandHistoryNextPage],
-      ["bt_last_", commandHistoryLastPage],
-      ["bt_refresh_", refreshCommandList],
-      ["bt_clear_", deleteCommandList]
-    ];
-    for (const [id, handler] of v_headerButtonHandlers) {
-      document.getElementById(id + v_tabTag.tab_id).addEventListener(
-        "click",
-        () => handler()
-      );
-    }
-    setupTimeRangePicker({
-      button: (
-        /** @type {HTMLElement} */
-        document.getElementById("cl_time_range_" + v_tabTag.tab_id)
-      ),
-      label: (
-        /** @type {HTMLElement} */
-        document.querySelector("#cl_time_range_" + v_tabTag.tab_id + " span")
-      ),
-      container: (
-        /** @type {HTMLElement} */
-        document.getElementById("command_history_timerange_container_" + v_tabTag.tab_id)
-      ),
-      fromInput: v_tabTag.commandHistory.inputStartedFrom,
-      toInput: v_tabTag.commandHistory.inputStartedTo,
-      onChange: refreshCommandList
-    });
-    refreshCommandList();
-  }
-  function commandHistoryNextPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage < v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage += 1;
-      refreshCommandList();
-    }
-  }
-  function commandHistoryPreviousPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage > 1) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage -= 1;
-      refreshCommandList();
-    }
-  }
-  function commandHistoryFirstPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != 1) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
-      refreshCommandList();
-    }
-  }
-  function commandHistoryLastPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages;
-      refreshCommandList();
-    }
-  }
-  function commandHistoryOpenCmd(p_index) {
-    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[3];
-    closeCommandHistory();
-    v_connTabControl.tag.createQueryTab();
-    var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
-    v_editor.setValue(v_command);
-    v_editor.clearSelection();
-    v_editor.gotoLine(0, 0, true);
-  }
-  function refreshCommandList() {
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value;
-    execAjax$2(
-      "/get_command_list/",
-      JSON.stringify({
-        p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
-        p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
-        p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value,
-        p_current_page: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage,
-        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex
-      }),
-      function(p_return) {
-        if (p_return.v_data.commandList.length == 0) {
-          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
-        }
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = p_return.v_data.pages;
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages.innerHTML = p_return.v_data.pages;
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage;
-        for (let i2 = 0; i2 < p_return.v_data.commandList.length; i2++) {
-          p_return.v_data.commandList[i2][0] = new Date(p_return.v_data.commandList[i2][0]).toLocaleString();
-          p_return.v_data.commandList[i2][1] = new Date(p_return.v_data.commandList[i2][1]).toLocaleString();
-          var v_row = p_return.v_data.commandList[i2];
-          p_return.v_data.commandList[i2] = [v_row[0], v_row[1], v_row[2], v_row[4], v_row[3]];
-        }
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.loadData(p_return.v_data.commandList);
-      },
-      null,
-      "box"
-    );
-  }
-  function closeCommandHistory() {
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.destroy();
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.div.style.display = "none";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.headerDiv.innerHTML = "";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.gridDiv.innerHTML = "";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = 1;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;
-    bootstrap.Modal.getOrCreateInstance(
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal
-    ).hide();
-  }
-  const commandHistory = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    closeCommandHistory,
-    commandHistoryFirstPage,
-    commandHistoryLastPage,
-    commandHistoryNextPage,
-    commandHistoryOpenCmd,
-    commandHistoryPreviousPage,
-    deleteCommandList,
-    refreshCommandList,
-    showCommandList
-  }, Symbol.toStringTag, { value: "Module" }));
-  function statementFoldRanges(text) {
-    const ranges = /* @__PURE__ */ new Map();
-    let state = "normal";
-    let row = 0;
-    let column = 0;
-    let startRow = -1;
-    let lastRow = -1;
-    let lastColumn = 0;
-    const close = (endRow, endColumn) => {
-      if (startRow >= 0 && endRow > startRow) ranges.set(startRow, { endRow, endColumn });
-      startRow = -1;
-    };
-    for (let i2 = 0; i2 < text.length; i2++) {
-      const ch = text[i2];
-      const next = text[i2 + 1];
-      if (ch === "\n") {
-        if (state === "line_comment") state = "normal";
-        row++;
-        column = 0;
-        continue;
-      }
-      const here = column;
-      column++;
-      if (state === "normal") {
-        if (ch === "-" && next === "-") {
-          state = "line_comment";
-        } else if (ch === "/" && next === "*") {
-          state = "block_comment";
-          i2++;
-          column++;
-        } else if (/\s/.test(ch)) ;
-        else {
-          if (startRow < 0) startRow = row;
-          lastRow = row;
-          lastColumn = here + 1;
-          if (ch === "'") state = "single";
-          else if (ch === '"') state = "double";
-          else if (ch === ";") close(row, here + 1);
-        }
-      } else if (state === "single") {
-        lastRow = row;
-        lastColumn = here + 1;
-        if (ch === "'") state = "normal";
-      } else if (state === "double") {
-        lastRow = row;
-        lastColumn = here + 1;
-        if (ch === '"') state = "normal";
-      } else if (state === "block_comment") {
-        if (ch === "*" && next === "/") {
-          state = "normal";
-          i2++;
-          column++;
-        }
-      }
-    }
-    close(lastRow, lastColumn);
-    return ranges;
-  }
-  function installEditorFolding(editor) {
-    const session = editor.session;
-    let cache = null;
-    session.on("change", () => {
-      cache = null;
-    });
-    const ranges = () => cache ??= statementFoldRanges(session.getValue());
-    const apply = () => {
-      const base = session.getMode().foldingRules;
-      if (!base || base.$omnidbStatements) return;
-      const Range2 = ace.require("ace/range").Range;
-      const wrapper = {
-        $omnidbStatements: true,
-        getFoldWidget(s2, style, row) {
-          return ranges().has(row) ? "start" : base.getFoldWidget(s2, style, row);
-        },
-        getFoldWidgetRange(s2, style, row, forceMultiline) {
-          const stmt = ranges().get(row);
-          if (stmt) return new Range2(row, s2.getLine(row).length, stmt.endRow, stmt.endColumn);
-          return base.getFoldWidgetRange(s2, style, row, forceMultiline);
-        }
-      };
-      session.$setFolding(wrapper);
-    };
-    apply();
-    session.on("changeMode", apply);
-    editor.commands.bindKey("Alt-J", "selectMoreAfter");
-    editor.commands.bindKey("Alt-Shift-J", "selectMoreBefore");
-  }
   function addBookmarkFromNode(p_node) {
     execAjax$2(
       "/add_bookmark/",
@@ -13617,7 +12795,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       rows: rows.map((r2) => r2.concat(Array(width - r2.length).fill("")))
     };
   }
-  function el$1(tag, className, text) {
+  function el$3(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -13655,14 +12833,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     const fileInput = (
       /** @type {HTMLInputElement} */
-      el$1("input", "form-control mb-2")
+      el$3("input", "form-control mb-2")
     );
     fileInput.type = "file";
     fileInput.accept = ".csv,.tsv,.txt,.json,text/csv,application/json";
     fileInput.setAttribute("aria-label", t$1("import.file"));
     const delimiterSelect = (
       /** @type {HTMLSelectElement} */
-      el$1("select", "form-select form-select-sm")
+      el$3("select", "form-select form-select-sm")
     );
     for (const [value, key] of [
       ["auto", "import.delim_auto"],
@@ -13673,23 +12851,23 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     ]) {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$1("option", void 0, t$1(key))
+        el$3("option", void 0, t$1(key))
       );
       o2.value = value;
       delimiterSelect.appendChild(o2);
     }
     const checkbox = (labelKey, checked) => {
-      const wrap = el$1("div", "form-check form-check-inline");
+      const wrap = el$3("div", "form-check form-check-inline");
       const input = (
         /** @type {HTMLInputElement} */
-        el$1("input", "form-check-input")
+        el$3("input", "form-check-input")
       );
       input.type = "checkbox";
       input.checked = checked;
       input.id = "import_opt_" + labelKey.replace(/\W/g, "_");
       const label = (
         /** @type {HTMLLabelElement} */
-        el$1("label", "form-check-label", t$1(labelKey))
+        el$3("label", "form-check-label", t$1(labelKey))
       );
       label.htmlFor = input.id;
       wrap.append(input, label);
@@ -13698,8 +12876,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     const header = checkbox("import.header", true);
     const emptyNullBox = checkbox("import.empty_null", true);
     const emptyNull = emptyNullBox.input;
-    const status = el$1("div", "my-2");
-    const table = el$1("div", "mt-2");
+    const status = el$3("div", "my-2");
+    const table = el$3("div", "mt-2");
     table.style.maxHeight = "45vh";
     table.style.overflow = "auto";
     const render2 = () => {
@@ -13717,29 +12895,29 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
       if (mapping.length !== parsed.width) mapping = suggestMapping(parsed.fileColumns, parsed.width, p_columns);
       status.textContent = t$1("import.rows_found", { count: parsed.rows.length });
-      const grid = el$1("table", "table table-sm mb-0");
+      const grid = el$3("table", "table table-sm mb-0");
       grid.style.setProperty("--bs-table-bg", "transparent");
       grid.style.setProperty("--bs-table-color", "inherit");
-      const head = el$1("tr");
-      const sel = el$1("tr");
+      const head = el$3("tr");
+      const sel = el$3("tr");
       for (let i2 = 0; i2 < parsed.width; i2++) {
-        head.appendChild(el$1("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
-        const cell = el$1("td");
+        head.appendChild(el$3("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
+        const cell = el$3("td");
         const select = (
           /** @type {HTMLSelectElement} */
-          el$1("select", "form-select form-select-sm")
+          el$3("select", "form-select form-select-sm")
         );
         select.setAttribute("aria-label", t$1("import.col_target"));
         const skip = (
           /** @type {HTMLOptionElement} */
-          el$1("option", void 0, t$1("import.map_skip"))
+          el$3("option", void 0, t$1("import.map_skip"))
         );
         skip.value = "";
         select.appendChild(skip);
         for (const c2 of p_columns) {
           const o2 = (
             /** @type {HTMLOptionElement} */
-            el$1("option", void 0, c2)
+            el$3("option", void 0, c2)
           );
           o2.value = c2;
           select.appendChild(o2);
@@ -13751,14 +12929,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         cell.appendChild(select);
         sel.appendChild(cell);
       }
-      const thead = el$1("thead");
+      const thead = el$3("thead");
       thead.append(head, sel);
-      const tbody = el$1("tbody");
+      const tbody = el$3("tbody");
       for (const row of parsed.rows.slice(0, PREVIEW_ROWS)) {
-        const tr = el$1("tr");
+        const tr = el$3("tr");
         for (let i2 = 0; i2 < parsed.width; i2++) {
           const v2 = row[i2];
-          const td = el$1("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
+          const td = el$3("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
           td.style.maxWidth = "14rem";
           td.style.overflow = "hidden";
           td.style.textOverflow = "ellipsis";
@@ -13798,8 +12976,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        const options = el$1("div", "d-flex flex-wrap align-items-center gap-2");
-        const delimiterLabel = el$1("label", "me-1", t$1("import.delimiter"));
+        const options = el$3("div", "d-flex flex-wrap align-items-center gap-2");
+        const delimiterLabel = el$3("label", "me-1", t$1("import.delimiter"));
         options.append(delimiterLabel, delimiterSelect, header.wrap, emptyNullBox.wrap);
         delimiterSelect.style.width = "auto";
         content.append(fileInput, options, status, table);
@@ -22616,6 +21794,1032 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     refreshTreePostgresqlConfirm,
     tabSQLTemplate
   }, Symbol.toStringTag, { value: "Module" }));
+  function errorText(r2) {
+    const v2 = r2.v_data;
+    return typeof v2 === "string" ? v2 : v2 && v2.message || t$1("errors.request_error");
+  }
+  function resolve(p_editor, p_pos, p_done) {
+    execAjax$2(
+      "/resolve_symbol/",
+      JSON.stringify({ p_sql: p_editor.getValue(), p_pos: p_editor.session.doc.positionToIndex(p_pos) }),
+      function(r2) {
+        p_done(r2.v_data);
+      },
+      function() {
+      },
+      "box",
+      false
+    );
+  }
+  function toRange(r2) {
+    return new (ace.require("ace/range")).Range(r2.row, r2.column, r2.end_row, r2.end_column);
+  }
+  function contains(p_pos, r2) {
+    return toRange(r2).contains(p_pos.row, p_pos.column) || p_pos.row === r2.end_row && p_pos.column === r2.end_column;
+  }
+  function openDefinition(p_table, p_connId, p_tabId) {
+    execAjax$2(
+      "/table_ddl/",
+      JSON.stringify({ p_database_index: p_connId, p_tab_id: p_tabId, p_table }),
+      function(r2) {
+        tabSQLTemplate(t$1("navigate.ddl_tab", { table: p_table }), r2.v_data);
+      },
+      function(r2) {
+        showAlert$1(errorText(r2));
+      },
+      "box",
+      true
+    );
+  }
+  function goToDefinition(p_editor, p_pos, p_getConnId, p_getTabId) {
+    resolve(p_editor, p_pos, (info) => {
+      if (info.kind === "alias" || info.kind === "cte") {
+        const onDefinition = info.definition && contains(p_pos, info.definition);
+        if (info.definition && !onDefinition) {
+          p_editor.selection.setSelectionRange(toRange(info.definition));
+          p_editor.centerSelection();
+          p_editor.focus();
+          return;
+        }
+        if (info.kind === "alias" && info.table) openDefinition(info.table, p_getConnId(), p_getTabId());
+        return;
+      }
+      if ((info.kind === "table" || info.kind === "column") && info.table) {
+        openDefinition(info.table, p_getConnId(), p_getTabId());
+      }
+    });
+  }
+  function mentionsInEditor(p_editor, p_name) {
+    const re2 = new RegExp('(^|[^\\w$])["`]?(' + p_name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ')["`]?(?![\\w$])', "gi");
+    const out = [];
+    p_editor.getValue().split("\n").forEach((line, row) => {
+      re2.lastIndex = 0;
+      let m2;
+      while ((m2 = re2.exec(line)) !== null) {
+        const column = m2.index + m2[1].length + (line[m2.index + m2[1].length] === '"' || line[m2.index + m2[1].length] === "`" ? 1 : 0);
+        if (out.length === 0 || out[out.length - 1].row !== row || out[out.length - 1].column !== column) {
+          out.push({ row, column, text: line.trim().slice(0, 160) });
+        }
+      }
+    });
+    return out;
+  }
+  function showUsagesDialog(p_editor, p_name, p_hits) {
+    const here = mentionsInEditor(p_editor, p_name);
+    showAlert$1('<div id="usages_root"></div>', null, true, true);
+    const root = (
+      /** @type {HTMLElement} */
+      document.getElementById("usages_root")
+    );
+    document.getElementById("modal_message_content").style.whiteSpace = "normal";
+    const modal = () => document.getElementById("modal_message_ok")?.click();
+    const section = (title, items) => {
+      if (items.length === 0) return;
+      const h2 = document.createElement("h6");
+      h2.className = "mt-3 mb-1";
+      h2.textContent = title + " (" + items.length + ")";
+      root.appendChild(h2);
+      const group = document.createElement("div");
+      group.className = "list-group";
+      for (const item of items) {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "list-group-item list-group-item-action text-start";
+        const label = document.createElement("div");
+        label.className = "small fw-bold";
+        label.textContent = item.label;
+        const text = document.createElement("div");
+        text.className = "small text-truncate";
+        text.textContent = item.text;
+        row.append(label, text);
+        row.addEventListener("click", () => {
+          modal();
+          item.onClick();
+        });
+        group.appendChild(row);
+      }
+      root.appendChild(group);
+    };
+    section(
+      t$1("navigate.usages_editor"),
+      here.map((m2) => ({
+        label: t$1("navigate.line", { line: m2.row + 1 }),
+        text: m2.text,
+        onClick: () => {
+          p_editor.gotoLine(m2.row + 1, m2.column, true);
+          p_editor.focus();
+        }
+      }))
+    );
+    section(
+      t$1("navigate.usages_snippets"),
+      p_hits.filter((h2) => h2.source === "snippet").map((h2) => ({
+        label: h2.title,
+        text: t$1("navigate.line", { line: h2.line }) + ": " + h2.text,
+        onClick: () => {
+          switchSection("snippets");
+          startEditSnippetText({ tag: { type: "snippet", id: h2.id, id_parent: null, name: h2.title } });
+        }
+      }))
+    );
+    section(
+      t$1("navigate.usages_history"),
+      p_hits.filter((h2) => h2.source === "history").map((h2) => ({
+        label: new Date(h2.title).toLocaleString(),
+        text: h2.text,
+        onClick: () => tabSQLTemplate(t$1("navigate.history_tab"), h2.full || h2.text)
+      }))
+    );
+    if (!root.hasChildNodes()) root.textContent = t$1("navigate.no_usages", { name: p_name });
+  }
+  function findUsages(p_editor, p_pos) {
+    resolve(p_editor, p_pos, (info) => {
+      if ((info.kind === "alias" || info.kind === "cte") && info.usages.length > 0) {
+        p_editor.selection.clearSelection();
+        info.usages.forEach((u2, i2) => {
+          const range = toRange(u2);
+          if (i2 === 0) p_editor.selection.setSelectionRange(range);
+          else p_editor.selection.addRange(range);
+        });
+        p_editor.focus();
+        return;
+      }
+      const name = info.table || (info.kind === "column" ? info.name : "");
+      if (!name) return;
+      const searched = name.split(".").pop() || name;
+      execAjax$2(
+        "/find_usages/",
+        JSON.stringify({ p_name: searched }),
+        function(r2) {
+          showUsagesDialog(p_editor, searched.replace(/^["`]|["`]$/g, ""), r2.v_data);
+        },
+        function(r2) {
+          showAlert$1(errorText(r2));
+        },
+        "box",
+        true
+      );
+    });
+  }
+  function installEditorNavigation(p_editor, p_getConnId, p_getTabId) {
+    p_editor.on("mousedown", (e2) => {
+      const ev = e2.domEvent;
+      if (!(ev.ctrlKey || ev.metaKey) || ev.shiftKey || ev.altKey || ev.button !== 0) return;
+      const pos = e2.getDocumentPosition();
+      const line = p_editor.session.getLine(pos.row);
+      if (!/[\w"`$]/.test(line.charAt(pos.column) || line.charAt(pos.column - 1))) return;
+      e2.stop();
+      goToDefinition(p_editor, pos, p_getConnId, p_getTabId);
+    });
+    p_editor.commands.addCommand({
+      name: "omnidbGoToDefinition",
+      bindKey: { win: "Ctrl-B", mac: "Command-B" },
+      exec: () => goToDefinition(p_editor, p_editor.getCursorPosition(), p_getConnId, p_getTabId)
+    });
+    p_editor.commands.addCommand({
+      name: "omnidbFindUsages",
+      bindKey: { win: "Alt-F7", mac: "Alt-F7" },
+      exec: () => findUsages(p_editor, p_editor.getCursorPosition())
+    });
+  }
+  function navigationMenuEntries(p_editor, p_clientX, p_clientY, p_getConnId, p_getTabId) {
+    const coords = p_editor.renderer.screenToTextCoordinates(p_clientX, p_clientY);
+    const pos = { row: coords.row, column: coords.column };
+    return [
+      {
+        text: t$1("navigate.go_to_definition"),
+        icon: "fas cm-all fa-link",
+        action: () => goToDefinition(p_editor, pos, p_getConnId, p_getTabId)
+      },
+      {
+        text: t$1("navigate.find_usages"),
+        icon: "fas cm-all fa-search",
+        action: () => findUsages(p_editor, pos)
+      }
+    ];
+  }
+  const IDLE_MS$1 = 1200;
+  function installEditorInspections(p_editor, p_getConnId, p_getTabId) {
+    const Range2 = ace.require("ace/range").Range;
+    let timer = 0;
+    let token = 0;
+    let lastText = null;
+    let markers = [];
+    const clear = () => {
+      for (const id of markers) p_editor.session.removeMarker(id);
+      markers = [];
+      p_editor.session.setAnnotations([]);
+    };
+    const show = (diagnostics) => {
+      clear();
+      p_editor.session.setAnnotations(
+        diagnostics.map((d2) => ({ row: d2.row, column: d2.column, type: d2.severity, text: t$1("inspect." + d2.code, { name: d2.arg }) }))
+      );
+      for (const d2 of diagnostics) {
+        markers.push(p_editor.session.addMarker(new Range2(d2.row, d2.column, d2.end_row, d2.end_column), "omnidb__inspection omnidb__inspection--" + d2.severity, "text"));
+      }
+    };
+    const run = () => {
+      const text = p_editor.getValue();
+      if (text === lastText) return;
+      lastText = text;
+      const mine = ++token;
+      if (!text.trim()) {
+        clear();
+        return;
+      }
+      execAjax$2(
+        "/inspect_sql/",
+        JSON.stringify({ p_database_index: p_getConnId(), p_tab_id: p_getTabId(), p_sql: text, p_check_tables: true }),
+        function(r2) {
+          if (mine === token && p_editor.getValue() === text) show(r2.v_data);
+        },
+        // A failing check (no connection yet, a password prompt pending) is no reason to bother the user.
+        function() {
+          lastText = null;
+        },
+        "box",
+        false
+      );
+    };
+    p_editor.on("change", () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(run, IDLE_MS$1);
+    });
+  }
+  const MAX_SCRIPT_BYTES = 48 * 1024 * 1024;
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+  function installScriptRestore(p_button, p_getConnId, p_getTabId) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".sql,.txt,text/plain,application/sql";
+    input.style.display = "none";
+    p_button.after(input);
+    p_button.addEventListener("click", () => {
+      input.value = "";
+      input.click();
+    });
+    input.addEventListener("change", async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      if (file.size > MAX_SCRIPT_BYTES) {
+        showAlert$1(t$1("script.too_large", { mb: Math.round(MAX_SCRIPT_BYTES / (1024 * 1024)) }));
+        return;
+      }
+      const script = await file.text();
+      showConfirm(
+        t$1("script.confirm", { file: file.name, size: formatSize(file.size) }),
+        function() {
+          execAjax$2(
+            "/restore_script/",
+            JSON.stringify({ p_database_index: p_getConnId(), p_tab_id: p_getTabId(), p_script: script }),
+            function(r2) {
+              showAlert$1(t$1("script.done", { count: r2.v_data.v_statements }));
+            },
+            function(r2) {
+              const v_data = r2.v_data;
+              showAlert$1(typeof v_data === "string" ? v_data : v_data && v_data.message || t$1("errors.request_error"));
+            },
+            "box",
+            true
+          );
+        },
+        null,
+        null,
+        null,
+        t$1("script.run")
+      );
+    });
+  }
+  const MAX_POINTS = 500;
+  const NUMERIC_TYPE = /^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|OID|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)\b/i;
+  const NUMBER_TEXT = /^\s*-?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?\s*$/;
+  function toNumber(value) {
+    if (value === null || value === void 0 || value === "") return null;
+    if (typeof value === "number") return Number.isFinite(value) ? value : null;
+    const text = String(value);
+    return NUMBER_TEXT.test(text) ? Number(text) : null;
+  }
+  function numericColumns(types, rows, width) {
+    return Array.from({ length: width }, (_2, i2) => {
+      const type = types && types[i2];
+      if (type && NUMERIC_TYPE.test(type)) return true;
+      if (type) return false;
+      let seen = 0;
+      for (const row of rows) {
+        const v2 = row[i2];
+        if (v2 === null || v2 === void 0 || v2 === "") continue;
+        if (toNumber(v2) === null) return false;
+        seen++;
+      }
+      return seen > 0;
+    });
+  }
+  function buildChartData(rows, labelCol, valueCols, columnNames) {
+    const shown2 = rows.slice(0, MAX_POINTS);
+    return {
+      labels: shown2.map((row) => {
+        const v2 = row[labelCol];
+        return v2 === null || v2 === void 0 ? "NULL" : String(v2);
+      }),
+      datasets: valueCols.map((col) => ({
+        label: columnNames[col],
+        data: shown2.map((row) => toNumber(row[col]))
+      })),
+      truncated: rows.length > MAX_POINTS
+    };
+  }
+  const PALETTE = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999"];
+  function paletteColor(index) {
+    return PALETTE[index % PALETTE.length];
+  }
+  const CHART_TYPES = ["bar", "line", "pie", "doughnut"];
+  function el$2(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  let chart = null;
+  function showResultChart(p_tab_tag) {
+    const grid = p_tab_tag.ht;
+    if (!grid || !p_tab_tag.result_columns || p_tab_tag.result_columns.length === 0) {
+      showAlert$1(t$1("chart.no_result"));
+      return;
+    }
+    const columns = p_tab_tag.result_columns;
+    const rows = grid.getVisibleData();
+    if (rows.length === 0) {
+      showAlert$1(t$1("chart.no_rows"));
+      return;
+    }
+    const numeric = numericColumns(p_tab_tag.result_types || null, rows, columns.length);
+    const firstNumeric = numeric.indexOf(true);
+    if (firstNumeric < 0) {
+      showAlert$1(t$1("chart.no_numeric"));
+      return;
+    }
+    showAlert$1('<div id="result_chart_root"></div>', null, true, true);
+    const root = (
+      /** @type {HTMLElement} */
+      document.getElementById("result_chart_root")
+    );
+    document.getElementById("modal_message_content").style.whiteSpace = "normal";
+    const typeSelect = (
+      /** @type {HTMLSelectElement} */
+      el$2("select", "form-select form-select-sm")
+    );
+    for (const type of CHART_TYPES) {
+      const o2 = (
+        /** @type {HTMLOptionElement} */
+        el$2("option", void 0, t$1("chart.type_" + type))
+      );
+      o2.value = type;
+      typeSelect.appendChild(o2);
+    }
+    const xSelect = (
+      /** @type {HTMLSelectElement} */
+      el$2("select", "form-select form-select-sm")
+    );
+    columns.forEach((name, i2) => {
+      const o2 = (
+        /** @type {HTMLOptionElement} */
+        el$2("option", void 0, name)
+      );
+      o2.value = String(i2);
+      xSelect.appendChild(o2);
+    });
+    const firstText = numeric.indexOf(false);
+    xSelect.value = String(firstText >= 0 ? firstText : 0);
+    const yBoxes = el$2("div", "d-flex flex-wrap gap-3");
+    const yInputs = [];
+    columns.forEach((name, i2) => {
+      if (!numeric[i2]) return;
+      const wrap = el$2("div", "form-check");
+      const input = (
+        /** @type {HTMLInputElement} */
+        el$2("input", "form-check-input")
+      );
+      input.type = "checkbox";
+      input.id = "chart_y_" + i2;
+      input.value = String(i2);
+      input.checked = i2 === (i2 === Number(xSelect.value) ? -1 : firstNumeric);
+      const label = (
+        /** @type {HTMLLabelElement} */
+        el$2("label", "form-check-label", name)
+      );
+      label.htmlFor = input.id;
+      wrap.append(input, label);
+      yBoxes.appendChild(wrap);
+      yInputs.push(input);
+    });
+    if (!yInputs.some((x2) => x2.checked) && yInputs.length) yInputs[0].checked = true;
+    const note = el$2("div", "small text-muted mt-1");
+    const holder = el$2("div", "mt-2");
+    holder.style.cssText = "position:relative;height:50vh;";
+    const canvas = (
+      /** @type {HTMLCanvasElement} */
+      el$2("canvas")
+    );
+    holder.appendChild(canvas);
+    const controls = el$2("div", "d-flex flex-wrap gap-3 align-items-end mb-2");
+    const field = (labelKey, control) => {
+      const w2 = el$2("div");
+      w2.append(el$2("label", "form-label small mb-1", t$1(labelKey)), control);
+      return w2;
+    };
+    controls.append(field("chart.type", typeSelect), field("chart.x_axis", xSelect));
+    root.append(controls, field("chart.y_axis", yBoxes), holder, note);
+    const draw = () => {
+      const type = typeSelect.value;
+      const valueCols = yInputs.filter((x2) => x2.checked).map((x2) => Number(x2.value));
+      if (chart) {
+        chart.destroy();
+        chart = null;
+      }
+      if (valueCols.length === 0) return;
+      const data = buildChartData(rows, Number(xSelect.value), type === "pie" || type === "doughnut" ? valueCols.slice(0, 1) : valueCols, columns);
+      note.textContent = data.truncated ? t$1("chart.truncated", { count: data.labels.length }) : "";
+      const styles = getComputedStyle(document.body);
+      const text = styles.getPropertyValue("--text-primary").trim() || "#444";
+      const grid2 = styles.getPropertyValue("--border-color").trim() || "#ddd";
+      const circular = type === "pie" || type === "doughnut";
+      chart = new Chart(canvas, {
+        type,
+        data: {
+          labels: data.labels,
+          datasets: data.datasets.map((d2, i2) => ({
+            label: d2.label,
+            data: d2.data,
+            backgroundColor: circular ? data.labels.map((_2, k2) => paletteColor(k2)) : paletteColor(i2),
+            borderColor: type === "line" ? paletteColor(i2) : circular ? void 0 : paletteColor(i2),
+            borderWidth: type === "line" ? 2 : 1,
+            pointRadius: type === "line" ? 2 : void 0,
+            tension: 0
+          }))
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          color: text,
+          plugins: { legend: { display: circular || data.datasets.length > 1, labels: { color: text } } },
+          scales: circular ? {} : {
+            x: { ticks: { color: text, maxRotation: 60, autoSkip: true }, grid: { color: grid2 } },
+            y: { ticks: { color: text }, grid: { color: grid2 } }
+          }
+        }
+      });
+    };
+    for (const control of [typeSelect, xSelect, ...yInputs]) control.addEventListener("change", draw);
+    draw();
+    const modal = document.getElementById("modal_message");
+    if (modal) {
+      modal.addEventListener(
+        "hidden.bs.modal",
+        () => {
+          if (chart) {
+            chart.destroy();
+            chart = null;
+          }
+        },
+        { once: true }
+      );
+    }
+  }
+  const MAX_CELLS = 4e6;
+  function diffLines(before, after) {
+    const a2 = before.split("\n");
+    const b2 = after.split("\n");
+    let start = 0;
+    while (start < a2.length && start < b2.length && a2[start] === b2[start]) start++;
+    let endA = a2.length;
+    let endB = b2.length;
+    while (endA > start && endB > start && a2[endA - 1] === b2[endB - 1]) {
+      endA--;
+      endB--;
+    }
+    const out = a2.slice(0, start).map((text) => ({ type: " ", text }));
+    const midA = a2.slice(start, endA);
+    const midB = b2.slice(start, endB);
+    if (midA.length * midB.length > MAX_CELLS) {
+      for (const text of midA) out.push({ type: "-", text });
+      for (const text of midB) out.push({ type: "+", text });
+    } else if (midA.length === 0 || midB.length === 0) {
+      for (const text of midA) out.push({ type: "-", text });
+      for (const text of midB) out.push({ type: "+", text });
+    } else {
+      const n2 = midA.length;
+      const m2 = midB.length;
+      const lcs = Array.from({ length: n2 + 1 }, () => new Uint32Array(m2 + 1));
+      for (let i3 = n2 - 1; i3 >= 0; i3--) {
+        for (let j3 = m2 - 1; j3 >= 0; j3--) {
+          lcs[i3][j3] = midA[i3] === midB[j3] ? lcs[i3 + 1][j3 + 1] + 1 : Math.max(lcs[i3 + 1][j3], lcs[i3][j3 + 1]);
+        }
+      }
+      let i2 = 0;
+      let j2 = 0;
+      while (i2 < n2 && j2 < m2) {
+        if (midA[i2] === midB[j2]) {
+          out.push({ type: " ", text: midA[i2] });
+          i2++;
+          j2++;
+        } else if (lcs[i2 + 1][j2] >= lcs[i2][j2 + 1]) {
+          out.push({ type: "-", text: midA[i2++] });
+        } else {
+          out.push({ type: "+", text: midB[j2++] });
+        }
+      }
+      while (i2 < n2) out.push({ type: "-", text: midA[i2++] });
+      while (j2 < m2) out.push({ type: "+", text: midB[j2++] });
+    }
+    for (const text of a2.slice(endA)) out.push({ type: " ", text });
+    return out;
+  }
+  function collapseUnchanged(lines, context) {
+    const out = [];
+    let i2 = 0;
+    while (i2 < lines.length) {
+      if (lines[i2].type !== " ") {
+        out.push(lines[i2++]);
+        continue;
+      }
+      let j2 = i2;
+      while (j2 < lines.length && lines[j2].type === " ") j2++;
+      const run = lines.slice(i2, j2);
+      const atStart = i2 === 0;
+      const atEnd = j2 === lines.length;
+      const keepHead = atStart ? 0 : context;
+      const keepTail = atEnd ? 0 : context;
+      if (run.length > keepHead + keepTail + 1) {
+        out.push(...run.slice(0, keepHead));
+        out.push({ type: "gap", count: run.length - keepHead - keepTail });
+        out.push(...run.slice(run.length - keepTail));
+      } else {
+        out.push(...run);
+      }
+      i2 = j2;
+    }
+    return out;
+  }
+  function hasChanges(lines) {
+    return lines.some((l2) => l2.type !== " ");
+  }
+  const IDLE_MS = 8e3;
+  const CONTEXT_LINES = 3;
+  function el$1(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  function installEditorHistory(p_editor, p_getConnId, p_button) {
+    let lastSaved = "";
+    let timer = 0;
+    const snapshot = () => {
+      clearTimeout(timer);
+      const text = p_editor.getValue();
+      if (!text.trim() || text === lastSaved) return;
+      lastSaved = text;
+      execAjax$2(
+        "/save_editor_version/",
+        JSON.stringify({ p_conn_id: p_getConnId(), p_text: text }),
+        null,
+        // A snapshot that cannot be saved (too large, connection gone) is not worth a dialog.
+        function() {
+          lastSaved = "";
+        },
+        "box",
+        false
+      );
+    };
+    p_editor.on("change", () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(snapshot, IDLE_MS);
+    });
+    p_editor.on("blur", snapshot);
+    p_button.addEventListener("click", () => openHistory(p_editor, p_getConnId(), snapshot));
+  }
+  function openHistory(p_editor, p_connId, p_snapshot) {
+    let selectedId = null;
+    let selectedText = null;
+    const list = el$1("div", "list-group");
+    list.style.cssText = "width:16rem;flex:none;max-height:60vh;overflow:auto;";
+    const diff = el$1("pre", "m-0 p-2");
+    diff.style.cssText = "flex:1;min-width:0;max-height:60vh;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:12px;border:1px solid var(--border-color);";
+    const hint = el$1("div", "mb-2 text-muted", t$1("history.diff_hint"));
+    const showDiff = (versionText) => {
+      diff.innerHTML = "";
+      const lines = diffLines(p_editor.getValue(), versionText);
+      if (!hasChanges(lines)) {
+        diff.textContent = t$1("history.no_changes");
+        return;
+      }
+      for (const item of collapseUnchanged(lines, CONTEXT_LINES)) {
+        const row = el$1("div");
+        if (item.type === "gap") {
+          row.className = "text-muted fst-italic";
+          row.textContent = "… " + t$1("history.unchanged_lines", { count: item.count });
+        } else {
+          row.textContent = item.type + " " + item.text;
+          if (item.type === "+") row.style.cssText = "background:rgba(40,167,69,.25);";
+          if (item.type === "-") row.style.cssText = "background:rgba(220,53,69,.25);";
+        }
+        diff.appendChild(row);
+      }
+    };
+    const select = (version, row) => {
+      list.querySelectorAll(".active").forEach((x2) => x2.classList.remove("active"));
+      row.classList.add("active");
+      selectedId = version.id;
+      selectedText = null;
+      diff.textContent = "";
+      execAjax$2(
+        "/get_editor_version/",
+        JSON.stringify({ p_id: version.id }),
+        function(r2) {
+          if (selectedId !== version.id) return;
+          selectedText = r2.v_data;
+          showDiff(r2.v_data);
+        },
+        null,
+        "box",
+        false
+      );
+    };
+    showConfirm(
+      "",
+      function() {
+        if (selectedText === null) return;
+        p_snapshot();
+        p_editor.setValue(selectedText, -1);
+        p_editor.focus();
+      },
+      null,
+      function() {
+        setMessageModalTitle(t$1("history.title"), "fas node-all fa-code-branch");
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        const body = el$1("div", "d-flex gap-3");
+        const right = el$1("div");
+        right.style.cssText = "flex:1;min-width:0;";
+        right.append(hint, diff);
+        body.append(list, right);
+        content.appendChild(body);
+        execAjax$2(
+          "/get_editor_versions/",
+          JSON.stringify({ p_conn_id: p_connId }),
+          function(r2) {
+            if (r2.v_data.length === 0) {
+              body.replaceChildren(el$1("div", "text-muted", t$1("history.empty")));
+              return;
+            }
+            r2.v_data.forEach((version, index) => {
+              const row = el$1("button", "list-group-item list-group-item-action text-start");
+              row.setAttribute("type", "button");
+              const when = el$1("div", "fw-bold small", new Date(version.date).toLocaleString());
+              const preview = el$1("div", "small text-truncate", version.preview || "—");
+              row.append(when, preview);
+              row.addEventListener("click", () => select(version, row));
+              list.appendChild(row);
+              if (index === 0) select(version, row);
+            });
+          },
+          null,
+          "box",
+          false
+        );
+      },
+      true,
+      t$1("history.restore")
+    );
+  }
+  function deleteCommandList() {
+    showConfirm(t$1("console.confirm_clear_command_history"), function() {
+      execAjax$2(
+        "/clear_command_list/",
+        JSON.stringify({
+          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+          p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
+          p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
+          p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value
+        }),
+        function(p_return) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+          refreshCommandList();
+        }
+      );
+    });
+  }
+  function showCommandList() {
+    v_connTabControl.selectedTab.tag;
+    var v_tabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 d-flex flex-column gap-2'><div class='d-flex align-items-center gap-2'><span>" + escapeHtml(t$1("console.time_range")) + "</span><div class='position-relative' id='command_history_timerange_container_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t$1("common.start_time")) + "' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t$1("common.end_time")) + "' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span></span> <i class='fa fa-caret-down'></i></button></div></div><div class='d-flex align-items-center gap-2'><label for='cl_input_contains_" + v_tabTag.tab_id + "' class='text-nowrap'>" + escapeHtml(t$1("console.search_commands")) + "</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='form-control form-control-sm' /></div></div><div class='mb-2 d-flex align-items-center gap-1'><button id='bt_refresh_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary' title='" + escapeHtmlAttribute(t$1("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t$1("common.refresh")) + "</button><button id='bt_clear_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm btn-danger' title='" + escapeHtmlAttribute(t$1("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t$1("console.clear_list")) + "</button><div class='d-flex align-items-center gap-1 ms-auto'><button id='bt_first_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.first")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.first")) + "'><i class='fas fa-angle-double-left'></i></button><button id='bt_previous_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.previous")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.previous")) + "'><i class='fas fa-angle-left'></i></button><span class='mx-1'><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span></span><button id='bt_next_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.next")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.next")) + "'><i class='fas fa-angle-right'></i></button><button id='bt_last_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.last")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.last")) + "'><i class='fas fa-angle-double-right'></i></button></div></div>";
+    var v_gridDiv = v_tabTag.commandHistory.gridDiv;
+    v_gridDiv.innerHTML = "";
+    if (v_tabTag.commandHistory.grid != null) {
+      v_tabTag.commandHistory.grid.destroy();
+    }
+    var v_columnProperties = [];
+    var v_column = {};
+    v_column.title = t$1("common.start_time");
+    v_column.readOnly = true;
+    v_column.fitContent = true;
+    v_columnProperties.push(v_column);
+    var v_column = {};
+    v_column.title = t$1("common.end_time");
+    v_column.readOnly = true;
+    v_column.fitContent = true;
+    v_columnProperties.push(v_column);
+    var v_column = {};
+    v_column.title = t$1("common.duration");
+    v_column.readOnly = true;
+    v_column.fitContent = true;
+    v_columnProperties.push(v_column);
+    var v_column = {};
+    v_column.title = t$1("console.column_command");
+    v_column.readOnly = true;
+    v_column.grow = true;
+    v_columnProperties.push(v_column);
+    var v_column = {};
+    v_column.title = t$1("common.status");
+    v_column.readOnly = true;
+    v_column.fitContent = true;
+    v_column.renderer = "html";
+    v_columnProperties.push(v_column);
+    v_tabTag.commandHistory.grid = new Handsontable(v_gridDiv, {
+      licenseKey: "non-commercial-and-evaluation",
+      data: [],
+      columns: v_columnProperties,
+      colHeaders: true,
+      rowHeaders: false,
+      stretchH: "last",
+      copyPaste: {
+        pasteMode: "",
+        rowsLimit: 1e9,
+        columnsLimit: 1e9
+      },
+      manualColumnResize: true,
+      fillHandle: false,
+      contextMenu: {
+        callback: function(p_key, p_options) {
+          if (p_key === "view_data") {
+            commandHistoryOpenCmd(p_options[0].start.row);
+          }
+        },
+        items: {
+          view_data: {
+            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t$1("console.copy_to_query_tab")) + "</div>"
+          }
+        }
+      },
+      cells: function(p_row, p_col, p_prop) {
+        var v_cellProperties = {};
+        if (p_row % 2 == 0) {
+          v_cellProperties.renderer = blueHtmlRenderer;
+        } else {
+          v_cellProperties.renderer = whiteHtmlRenderer;
+        }
+        return v_cellProperties;
+      }
+    });
+    bootstrap.Modal.getOrCreateInstance(v_tabTag.commandHistory.modal).show();
+    v_tabTag.commandHistory.div.style.display = "block";
+    v_tabTag.commandHistory.currentPage = 1;
+    v_tabTag.commandHistory.pages = 1;
+    v_tabTag.commandHistory.spanNumPages = document.getElementById("cl_num_pages_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.spanNumPages.innerHTML = 1;
+    v_tabTag.commandHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.spanCurrPage.innerHTML = 1;
+    v_tabTag.commandHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputStartedFrom.value = new Date(Date.now() - 6 * 3600 * 1e3).toISOString();
+    v_tabTag.commandHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputStartedTo.value = (/* @__PURE__ */ new Date()).toISOString();
+    v_tabTag.commandHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputCommandContains.value = v_tabTag.commandHistory.inputCommandContainsLastValue;
+    v_tabTag.commandHistory.inputCommandContains.addEventListener("change", () => refreshCommandList());
+    var v_headerButtonHandlers = [
+      ["bt_first_", commandHistoryFirstPage],
+      ["bt_previous_", commandHistoryPreviousPage],
+      ["bt_next_", commandHistoryNextPage],
+      ["bt_last_", commandHistoryLastPage],
+      ["bt_refresh_", refreshCommandList],
+      ["bt_clear_", deleteCommandList]
+    ];
+    for (const [id, handler] of v_headerButtonHandlers) {
+      document.getElementById(id + v_tabTag.tab_id).addEventListener(
+        "click",
+        () => handler()
+      );
+    }
+    setupTimeRangePicker({
+      button: (
+        /** @type {HTMLElement} */
+        document.getElementById("cl_time_range_" + v_tabTag.tab_id)
+      ),
+      label: (
+        /** @type {HTMLElement} */
+        document.querySelector("#cl_time_range_" + v_tabTag.tab_id + " span")
+      ),
+      container: (
+        /** @type {HTMLElement} */
+        document.getElementById("command_history_timerange_container_" + v_tabTag.tab_id)
+      ),
+      fromInput: v_tabTag.commandHistory.inputStartedFrom,
+      toInput: v_tabTag.commandHistory.inputStartedTo,
+      onChange: refreshCommandList
+    });
+    refreshCommandList();
+  }
+  function commandHistoryNextPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage < v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage += 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryPreviousPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage > 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage -= 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryFirstPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryLastPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryOpenCmd(p_index) {
+    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[3];
+    closeCommandHistory();
+    v_connTabControl.tag.createQueryTab();
+    var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
+    v_editor.setValue(v_command);
+    v_editor.clearSelection();
+    v_editor.gotoLine(0, 0, true);
+  }
+  function refreshCommandList() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value;
+    execAjax$2(
+      "/get_command_list/",
+      JSON.stringify({
+        p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
+        p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
+        p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value,
+        p_current_page: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage,
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex
+      }),
+      function(p_return) {
+        if (p_return.v_data.commandList.length == 0) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages.innerHTML = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage;
+        for (let i2 = 0; i2 < p_return.v_data.commandList.length; i2++) {
+          p_return.v_data.commandList[i2][0] = new Date(p_return.v_data.commandList[i2][0]).toLocaleString();
+          p_return.v_data.commandList[i2][1] = new Date(p_return.v_data.commandList[i2][1]).toLocaleString();
+          var v_row = p_return.v_data.commandList[i2];
+          p_return.v_data.commandList[i2] = [v_row[0], v_row[1], v_row[2], v_row[4], v_row[3]];
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.loadData(p_return.v_data.commandList);
+      },
+      null,
+      "box"
+    );
+  }
+  function closeCommandHistory() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.destroy();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.div.style.display = "none";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.headerDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.gridDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;
+    bootstrap.Modal.getOrCreateInstance(
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal
+    ).hide();
+  }
+  const commandHistory = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    closeCommandHistory,
+    commandHistoryFirstPage,
+    commandHistoryLastPage,
+    commandHistoryNextPage,
+    commandHistoryOpenCmd,
+    commandHistoryPreviousPage,
+    deleteCommandList,
+    refreshCommandList,
+    showCommandList
+  }, Symbol.toStringTag, { value: "Module" }));
+  function statementFoldRanges(text) {
+    const ranges = /* @__PURE__ */ new Map();
+    let state = "normal";
+    let row = 0;
+    let column = 0;
+    let startRow = -1;
+    let lastRow = -1;
+    let lastColumn = 0;
+    const close = (endRow, endColumn) => {
+      if (startRow >= 0 && endRow > startRow) ranges.set(startRow, { endRow, endColumn });
+      startRow = -1;
+    };
+    for (let i2 = 0; i2 < text.length; i2++) {
+      const ch = text[i2];
+      const next = text[i2 + 1];
+      if (ch === "\n") {
+        if (state === "line_comment") state = "normal";
+        row++;
+        column = 0;
+        continue;
+      }
+      const here = column;
+      column++;
+      if (state === "normal") {
+        if (ch === "-" && next === "-") {
+          state = "line_comment";
+        } else if (ch === "/" && next === "*") {
+          state = "block_comment";
+          i2++;
+          column++;
+        } else if (/\s/.test(ch)) ;
+        else {
+          if (startRow < 0) startRow = row;
+          lastRow = row;
+          lastColumn = here + 1;
+          if (ch === "'") state = "single";
+          else if (ch === '"') state = "double";
+          else if (ch === ";") close(row, here + 1);
+        }
+      } else if (state === "single") {
+        lastRow = row;
+        lastColumn = here + 1;
+        if (ch === "'") state = "normal";
+      } else if (state === "double") {
+        lastRow = row;
+        lastColumn = here + 1;
+        if (ch === '"') state = "normal";
+      } else if (state === "block_comment") {
+        if (ch === "*" && next === "/") {
+          state = "normal";
+          i2++;
+          column++;
+        }
+      }
+    }
+    close(lastRow, lastColumn);
+    return ranges;
+  }
+  function installEditorFolding(editor) {
+    const session = editor.session;
+    let cache = null;
+    session.on("change", () => {
+      cache = null;
+    });
+    const ranges = () => cache ??= statementFoldRanges(session.getValue());
+    const apply = () => {
+      const base = session.getMode().foldingRules;
+      if (!base || base.$omnidbStatements) return;
+      const Range2 = ace.require("ace/range").Range;
+      const wrapper = {
+        $omnidbStatements: true,
+        getFoldWidget(s2, style, row) {
+          return ranges().has(row) ? "start" : base.getFoldWidget(s2, style, row);
+        },
+        getFoldWidgetRange(s2, style, row, forceMultiline) {
+          const stmt = ranges().get(row);
+          if (stmt) return new Range2(row, s2.getLine(row).length, stmt.endRow, stmt.endColumn);
+          return base.getFoldWidgetRange(s2, style, row, forceMultiline);
+        }
+      };
+      session.$setFolding(wrapper);
+    };
+    apply();
+    session.on("changeMode", apply);
+    editor.commands.bindKey("Alt-J", "selectMoreAfter");
+    editor.commands.bindKey("Alt-Shift-J", "selectMoreBefore");
+  }
   function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== "") {
@@ -22973,6 +23177,19 @@ ${t2 ? `    <#ArrowNext [${t2}] />
             elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor)
           }
         });
+      v_option_list.push(
+        ...navigationMenuEntries(
+          v_editor,
+          event2.clientX,
+          event2.clientY,
+          function() {
+            return v_owner_conn_tab.tag.selectedDatabaseIndex;
+          },
+          function() {
+            return v_owner_conn_tab.id;
+          }
+        )
+      );
       customMenu(
         {
           x: event2.clientX + 5,
@@ -23167,6 +23384,15 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     installScriptRestore(
       /** @type {HTMLElement} */
       document.getElementById("bt_run_script_" + v_tab.id),
+      function() {
+        return v_owner_conn_tab.tag.selectedDatabaseIndex;
+      },
+      function() {
+        return v_owner_conn_tab.id;
+      }
+    );
+    installEditorNavigation(
+      v_editor,
       function() {
         return v_owner_conn_tab.tag.selectedDatabaseIndex;
       },
@@ -37630,7 +37856,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     var v_section = document.getElementById("omnidb__section_snippets");
     if (!v_section || !v_section.classList.contains("omnidb__section--active")) return;
     var v_inner_snippet_tag = v_snippet_tag.tabControl.selectedTab.tag;
-    var updateOuterSnippetLayout = new Promise((resolve) => {
+    var updateOuterSnippetLayout = new Promise((resolve2) => {
       setTimeout(function() {
         var v_totalWidth = v_snippet_tag.divLayoutGrid.getBoundingClientRect().width;
         var v_max_allowed_left_width = v_totalWidth - 50;
@@ -37653,7 +37879,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
           /** @type {HTMLElement} */
           v_section.getBoundingClientRect().height
         );
-        resolve(v_panel_height);
+        resolve2(v_panel_height);
       }, 0);
     });
     await updateOuterSnippetLayout.then(function(v_panel_height) {
@@ -40098,7 +40324,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         v_control.stepSelected = p_index;
         var v_step_item = await v_control.renderStep();
         if (v_step_item !== "stop") {
-          var get_v_target = new Promise((resolve) => {
+          var get_v_target = new Promise((resolve2) => {
             setTimeout(function() {
               var v_next_btn = document.getElementById("omnis_step_btn_next");
               if (v_next_btn !== void 0 && v_next_btn !== null) {
@@ -40113,7 +40339,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                 v_target = v_step_item.target;
               }
               v_control.updateOmnisPosition(v_target, v_step_item.position);
-              resolve(v_target);
+              resolve2(v_target);
             }, v_step_item.update_delay);
           });
           await get_v_target.then(function(v_target) {
@@ -40227,14 +40453,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
           var v_step_html = '<div class="omnis__step card">' + v_step_title + v_message + '<div class="omnis__step__footer card-footer d-flex align-items-center p-2">' + v_step_btn_previous + v_step_btn_next + v_step_btn_close + "</div></div>";
           this.divCardElement.innerHTML = v_step_html;
           this.divElement.style.display = "block";
-          return new Promise((resolve) => {
-            resolve(v_step_item);
+          return new Promise((resolve2) => {
+            resolve2(v_step_item);
           });
         } else {
           this.divElement.style.display = "none";
           this.divWavesElement.innerHTML = "";
-          return new Promise((resolve) => {
-            resolve("stop");
+          return new Promise((resolve2) => {
+            resolve2("stop");
           });
         }
       },

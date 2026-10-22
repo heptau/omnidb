@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { installEditorNavigation, navigationMenuEntries } from "../editor_navigation.js";
 import { installEditorInspections } from "../editor_inspections.js";
 import { installScriptRestore } from "../script_restore.js";
 import { showResultChart } from "../result_chart.js";
@@ -424,6 +425,19 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 					elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor),
 				},
 			});
+		v_option_list.push(
+			...navigationMenuEntries(
+				v_editor,
+				event.clientX,
+				event.clientY,
+				function () {
+					return v_owner_conn_tab.tag.selectedDatabaseIndex;
+				},
+				function () {
+					return v_owner_conn_tab.id;
+				},
+			),
+		);
 		customMenu(
 			{
 				x: event.clientX + 5,
@@ -661,6 +675,15 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	/** @type {HTMLElement} */ (document.getElementById("bt_chart_" + v_tab.id)).addEventListener("click", () => showResultChart(v_tag));
 	installScriptRestore(
 		/** @type {HTMLElement} */ (document.getElementById("bt_run_script_" + v_tab.id)),
+		function () {
+			return v_owner_conn_tab.tag.selectedDatabaseIndex;
+		},
+		function () {
+			return v_owner_conn_tab.id;
+		},
+	);
+	installEditorNavigation(
+		v_editor,
 		function () {
 			return v_owner_conn_tab.tag.selectedDatabaseIndex;
 		},
