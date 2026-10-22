@@ -86,7 +86,19 @@ func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*
 		return nil, errSQLiteRestricted
 	}
 
-	info := &ConnectionInfo{
+	info := connectionInfoFromApp(c)
+	if err := checkAWSIAMAllowed(info, who); err != nil {
+		return nil, err
+	}
+	if err := checkOAuthAllowed(info, who); err != nil {
+		return nil, err
+	}
+	return info, nil
+}
+
+// connectionInfoFromApp is the ConnectionInfo of a saved connection row.
+func connectionInfoFromApp(c *appConnection) *ConnectionInfo {
+	return &ConnectionInfo{
 		Found:              true,
 		Technology:         c.Technology,
 		Server:             c.Server,
@@ -106,13 +118,6 @@ func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*
 		OAuthSecret:        c.OAuthSecret,
 		ReadOnly:           c.ReadOnly,
 	}
-	if err := checkAWSIAMAllowed(info, who); err != nil {
-		return nil, err
-	}
-	if err := checkOAuthAllowed(info, who); err != nil {
-		return nil, err
-	}
-	return info, nil
 }
 
 // errSQLiteRestricted is returned for a non-superuser's SQLite connection

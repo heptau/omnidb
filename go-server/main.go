@@ -462,6 +462,12 @@ func run() error {
 	mux.Handle("/get_bookmarks/", handleGetBookmarks(upstream))
 	mux.Handle("/add_bookmark/", handleAddBookmark(upstream))
 	mux.Handle("/delete_bookmark/", handleDeleteBookmark(upstream))
+	mux.Handle("/get_schedules/", handleGetSchedules(upstream))
+	mux.Handle("/add_schedule/", handleAddSchedule(upstream))
+	mux.Handle("/set_schedule_enabled/", handleSetScheduleEnabled(upstream))
+	mux.Handle("/delete_schedule/", handleDeleteSchedule(upstream))
+	mux.Handle("/get_schedule_runs/", handleGetScheduleRuns(upstream))
+	mux.Handle("/run_schedule_now/", handleRunScheduleNow(upstream))
 	mux.Handle("/get_all_snippets/", handleGetAllSnippets(upstream))
 	mux.Handle("/get_node_children/", handleGetNodeChildren(upstream))
 	mux.Handle("/get_snippet_text/", handleGetSnippetText(upstream))
@@ -574,6 +580,7 @@ func run() error {
 			log.Printf("app database: %v", err)
 		} else {
 			appdb.Close()
+			startScheduler(upstream)
 		}
 	}
 

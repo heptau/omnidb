@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Scheduled queries (the calendar button in the query toolbar): saves the editor's SQL (the selection, else the whole
+  text) to run on a connection every N minutes (1 minute to a week). The dialog lists the schedules with their last
+  outcome and lets you run one now, pause or resume it, read its last 50 runs, or delete it. Each run records its
+  status, duration and what every statement did (rows returned or affected), or the error it stopped on; a read-only
+  connection still refuses writes. The scheduler lives in the server process, so it runs only while OmniDB is open (a
+  run that came due while it was closed happens once at the next start, not once per missed interval). Connections
+  that use an SSH tunnel or token authentication cannot be scheduled.
 - Compare (the exchange button in the query toolbar): the schema of the current connection against another
   connection's (tables, columns, column types), or one table's rows by primary key. The result is a summary plus a
   script that makes the target match the source (`CREATE TABLE`, `ADD COLUMN`, type changes; `INSERT`/`UPDATE` for
