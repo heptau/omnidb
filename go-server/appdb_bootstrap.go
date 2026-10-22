@@ -196,6 +196,11 @@ func migrateAppDB(db *sql.DB) error {
 		return fmt.Errorf("create OmniDB_app_bookmark: %w", err)
 	}
 
+	// Per-user interface preferences (v5.5.0+) -- see appdb_uiprefs.go.
+	if _, err := db.Exec(uiPrefTableDDL); err != nil {
+		return fmt.Errorf("create OmniDB_app_uipref: %w", err)
+	}
+
 	// Scheduled queries (v5.5.0+) -- see appdb_schedules.go.
 	if _, err := db.Exec(scheduleTableDDL); err != nil {
 		return fmt.Errorf("create OmniDB_app_schedule: %w", err)

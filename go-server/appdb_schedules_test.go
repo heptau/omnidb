@@ -92,6 +92,23 @@ func TestScheduleLifecycle(t *testing.T) {
 		t.Errorf("another user sees %d schedules", len(other))
 	}
 
+	// Editing changes the definition, keeps it enabled, and pulls a later run in.
+	if err := updateSchedule(db, 1, id, "renamed", "select 2", 1, later); err != nil {
+		t.Fatal(err)
+	}
+	if err := updateSchedule(db, 2, id, "x", "select 2", 1, later); err == nil {
+		t.Error("another user must not edit it")
+	}
+	if err := updateSchedule(db, 1, id, "", "select 2", 1, later); err == nil {
+		t.Error("a blank name must fail")
+	}
+	var gotName string
+	var gotNext int64
+	db.QueryRow(`select name, next_run from OmniDB_app_schedule where id = ?`, id).Scan(&gotName, &gotNext)
+	if gotName != "renamed" || gotNext > later.Unix()+60 {
+		t.Errorf("after update: name=%q next=%d", gotName, gotNext)
+	}
+
 	// Pausing keeps a schedule from being claimed; resuming restarts its countdown.
 	if err := setScheduleEnabled(db, 1, id, false, later); err != nil {
 		t.Fatal(err)

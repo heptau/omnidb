@@ -461,6 +461,7 @@
 		     panel_functions/outer_connected_users_panel.js. -->
 		<div id="omnidb__section_connected_users" class="omnidb__section"></div>
 		<div id="omnidb__section_bookmarks" class="omnidb__section"></div>
+		<div id="omnidb__section_schedules" class="omnidb__section"></div>
 
 		<!-- Snippets section (was the slide-in panel). Content is built by
 		     panel_functions/outer_snippet_panel.js. -->
@@ -502,6 +503,10 @@
 							<div class="omnidb__settings__list-item" data-category="shortcuts">
 								<i class="fas fa-keyboard omnidb__settings__list-item-icon"></i>
 								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.shortcuts">Shortcuts</span>
+							</div>
+							<div class="omnidb__settings__list-item" data-category="navigation">
+								<i class="fas fa-bars omnidb__settings__list-item-icon"></i>
+								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.navigation">Navigation panel</span>
 							</div>
 							<div class="omnidb__settings__list-item" data-category="password">
 								<i class="fas fa-lock omnidb__settings__list-item-icon"></i>
@@ -889,6 +894,14 @@
 								<div style="position: absolute; top: 50%; width: 100%;" data-i18n="settings.shortcuts.press_combination">Press key combination... (ESC to cancel)</div>
 							</div>
 							<div id="shortcuts_list"></div>
+						</div>
+
+						<div class="omnidb__settings__pane" data-category="navigation">
+							<div class="omnidb__settings__pane-header">
+								<h5 data-i18n="settings.category.navigation">Navigation panel</h5>
+							</div>
+							<p class="text-muted small" data-i18n="settings.navigation.hint">Choose which sections the panel on the left shows, their order, and where the divider between its upper and lower part sits. The Settings icon is always last.</p>
+							<div id="nav_layout_editor"></div>
 						</div>
 
 						<div class="omnidb__settings__pane" data-category="password">

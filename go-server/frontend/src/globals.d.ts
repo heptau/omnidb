@@ -135,6 +135,8 @@ declare let v_short_version: string;
 declare let v_version: string;
 declare let v_language: string;
 declare let v_language_preference: string;
+/** The user's saved layout of the left section rail, as a JSON document ("" = default). */
+declare let v_nav_layout: string;
 declare let v_i18n: Record<string, string>;
 
 // --- reachable across a bundle boundary ------------------------------------

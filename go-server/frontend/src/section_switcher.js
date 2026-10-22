@@ -48,14 +48,16 @@ import { refreshConnectedUsersPane } from "./panel_functions/outer_connected_use
 import { refreshPermissionsPane } from "./panel_functions/outer_permissions_panel.js";
 import { refreshMonitoringPane } from "./panel_functions/outer_monitoring_panel.js";
 import { refreshBookmarksPane } from "./panel_functions/outer_bookmarks_panel.js";
+import { refreshSchedulesPane } from "./panel_functions/outer_schedules_panel.js";
 import { toggleSnippetPanel } from "./panel_functions/outer_snippet_panel.js";
 import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
 import { refreshHeights } from "./workspace.js";
 import { t } from "./i18n.js";
 import { jsonPostHeaders } from "./ajax_control_bridge.js";
+import { NAV_DIVIDER, resolveNavLayout } from "./nav_layout.js";
 
-const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "bookmarks", "snippets", "settings"];
+const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "bookmarks", "schedules", "snippets", "settings"];
 
 // The i18n key for each section's display name -- reused from the rail's own
 // tooltips (see initSectionSwitcher below) so the window title and the
@@ -69,6 +71,7 @@ const SECTION_TITLE_KEYS = {
 	permissions: "nav.permissions",
 	connected_users: "nav.connected_users",
 	bookmarks: "nav.bookmarks",
+	schedules: "nav.schedules",
 	snippets: "tree.snippets_section",
 	settings: "nav.settings",
 };
@@ -171,6 +174,8 @@ export function switchSection(p_name) {
 		refreshConnectedUsersPane();
 	} else if (p_name === "bookmarks") {
 		refreshBookmarksPane();
+	} else if (p_name === "schedules") {
+		refreshSchedulesPane();
 	} else if (p_name === "database") {
 		// Forces a fresh layout pass for the now-visible connection tab --
 		// refreshHeights's own DB-specific sizing skips itself entirely
@@ -200,6 +205,140 @@ export function isSectionActive(p_name) {
 	return v_div != null && v_div.classList.contains("omnidb__section--active");
 }
 
+/**
+ * The rail's configurable items: icon, tooltip text key and what a click does.
+ * `section` items switch to a section; `action` items are plain click
+ * triggers that are never "selected" (Getting Started, Account).
+ * @type {Record<string, { icon: string, titleKey: string, select?: () => void, click?: (e: MouseEvent) => void, desktopOnly?: boolean, serverOnly?: boolean }>}
+ */
+const NAV_ITEMS = {
+	welcome: { icon: "fa-hand-spock", titleKey: "nav.welcome", select: () => switchSection("welcome") },
+	// Also refreshes the connection list from the server -- see connections.js,
+	// which shows this section as its last step.
+	connections: { icon: "fa-plug", titleKey: "nav.connections", select: () => startConnectionManagement() },
+	database: { icon: "fa-database", titleKey: "tree.databases_section", select: () => switchSection("database") },
+	monitoring: { icon: "fa-chart-line", titleKey: "nav.monitoring", select: () => switchSection("monitoring") },
+	notify: { icon: "fa-bell", titleKey: "nav.notify", select: () => switchSection("notify") },
+	permissions: { icon: "fa-users", titleKey: "nav.permissions", select: () => switchSection("permissions") },
+	// fa-server, not fa-users: the server-side connections/processes this
+	// section shows -- fa-users belongs to Permissions.
+	connected_users: { icon: "fa-server", titleKey: "nav.connected_users", select: () => switchSection("connected_users") },
+	schedules: { icon: "fa-calendar-alt", titleKey: "nav.schedules", select: () => switchSection("schedules") },
+	snippets: { icon: "fa-scroll", titleKey: "tree.snippets_section", select: () => toggleSnippetPanel() },
+	bookmarks: { icon: "fa-star", titleKey: "nav.bookmarks", select: () => switchSection("bookmarks") },
+	// Getting Started used to be reachable only by the floating omnis icon in
+	// the bottom-right corner (see workspace.js); a click trigger, not selectable.
+	getting_started: {
+		icon: "fa-lightbulb",
+		titleKey: "nav.getting_started",
+		click: (e) => startTutorial("getting_started", /** @type {HTMLElement} */ (e.currentTarget)),
+	},
+	// The account popup (username/version/sign-out) has anything to show only
+	// in server mode -- the desktop (Wails) build has no user concept.
+	account: { icon: "fa-user", titleKey: "nav.account", serverOnly: true },
+};
+
+/** Ids of the rail items that exist in this build, for the layout and its editor. */
+export function availableNavItems() {
+	return Object.keys(NAV_ITEMS).filter((id) => !(NAV_ITEMS[id].serverOnly && gv_desktopMode));
+}
+
+/**
+ * The configurable items with their icon and display name, for the Settings editor.
+ * @returns {Array<{ id: string, icon: string, title: string }>}
+ */
+export function navItemDescriptions() {
+	return availableNavItems().map((id) => ({ id, icon: NAV_ITEMS[id].icon, title: t(NAV_ITEMS[id].titleKey) }));
+}
+
+/** @param {string} id */
+function createNavItem(id) {
+	if (id === "account") {
+		initAccountMenu();
+		return;
+	}
+	const item = NAV_ITEMS[id];
+	/** @type {any} */
+	const config = {
+		p_icon: '<i class="fas ' + item.icon + '"></i>',
+		p_close: false,
+		p_isDraggable: false,
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t(item.titleKey)) + "</h5>",
+	};
+	if (item.select) config.p_selectFunction = item.select;
+	if (item.click) {
+		config.p_selectable = false;
+		config.p_clickFunction = item.click;
+	}
+	v_sectionNavTabs[id] = v_sectionNav.createTab(config);
+}
+
+/**
+ * Creates the rail's tabs from the user's layout (Settings > Navigation
+ * panel): which items to show, their order, and where the divider that
+ * pushes the lower part to the bottom sits. Settings itself is always last.
+ */
+function buildSectionNav() {
+	const layout = resolveNavLayout(typeof v_nav_layout === "string" ? v_nav_layout : "", availableNavItems());
+	for (const id of layout.order) {
+		if (id === NAV_DIVIDER) {
+			// Pushes everything after it to the bottom of the rail, VSCode-style.
+			var v_spacer = document.createElement("div");
+			v_spacer.className = "omnidb__section-nav__spacer";
+			v_sectionNav.tabListDiv.appendChild(v_spacer);
+		} else if (!layout.hidden.includes(id)) {
+			createNavItem(id);
+		}
+	}
+
+	// Settings is the very last icon, bottom-most, VSCode-style.
+	v_sectionNavTabs.settings = v_sectionNav.createTab({
+		p_icon: '<i class="fas fa-cog"></i>',
+		p_close: false,
+		p_isDraggable: false,
+		p_selectFunction: function () {
+			showConfigUser();
+		},
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.settings")) + "</h5>",
+	});
+}
+
+/**
+ * Rebuilds the rail in place for a new layout, with no page reload: every
+ * tab is removed and recreated, and the current section keeps its highlight
+ * (without running its select function again -- that would, for instance,
+ * toggle the snippets panel shut).
+ * @param {string} layoutJSON  the layout document; "" means the default layout
+ */
+export function rebuildSectionNav(layoutJSON) {
+	v_nav_layout = layoutJSON;
+	var v_active = SECTION_NAMES.find(function (p_name) {
+		return isSectionActive(p_name);
+	});
+
+	v_sectionNav.selectedTab = null;
+	v_sectionNav.selectedA = null;
+	v_sectionNav.selectedDiv = null;
+	v_sectionNav.tabList.slice().forEach(function (/** @type {any} */ p_tab) {
+		v_sectionNav.removeTab(p_tab);
+	});
+	// The divider is not a tab; nothing else lives in the list.
+	v_sectionNav.tabListDiv.innerHTML = "";
+	Object.keys(v_sectionNavTabs).forEach(function (p_key) {
+		delete v_sectionNavTabs[p_key];
+	});
+
+	buildSectionNav();
+
+	var v_tab = v_active ? v_sectionNavTabs[v_active] : null;
+	if (v_tab) {
+		var v_select = v_tab.selectFunction;
+		v_tab.selectFunction = null;
+		v_sectionNav.selectTab(v_tab);
+		v_tab.selectFunction = v_select;
+	}
+}
+
 export function initSectionSwitcher() {
 	for (let i = 0; i < SECTION_NAMES.length; i++) {
 		v_sectionDivs[SECTION_NAMES[i]] = /** @type {HTMLElement} */ (
@@ -213,141 +352,7 @@ export function initSectionSwitcher() {
 	// higher-specificity overrides.
 	v_sectionNav = createTabControl({ p_div: "omnidb_section_nav", p_hierarchy: "sectionnav" });
 
-	v_sectionNavTabs.welcome = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-hand-spock"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			switchSection("welcome");
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.welcome")) + "</h5>",
-	});
-
-	v_sectionNavTabs.connections = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-plug"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			// Also refreshes the connection list from the server -- see
-			// connections.js, which now shows this section instead of a
-			// modal as its last step.
-			startConnectionManagement();
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.connections")) + "</h5>",
-	});
-
-	v_sectionNavTabs.database = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-database"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			switchSection("database");
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("tree.databases_section")) + "</h5>",
-	});
-
-	v_sectionNavTabs.monitoring = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-chart-line"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			switchSection("monitoring");
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.monitoring")) + "</h5>",
-	});
-
-	v_sectionNavTabs.notify = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-bell"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			switchSection("notify");
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.notify")) + "</h5>",
-	});
-
-	v_sectionNavTabs.permissions = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-users"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			switchSection("permissions");
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.permissions")) + "</h5>",
-	});
-
-	v_sectionNavTabs.connected_users = v_sectionNav.createTab({
-		// fa-server, not fa-users: represents the server-side connections/
-		// processes this section shows -- fa-users went to the Permissions
-		// section right above, once that was actually built.
-		p_icon: '<i class="fas fa-server"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			switchSection("connected_users");
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.connected_users")) + "</h5>",
-	});
-
-	v_sectionNavTabs.bookmarks = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-star"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			switchSection("bookmarks");
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.bookmarks")) + "</h5>",
-	});
-
-	v_sectionNavTabs.snippets = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-scroll"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			toggleSnippetPanel();
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("tree.snippets_section")) + "</h5>",
-	});
-
-	// Pushes About/Account/Settings to the bottom of the rail, VSCode-style.
-	var v_spacer = document.createElement("div");
-	v_spacer.className = "omnidb__section-nav__spacer";
-	v_sectionNav.tabListDiv.appendChild(v_spacer);
-
-	// Getting Started used to be reachable only by clicking the floating
-	// omnis icon in the bottom-right corner (see workspace.js) -- that was
-	// its one and only purpose there, so it's a rail icon now instead. Not
-	// selectable, just a click trigger, same shape as the Account icon
-	// below (this replaces the old About entry -- About's info now lives
-	// on the Welcome section instead, see outer_welcome_tab.js).
-	v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-lightbulb"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectable: false,
-		p_clickFunction: function (e) {
-			startTutorial("getting_started", e.currentTarget);
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.getting_started")) + "</h5>",
-	});
-
-	// The account icon (username/version/sign-out) only has anything to show
-	// in server mode -- the desktop (Wails) build has no session/user
-	// concept, so it is not created at all there rather than shown empty.
-	if (!gv_desktopMode) {
-		initAccountMenu();
-	}
-
-	// Settings is the very last icon, bottom-most, VSCode-style.
-	v_sectionNavTabs.settings = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-cog"></i>',
-		p_close: false,
-		p_isDraggable: false,
-		p_selectFunction: function () {
-			showConfigUser();
-		},
-		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.settings")) + "</h5>",
-	});
+	buildSectionNav();
 
 	// No default switchSection() call here -- workspace.js's initWorkspace()
 	// decides the startup section itself, since it depends on whether
@@ -363,7 +368,14 @@ export function initSectionSwitcher() {
  * bar. Kept out of Settings on purpose -- sign out is reached often enough
  * that it should not cost a section switch to get to.
  */
+/** The account icon's tab and popup, replaced whenever the rail is rebuilt. */
+/** @type {any} */
+var v_accountTab = null;
+var v_accountOutsideClickBound = false;
+
 function initAccountMenu() {
+	var v_old_menu = document.getElementById("omnidb_section_nav__account_menu");
+	if (v_old_menu) v_old_menu.remove();
 	var v_tab = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-user"></i>',
 		p_close: false,
@@ -400,12 +412,19 @@ function initAccountMenu() {
 		);
 	}
 
-	document.addEventListener("click", function (e) {
-		if (!(e.target instanceof Node)) return;
-		if (!v_menu.contains(e.target) && !v_tab.elementA.contains(e.target)) {
-			hideAccountMenu();
-		}
-	});
+	v_accountTab = v_tab;
+	// One listener for the page's lifetime: the rail can be rebuilt many
+	// times, and each rebuild would otherwise add another.
+	if (!v_accountOutsideClickBound) {
+		v_accountOutsideClickBound = true;
+		document.addEventListener("click", function (e) {
+			var v_current = document.getElementById("omnidb_section_nav__account_menu");
+			if (!v_current || !v_accountTab || !(e.target instanceof Node)) return;
+			if (!v_current.contains(e.target) && !v_accountTab.elementA.contains(e.target)) {
+				hideAccountMenu();
+			}
+		});
+	}
 }
 
 function toggleAccountMenu() {

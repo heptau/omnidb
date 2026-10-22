@@ -40,6 +40,7 @@ import { refreshHeights, uiCopyTextToClipboard } from "./workspace.js";
 import { isJSONText, reformatJSON } from "./json_format.js";
 import { escapeHtml, escapeHtmlAttribute } from "./query.js";
 import { t } from "./i18n.js";
+import { renderNavLayoutEditor } from "./nav_layout_editor.js";
 
 export function showAbout() {
 	var v_version_line = document.getElementById("about_version_line");
@@ -422,6 +423,7 @@ export function showConfigUser() {
 	}
 
 	/** @type {HTMLInputElement} */ (document.getElementById("sel_language")).value = v_language_preference;
+	renderNavLayoutEditor();
 
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd")).value = "";
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd")).value = "";

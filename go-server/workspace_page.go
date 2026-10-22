@@ -82,6 +82,9 @@ type workspaceBootstrap struct {
 	Language           string            `json:"language"`
 	LanguagePreference string            `json:"language_preference"`
 	Translations       map[string]string `json:"i18n"`
+	// NavLayout is the user's saved layout of the left section rail, as a
+	// JSON document (see appdb_uiprefs.go); blank means the default layout.
+	NavLayout string `json:"nav_layout"`
 }
 
 // workspaceVarPatterns matches both spaced ("{{ user_name }}") and unspaced
@@ -155,7 +158,7 @@ func stripWorkspaceConditionals(html string, desktopMode, superUser bool) string
 // template.render(), minus the Django-session bookkeeping (handled
 // separately by ensureDjangoSession, since it's a side effect on Django's
 // own session store, not something the rendered HTML needs).
-func renderWorkspacePage(r *http.Request, who *WhoAmI, ud userDetailsRow, shortcuts map[string]workspaceShortcut) (string, error) {
+func renderWorkspacePage(r *http.Request, who *WhoAmI, ud userDetailsRow, shortcuts map[string]workspaceShortcut, navLayout string) (string, error) {
 	tabToken, err := randomLowerAlnum(20)
 	if err != nil {
 		return "", err
@@ -211,6 +214,7 @@ func renderWorkspacePage(r *http.Request, who *WhoAmI, ud userDetailsRow, shortc
 		Language:                  lang,
 		LanguagePreference:        who.Language,
 		Translations:              i18n.CatalogFor(lang),
+		NavLayout:                 navLayout,
 	})
 	if err != nil {
 		return "", err
@@ -280,7 +284,7 @@ func handleWorkspacePage(upstream *url.URL) http.HandlerFunc {
 			shortcuts = map[string]workspaceShortcut{}
 		}
 
-		html, err := renderWorkspacePage(r, who, ud, shortcuts)
+		html, err := renderWorkspacePage(r, who, ud, shortcuts, getUIPref(db, int64(who.UserID), navLayoutKey))
 		if err != nil {
 			http.Error(w, "internal error", http.StatusInternalServerError)
 			return

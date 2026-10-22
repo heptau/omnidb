@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$a = document.getElementById("omnidb_bootstrap");
-  if (!el$a) {
+  const el$c = document.getElementById("omnidb_bootstrap");
+  if (!el$c) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$a.textContent);
+  const cfg = JSON.parse(el$c.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -46,6 +46,7 @@
     v_language: cfg.language,
     v_language_preference: cfg.language_preference,
     v_i18n: cfg.i18n,
+    v_nav_layout: cfg.nav_layout,
     // Aliases the old inline block derived from the values above. Kept because
     // plenty of code reads them by these names.
     v_session_key: cfg.user_key,
@@ -949,7 +950,7 @@
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$9(id) {
+  function el$b(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -971,7 +972,7 @@
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    var v_modal_message = el$9("modal_message");
+    var v_modal_message = el$b("modal_message");
     v_modal_message.addEventListener("hide.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
@@ -979,7 +980,7 @@
       v_message_modal_animating = true;
     });
     v_modal_message.addEventListener("hidden.bs.modal", function(e2) {
-      el$9("modal_message_content").innerHTML = "";
+      el$b("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -999,21 +1000,21 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$9("modal_message_dialog");
+    var v_dialog = el$b("modal_message_dialog");
     var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
     if (v_old_title) v_old_title.remove();
     v_dialog.classList.toggle("modal-xl", p_large === true);
     v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$9("modal_message")).show();
+      bootstrap.Modal.getOrCreateInstance(el$b("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
   }
   function setMessageModalTitle(p_text, p_icon_class = null) {
-    var v_header = el$9("modal_message_dialog").querySelector(".modal-header");
+    var v_header = el$b("modal_message_dialog").querySelector(".modal-header");
     if (!v_header) return;
     var v_title = document.createElement("h5");
     v_title.className = "modal-title";
@@ -1027,11 +1028,11 @@
     v_header.insertBefore(v_title, v_header.firstChild);
   }
   function showError(p_message) {
-    var v_content_div = el$9("modal_message_content");
-    var v_button_yes = el$9("modal_message_yes");
-    var v_button_ok = el$9("modal_message_ok");
-    var v_button_no = el$9("modal_message_no");
-    var v_button_cancel = el$9("modal_message_cancel");
+    var v_content_div = el$b("modal_message_content");
+    var v_button_yes = el$b("modal_message_yes");
+    var v_button_ok = el$b("modal_message_ok");
+    var v_button_no = el$b("modal_message_no");
+    var v_button_cancel = el$b("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_ok.textContent = t$1("common.ok");
     v_button_yes.style.display = "none";
@@ -1045,11 +1046,11 @@
   }
   function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el$9("modal_message_content");
-      var v_button_yes = el$9("modal_message_yes");
-      var v_button_ok = el$9("modal_message_ok");
-      var v_button_no = el$9("modal_message_no");
-      var v_button_cancel = el$9("modal_message_cancel");
+      var v_content_div = el$b("modal_message_content");
+      var v_button_yes = el$b("modal_message_yes");
+      var v_button_ok = el$b("modal_message_ok");
+      var v_button_no = el$b("modal_message_no");
+      var v_button_cancel = el$b("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -1069,11 +1070,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$9("modal_message_content");
-      var v_button_yes = el$9("modal_message_yes");
-      var v_button_ok = el$9("modal_message_ok");
-      var v_button_no = el$9("modal_message_no");
-      var v_button_cancel = el$9("modal_message_cancel");
+      var v_content_div = el$b("modal_message_content");
+      var v_button_yes = el$b("modal_message_yes");
+      var v_button_ok = el$b("modal_message_ok");
+      var v_button_no = el$b("modal_message_no");
+      var v_button_cancel = el$b("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.textContent = p_yes_label || t$1("common.ok");
       v_button_ok.onclick = function() {
@@ -1090,11 +1091,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$9("modal_message_content");
-    var v_button_yes = el$9("modal_message_yes");
-    var v_button_ok = el$9("modal_message_ok");
-    var v_button_no = el$9("modal_message_no");
-    var v_button_cancel = el$9("modal_message_cancel");
+    var v_content_div = el$b("modal_message_content");
+    var v_button_yes = el$b("modal_message_yes");
+    var v_button_ok = el$b("modal_message_ok");
+    var v_button_no = el$b("modal_message_no");
+    var v_button_cancel = el$b("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1113,11 +1114,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$9("modal_message_content");
-    var v_button_yes = el$9("modal_message_yes");
-    var v_button_ok = el$9("modal_message_ok");
-    var v_button_no = el$9("modal_message_no");
-    var v_button_cancel = el$9("modal_message_cancel");
+    var v_content_div = el$b("modal_message_content");
+    var v_button_yes = el$b("modal_message_yes");
+    var v_button_ok = el$b("modal_message_ok");
+    var v_button_no = el$b("modal_message_no");
+    var v_button_cancel = el$b("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1404,7 +1405,7 @@
   }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   var v_pgpass_lookup_info = null;
-  function el$8(id) {
+  function el$a(id) {
     return document.getElementById(id);
   }
   function initPasswordModal() {
@@ -1435,15 +1436,15 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-    if (gv_desktopMode) el$8("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
-    el$8("modal_password_pgpass_button").addEventListener("click", function() {
+    if (gv_desktopMode) el$a("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
+    el$a("modal_password_pgpass_button").addEventListener("click", function() {
       if (gv_desktopMode) {
         grantPgpassAccess(v_pgpass_lookup_info);
       } else {
-        el$8("modal_password_pgpass_input").click();
+        el$a("modal_password_pgpass_input").click();
       }
     });
-    el$8("modal_password_pgpass_input").addEventListener("change", function(e2) {
+    el$a("modal_password_pgpass_input").addEventListener("change", function(e2) {
       var v_file = e2.target.files ? e2.target.files[0] : null;
       e2.target.value = "";
       if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
@@ -1484,12 +1485,12 @@
     return null;
   }
   function showPgpassError(p_message) {
-    var v_error_div = el$8("modal_password_pgpass_error");
+    var v_error_div = el$a("modal_password_pgpass_error");
     v_error_div.textContent = p_message;
     v_error_div.style.display = "block";
   }
   function hidePgpassError() {
-    el$8("modal_password_pgpass_error").style.display = "none";
+    el$a("modal_password_pgpass_error").style.display = "none";
   }
   function readPgpassFileViaInput(p_file, p_lookup_info) {
     var v_reader = new FileReader();
@@ -1629,7 +1630,7 @@
     v_modal_password_input = /** @type {HTMLInputElement} */
     document.getElementById("txt_password_prompt");
     v_pgpass_lookup_info = resolvePgpassLookupInfo(p_database_index);
-    el$8("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
+    el$a("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
     hidePgpassError();
     if (p_message) v_content_div.textContent = p_message;
     bootstrap.Modal.getOrCreateInstance(
@@ -8974,7 +8975,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   }
   const STORAGE_KEY = "omnidb.vcs_dir";
   const KINDS = ["snippets", "monitoring", "schedules"];
-  function el$7(tag, className, text) {
+  function el$9(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -8993,7 +8994,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     } catch {
     }
   }
-  function call$1(body, done, failed) {
+  function call$2(body, done, failed) {
     execAjax$2(
       "/vcs/",
       JSON.stringify(body),
@@ -9010,30 +9011,30 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   function openVcsDialog(snippetsRoot) {
     const dir = (
       /** @type {HTMLInputElement} */
-      el$7("input", "form-control form-control-sm")
+      el$9("input", "form-control form-control-sm")
     );
     dir.type = "text";
     dir.placeholder = t$1("vcs.dir_placeholder");
     dir.value = savedDir();
     const choose2 = (
       /** @type {HTMLButtonElement} */
-      el$7("button", "btn btn-sm omnidb__theme__btn--secondary flex-shrink-0", t$1("vcs.choose"))
+      el$9("button", "btn btn-sm omnidb__theme__btn--secondary flex-shrink-0", t$1("vcs.choose"))
     );
     choose2.type = "button";
     choose2.style.display = "none";
-    const folderRow = el$7("div", "d-flex gap-2 align-items-center");
+    const folderRow = el$9("div", "d-flex gap-2 align-items-center");
     dir.classList.add("flex-grow-1");
     folderRow.append(dir, choose2);
     const message = (
       /** @type {HTMLInputElement} */
-      el$7("input", "form-control form-control-sm")
+      el$9("input", "form-control form-control-sm")
     );
     message.type = "text";
     message.placeholder = t$1("vcs.message_placeholder");
-    const state = el$7("pre", "p-2 small mb-3");
+    const state = el$9("pre", "p-2 small mb-3");
     state.style.cssText = "max-height:24vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
-    const buttons = el$7("div", "d-flex flex-wrap gap-2 mb-3");
-    const defaultNote = el$7("div", "small text-muted mt-1", t$1("vcs.default_folder"));
+    const buttons = el$9("div", "d-flex flex-wrap gap-2 mb-3");
+    const defaultNote = el$9("div", "small text-muted mt-1", t$1("vcs.default_folder"));
     defaultNote.style.display = "none";
     let managed = false;
     let folderKnown = () => {
@@ -9042,12 +9043,12 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       folderKnown = () => resolve2(void 0);
     });
     const kindBoxes = {};
-    const kindsRow = el$7("div", "d-flex flex-column gap-1");
+    const kindsRow = el$9("div", "d-flex flex-column gap-1");
     for (const kind of KINDS) {
-      const wrap = el$7("label", "d-flex align-items-center gap-2");
+      const wrap = el$9("label", "d-flex align-items-center gap-2");
       const box = (
         /** @type {HTMLInputElement} */
-        el$7("input", "form-check-input m-0")
+        el$9("input", "form-check-input m-0")
       );
       box.type = "checkbox";
       box.checked = true;
@@ -9074,12 +9075,12 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         return;
       }
       if (!managed) rememberDir(folder());
-      call$1({ p_action: "status", p_dir: folder() }, showState);
+      call$2({ p_action: "status", p_dir: folder() }, showState);
     };
     const button = (label, onClick) => {
       const b2 = (
         /** @type {HTMLButtonElement} */
-        el$7("button", "btn btn-sm omnidb__theme__btn--secondary", label)
+        el$9("button", "btn btn-sm omnidb__theme__btn--secondary", label)
       );
       b2.type = "button";
       b2.addEventListener("click", onClick);
@@ -9090,21 +9091,21 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       await folderReady;
       if (!haveFolder()) return showAlert$1(t$1("vcs.need_dir"));
       if (!managed) rememberDir(folder());
-      call$1({ p_action: "init", p_dir: folder() }, showState);
+      call$2({ p_action: "init", p_dir: folder() }, showState);
     });
     button(t$1("vcs.import"), async () => {
       await folderReady;
       if (!haveFolder()) return showAlert$1(t$1("vcs.need_dir"));
       if (selectedKinds().length === 0) return showAlert$1(t$1("vcs.need_kind"));
       if (!managed) rememberDir(folder());
-      call$1({ p_action: "import", p_dir: folder(), p_kinds: selectedKinds() }, (r2) => {
+      call$2({ p_action: "import", p_dir: folder(), p_kinds: selectedKinds() }, (r2) => {
         state.textContent = Object.entries(r2).map(([name, res]) => t$1("vcs.imported", { name: t$1("vcs.kind_" + name), ...res })).join("\n");
         if (snippetsRoot && r2.snippets) refreshTreeSnippets(snippetsRoot);
       });
     });
     choose2.addEventListener(
       "click",
-      () => call$1({ p_action: "choose_folder" }, (r2) => {
+      () => call$2({ p_action: "choose_folder" }, (r2) => {
         if (r2.cancelled) return;
         dir.value = r2.path || "";
         defaultNote.style.display = "none";
@@ -9112,8 +9113,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       })
     );
     const field = (key, ...controls) => {
-      const w2 = el$7("div", "mb-3");
-      w2.append(el$7("label", "form-label small fw-bold mb-1", t$1(key)), ...controls);
+      const w2 = el$9("div", "mb-3");
+      w2.append(el$9("label", "form-label small fw-bold mb-1", t$1(key)), ...controls);
       return w2;
     };
     showConfirm(
@@ -9123,7 +9124,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         if (!haveFolder()) return showAlert$1(t$1("vcs.need_dir"));
         if (selectedKinds().length === 0) return showAlert$1(t$1("vcs.need_kind"));
         if (!managed) rememberDir(folder());
-        call$1({ p_action: "commit", p_dir: folder(), p_kinds: selectedKinds(), p_message: message.value }, (r2) => {
+        call$2({ p_action: "commit", p_dir: folder(), p_kinds: selectedKinds(), p_message: message.value }, (r2) => {
           showAlert$1(r2.result === "nothing to commit" ? t$1("vcs.nothing") : t$1("vcs.committed", { commit: r2.result }));
         });
       },
@@ -9136,9 +9137,9 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        content.append(field("vcs.dir", folderRow, defaultNote), field("vcs.kinds", kindsRow), buttons, state, field("vcs.message", message), el$7("div", "small text-muted", t$1("vcs.hint")));
+        content.append(field("vcs.dir", folderRow, defaultNote), field("vcs.kinds", kindsRow), buttons, state, field("vcs.message", message), el$9("div", "small text-muted", t$1("vcs.hint")));
         dir.placeholder = t$1("vcs.loading");
-        call$1({ p_action: "folder" }, (r2) => {
+        call$2({ p_action: "folder" }, (r2) => {
           dir.placeholder = t$1("vcs.dir_placeholder");
           managed = r2.managed;
           if (managed) {
@@ -12983,7 +12984,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       rows: rows.map((r2) => r2.concat(Array(width - r2.length).fill("")))
     };
   }
-  function el$6(tag, className, text) {
+  function el$8(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -13021,14 +13022,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     const fileInput = (
       /** @type {HTMLInputElement} */
-      el$6("input", "form-control mb-2")
+      el$8("input", "form-control mb-2")
     );
     fileInput.type = "file";
     fileInput.accept = ".csv,.tsv,.txt,.json,text/csv,application/json";
     fileInput.setAttribute("aria-label", t$1("import.file"));
     const delimiterSelect = (
       /** @type {HTMLSelectElement} */
-      el$6("select", "form-select form-select-sm")
+      el$8("select", "form-select form-select-sm")
     );
     for (const [value, key] of [
       ["auto", "import.delim_auto"],
@@ -13039,23 +13040,23 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     ]) {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$6("option", void 0, t$1(key))
+        el$8("option", void 0, t$1(key))
       );
       o2.value = value;
       delimiterSelect.appendChild(o2);
     }
     const checkbox = (labelKey, checked) => {
-      const wrap = el$6("div", "form-check form-check-inline");
+      const wrap = el$8("div", "form-check form-check-inline");
       const input = (
         /** @type {HTMLInputElement} */
-        el$6("input", "form-check-input")
+        el$8("input", "form-check-input")
       );
       input.type = "checkbox";
       input.checked = checked;
       input.id = "import_opt_" + labelKey.replace(/\W/g, "_");
       const label = (
         /** @type {HTMLLabelElement} */
-        el$6("label", "form-check-label", t$1(labelKey))
+        el$8("label", "form-check-label", t$1(labelKey))
       );
       label.htmlFor = input.id;
       wrap.append(input, label);
@@ -13064,8 +13065,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     const header = checkbox("import.header", true);
     const emptyNullBox = checkbox("import.empty_null", true);
     const emptyNull = emptyNullBox.input;
-    const status = el$6("div", "my-2");
-    const table = el$6("div", "mt-2");
+    const status = el$8("div", "my-2");
+    const table = el$8("div", "mt-2");
     table.style.maxHeight = "45vh";
     table.style.overflow = "auto";
     const render2 = () => {
@@ -13083,29 +13084,29 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
       if (mapping.length !== parsed.width) mapping = suggestMapping(parsed.fileColumns, parsed.width, p_columns);
       status.textContent = t$1("import.rows_found", { count: parsed.rows.length });
-      const grid = el$6("table", "table table-sm mb-0");
+      const grid = el$8("table", "table table-sm mb-0");
       grid.style.setProperty("--bs-table-bg", "transparent");
       grid.style.setProperty("--bs-table-color", "inherit");
-      const head = el$6("tr");
-      const sel = el$6("tr");
+      const head = el$8("tr");
+      const sel = el$8("tr");
       for (let i2 = 0; i2 < parsed.width; i2++) {
-        head.appendChild(el$6("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
-        const cell = el$6("td");
+        head.appendChild(el$8("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
+        const cell = el$8("td");
         const select = (
           /** @type {HTMLSelectElement} */
-          el$6("select", "form-select form-select-sm")
+          el$8("select", "form-select form-select-sm")
         );
         select.setAttribute("aria-label", t$1("import.col_target"));
         const skip = (
           /** @type {HTMLOptionElement} */
-          el$6("option", void 0, t$1("import.map_skip"))
+          el$8("option", void 0, t$1("import.map_skip"))
         );
         skip.value = "";
         select.appendChild(skip);
         for (const c2 of p_columns) {
           const o2 = (
             /** @type {HTMLOptionElement} */
-            el$6("option", void 0, c2)
+            el$8("option", void 0, c2)
           );
           o2.value = c2;
           select.appendChild(o2);
@@ -13117,14 +13118,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         cell.appendChild(select);
         sel.appendChild(cell);
       }
-      const thead = el$6("thead");
+      const thead = el$8("thead");
       thead.append(head, sel);
-      const tbody = el$6("tbody");
+      const tbody = el$8("tbody");
       for (const row of parsed.rows.slice(0, PREVIEW_ROWS)) {
-        const tr = el$6("tr");
+        const tr = el$8("tr");
         for (let i2 = 0; i2 < parsed.width; i2++) {
           const v2 = row[i2];
-          const td = el$6("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
+          const td = el$8("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
           td.style.maxWidth = "14rem";
           td.style.overflow = "hidden";
           td.style.textOverflow = "ellipsis";
@@ -13164,8 +13165,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        const options = el$6("div", "d-flex flex-wrap align-items-center gap-2");
-        const delimiterLabel = el$6("label", "me-1", t$1("import.delimiter"));
+        const options = el$8("div", "d-flex flex-wrap align-items-center gap-2");
+        const delimiterLabel = el$8("label", "me-1", t$1("import.delimiter"));
         options.append(delimiterLabel, delimiterSelect, header.wrap, emptyNullBox.wrap);
         delimiterSelect.style.width = "auto";
         content.append(fileInput, options, status, table);
@@ -21982,7 +21983,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     refreshTreePostgresqlConfirm,
     tabSQLTemplate
   }, Symbol.toStringTag, { value: "Module" }));
-  function el$5(tag, className, text) {
+  function el$7(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -22029,18 +22030,18 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         } else {
           lines.push(t$1("compare.sum_rows", { inserts: result.inserts, updates: result.updates, deletes: result.deletes }));
         }
-        const summary = el$5("ul", "mb-2");
-        for (const line of lines) summary.appendChild(el$5("li", void 0, line));
+        const summary = el$7("ul", "mb-2");
+        for (const line of lines) summary.appendChild(el$7("li", void 0, line));
         content.appendChild(summary);
         if (kind === "data" && (result.samples || []).length > 0) {
-          const sample = el$5("pre", "p-2 small mb-2");
+          const sample = el$7("pre", "p-2 small mb-2");
           sample.style.cssText = "max-height:20vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
           sample.textContent = result.samples.join("\n") + (result.inserts + result.updates + result.deletes > result.samples.length ? "\n…" : "");
           content.appendChild(sample);
         }
-        const pre = el$5("pre", "p-2 small mb-2", result.script);
+        const pre = el$7("pre", "p-2 small mb-2", result.script);
         pre.style.cssText = "max-height:30vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
-        content.append(pre, el$5("div", "small text-muted", t$1("compare.script_hint", { target: targetLabel })));
+        content.append(pre, el$7("div", "small text-muted", t$1("compare.script_hint", { target: targetLabel })));
       },
       true,
       t$1("compare.open_script")
@@ -22057,13 +22058,13 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     const label = (c2) => c2.v_alias || c2.v_details1 || String(c2.v_conn_id);
     const sourceLabel = connections2.find((c2) => c2.v_conn_id === sourceConn) || { v_alias: "", v_details1: "" };
     const field = (key, control) => {
-      const w2 = el$5("div", "mb-2");
-      w2.append(el$5("label", "form-label small mb-1", t$1(key)), control);
+      const w2 = el$7("div", "mb-2");
+      w2.append(el$7("label", "form-label small mb-1", t$1(key)), control);
       return w2;
     };
     const kindSelect = (
       /** @type {HTMLSelectElement} */
-      el$5("select", "form-select form-select-sm")
+      el$7("select", "form-select form-select-sm")
     );
     for (const [value, key] of [
       ["schema", "compare.kind_schema"],
@@ -22071,19 +22072,19 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     ]) {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$5("option", void 0, t$1(key))
+        el$7("option", void 0, t$1(key))
       );
       o2.value = value;
       kindSelect.appendChild(o2);
     }
     const targetSelect = (
       /** @type {HTMLSelectElement} */
-      el$5("select", "form-select form-select-sm")
+      el$7("select", "form-select form-select-sm")
     );
     for (const c2 of connections2) {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$5("option", void 0, label(c2))
+        el$7("option", void 0, label(c2))
       );
       o2.value = String(c2.v_conn_id);
       targetSelect.appendChild(o2);
@@ -22091,7 +22092,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     const input = (placeholderKey) => {
       const i2 = (
         /** @type {HTMLInputElement} */
-        el$5("input", "form-control form-control-sm")
+        el$7("input", "form-control form-control-sm")
       );
       i2.type = "text";
       i2.placeholder = t$1(placeholderKey);
@@ -22103,18 +22104,18 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     const targetTable = input("compare.target_table_placeholder");
     const deletes = (
       /** @type {HTMLInputElement} */
-      el$5("input", "form-check-input")
+      el$7("input", "form-check-input")
     );
     deletes.type = "checkbox";
     deletes.id = "compare_deletes";
-    const deletesWrap = el$5("div", "form-check mb-2");
+    const deletesWrap = el$7("div", "form-check mb-2");
     const deletesLabel = (
       /** @type {HTMLLabelElement} */
-      el$5("label", "form-check-label", t$1("compare.include_deletes"))
+      el$7("label", "form-check-label", t$1("compare.include_deletes"))
     );
     deletesLabel.htmlFor = deletes.id;
     deletesWrap.append(deletes, deletesLabel);
-    const dataOnly = el$5("div");
+    const dataOnly = el$7("div");
     dataOnly.append(field("compare.table", table), field("compare.target_table", targetTable), deletesWrap);
     const sync = () => {
       dataOnly.style.display = kindSelect.value === "data" ? "" : "none";
@@ -22166,94 +22167,94 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        const source = el$5("div", "mb-2 fw-bold", t$1("compare.source", { name: label(sourceLabel) }));
+        const source = el$7("div", "mb-2 fw-bold", t$1("compare.source", { name: label(sourceLabel) }));
         content.append(field("compare.what", kindSelect), source, field("compare.source_schema", sourceSchema), field("compare.target", targetSelect), field("compare.target_schema", targetSchema), dataOnly);
       },
       "form",
       t$1("compare.run")
     );
   }
-  function el$4(tag, className, text) {
+  function el$6(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
     return e2;
   }
-  function when(unixSeconds) {
+  function when$1(unixSeconds) {
     return unixSeconds ? new Date(unixSeconds * 1e3).toLocaleString() : "—";
   }
   function errorText$1(r2) {
     const v2 = r2.v_data;
     return typeof v2 === "string" ? v2 : v2 && v2.message || t$1("errors.request_error");
   }
-  function call(url, body, done) {
+  function call$1(url, body, done) {
     execAjax$2(url, JSON.stringify(body), (r2) => done(r2.v_data), (r2) => showAlert$1(errorText$1(r2)), "box", false);
   }
-  function renderRuns(box, runs) {
+  function renderRuns$1(box, runs) {
     box.innerHTML = "";
     if (runs.length === 0) {
-      box.appendChild(el$4("div", "text-muted small", t$1("schedules.no_runs")));
+      box.appendChild(el$6("div", "text-muted small", t$1("schedules.no_runs")));
       return;
     }
-    const pre = el$4("pre", "p-2 small mb-0");
+    const pre = el$6("pre", "p-2 small mb-0");
     pre.style.cssText = "max-height:20vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
-    pre.textContent = runs.map((r2) => `${when(r2.started)}  ${r2.status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")}  ${r2.duration_ms} ms
+    pre.textContent = runs.map((r2) => `${when$1(r2.started)}  ${r2.status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")}  ${r2.duration_ms} ms
 ${r2.message}`).join("\n\n");
     box.appendChild(pre);
   }
   function renderList(list, rows, refresh) {
     list.innerHTML = "";
     if (rows.length === 0) {
-      list.appendChild(el$4("div", "text-muted small mb-2", t$1("schedules.none")));
+      list.appendChild(el$6("div", "text-muted small mb-2", t$1("schedules.none")));
       return;
     }
     for (const s2 of rows) {
-      const item = el$4("div", "mb-2 p-2");
+      const item = el$6("div", "mb-2 p-2");
       item.style.cssText = "border:1px solid var(--border-color);border-radius:4px;";
-      const title = el$4("div", "fw-bold", `${s2.name} — ${s2.alias}`);
-      const meta = el$4(
+      const title = el$6("div", "fw-bold", `${s2.name} — ${s2.alias}`);
+      const meta = el$6(
         "div",
         "small text-muted",
-        t$1("schedules.meta", { interval: s2.interval, last: when(s2.last_started), next: s2.enabled ? when(s2.next_run) : t$1("schedules.paused") })
+        t$1("schedules.meta", { interval: s2.interval, last: when$1(s2.last_started), next: s2.enabled ? when$1(s2.next_run) : t$1("schedules.paused") })
       );
-      const status = el$4("div", "small", s2.last_status ? (s2.last_status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")) + ": " + s2.last_message.split("\n").slice(-1)[0] : "");
+      const status = el$6("div", "small", s2.last_status ? (s2.last_status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")) + ": " + s2.last_message.split("\n").slice(-1)[0] : "");
       if (s2.last_status === "error") status.style.color = "var(--bs-danger, #dc3545)";
-      const runs = el$4("div", "mt-1");
-      const buttons = el$4("div", "mt-1");
+      const runs = el$6("div", "mt-1");
+      const buttons = el$6("div", "mt-1");
       const button = (label, onClick) => {
         const b2 = (
           /** @type {HTMLButtonElement} */
-          el$4("button", "btn btn-sm omnidb__theme__btn--secondary me-1", label)
+          el$6("button", "btn btn-sm omnidb__theme__btn--secondary me-1", label)
         );
         b2.type = "button";
         b2.addEventListener("click", onClick);
         buttons.appendChild(b2);
       };
-      button(t$1("schedules.run_now"), () => call("/run_schedule_now/", { p_id: s2.id }, refresh));
-      button(s2.enabled ? t$1("schedules.pause") : t$1("schedules.resume"), () => call("/set_schedule_enabled/", { p_id: s2.id, p_enabled: !s2.enabled }, refresh));
-      button(t$1("schedules.history"), () => call("/get_schedule_runs/", { p_id: s2.id }, (data) => renderRuns(runs, data)));
-      button(t$1("schedules.delete"), () => call("/delete_schedule/", { p_id: s2.id }, refresh));
+      button(t$1("schedules.run_now"), () => call$1("/run_schedule_now/", { p_id: s2.id }, refresh));
+      button(s2.enabled ? t$1("schedules.pause") : t$1("schedules.resume"), () => call$1("/set_schedule_enabled/", { p_id: s2.id, p_enabled: !s2.enabled }, refresh));
+      button(t$1("schedules.history"), () => call$1("/get_schedule_runs/", { p_id: s2.id }, (data) => renderRuns$1(runs, data)));
+      button(t$1("schedules.delete"), () => call$1("/delete_schedule/", { p_id: s2.id }, refresh));
       item.append(title, meta, status, buttons, runs);
       list.appendChild(item);
     }
   }
   function openSchedulesDialog(getSql, getConnId) {
     const connections2 = (v_connTabControl.tag.connections || []).filter((c2) => c2.v_db_type !== "terminal");
-    const list = el$4("div", "mb-3");
+    const list = el$6("div", "mb-3");
     const name = (
       /** @type {HTMLInputElement} */
-      el$4("input", "form-control form-control-sm")
+      el$6("input", "form-control form-control-sm")
     );
     name.type = "text";
     name.placeholder = t$1("schedules.name_placeholder");
     const target = (
       /** @type {HTMLSelectElement} */
-      el$4("select", "form-select form-select-sm")
+      el$6("select", "form-select form-select-sm")
     );
     for (const c2 of connections2) {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$4("option", void 0, c2.v_alias || c2.v_details1 || String(c2.v_conn_id))
+        el$6("option", void 0, c2.v_alias || c2.v_details1 || String(c2.v_conn_id))
       );
       o2.value = String(c2.v_conn_id);
       target.appendChild(o2);
@@ -22261,7 +22262,7 @@ ${r2.message}`).join("\n\n");
     target.value = String(getConnId());
     const interval = (
       /** @type {HTMLInputElement} */
-      el$4("input", "form-control form-control-sm")
+      el$6("input", "form-control form-control-sm")
     );
     interval.type = "number";
     interval.min = "1";
@@ -22269,22 +22270,22 @@ ${r2.message}`).join("\n\n");
     interval.value = "60";
     const sql = (
       /** @type {HTMLTextAreaElement} */
-      el$4("textarea", "form-control form-control-sm")
+      el$6("textarea", "form-control form-control-sm")
     );
     sql.rows = 5;
     sql.spellcheck = false;
     sql.value = getSql();
     sql.style.fontFamily = "monospace";
-    const refresh = () => call("/get_schedules/", {}, (rows) => renderList(list, rows, refresh));
+    const refresh = () => call$1("/get_schedules/", {}, (rows) => renderList(list, rows, refresh));
     const field = (key, control) => {
-      const w2 = el$4("div", "mb-2");
-      w2.append(el$4("label", "form-label small mb-1", t$1(key)), control);
+      const w2 = el$6("div", "mb-2");
+      w2.append(el$6("label", "form-label small mb-1", t$1(key)), control);
       return w2;
     };
     showConfirm(
       "",
       function() {
-        call(
+        call$1(
           "/add_schedule/",
           { p_conn_id: Number(target.value), p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) },
           () => openSchedulesDialog(getSql, getConnId)
@@ -22301,12 +22302,12 @@ ${r2.message}`).join("\n\n");
         content.innerHTML = "";
         content.append(
           list,
-          el$4("div", "fw-bold mb-1", t$1("schedules.new")),
+          el$6("div", "fw-bold mb-1", t$1("schedules.new")),
           field("schedules.name", name),
           field("schedules.connection", target),
           field("schedules.interval", interval),
           field("schedules.sql", sql),
-          el$4("div", "small text-muted", t$1("schedules.hint"))
+          el$6("div", "small text-muted", t$1("schedules.hint"))
         );
         refresh();
       },
@@ -22519,7 +22520,7 @@ ${r2.message}`).join("\n\n");
     ];
   }
   const NAME_PATTERN = /^[\p{L}_][\p{L}\p{N}_$]{0,99}$/u;
-  function el$3(tag, className, text) {
+  function el$5(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -22528,12 +22529,12 @@ ${r2.message}`).join("\n\n");
   function askNewName(p_oldName, p_done, p_okLabel) {
     const input = (
       /** @type {HTMLInputElement} */
-      el$3("input", "form-control")
+      el$5("input", "form-control")
     );
     input.type = "text";
     input.value = p_oldName;
     input.setAttribute("aria-label", t$1("rename.new_name"));
-    const problem = el$3("div", "text-danger small mt-1");
+    const problem = el$5("div", "text-danger small mt-1");
     showConfirm(
       "",
       function() {
@@ -22553,7 +22554,7 @@ ${r2.message}`).join("\n\n");
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        content.append(el$3("label", "form-label", t$1("rename.new_name")), input, problem);
+        content.append(el$5("label", "form-label", t$1("rename.new_name")), input, problem);
         input.focus();
         input.select();
         input.addEventListener("keydown", (e2) => {
@@ -22611,7 +22612,7 @@ ${r2.message}`).join("\n\n");
     const snippetBoxes = /* @__PURE__ */ new Map();
     const editorBox = (
       /** @type {HTMLInputElement} */
-      el$3("input", "form-check-input")
+      el$5("input", "form-check-input")
     );
     editorBox.type = "checkbox";
     editorBox.checked = true;
@@ -22646,29 +22647,29 @@ ${r2.message}`).join("\n\n");
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        const pre = el$3("pre", "p-2 mb-2", p_plan.sql);
+        const pre = el$5("pre", "p-2 mb-2", p_plan.sql);
         pre.style.cssText = "white-space:pre-wrap;border:1px solid var(--border-color);";
-        content.append(pre, el$3("div", "small text-muted mb-2", t$1("rename.script_hint")));
+        content.append(pre, el$5("div", "small text-muted mb-2", t$1("rename.script_hint")));
         if (p_plan.editor_count) {
-          const wrap = el$3("div", "form-check mb-2");
+          const wrap = el$5("div", "form-check mb-2");
           editorBox.id = "rename_editor_box";
           const label = (
             /** @type {HTMLLabelElement} */
-            el$3("label", "form-check-label", t$1("rename.editor_mentions", { count: p_plan.editor_count }))
+            el$5("label", "form-check-label", t$1("rename.editor_mentions", { count: p_plan.editor_count }))
           );
           label.htmlFor = editorBox.id;
           wrap.append(editorBox, label);
           content.appendChild(wrap);
         }
         if (p_plan.snippets.length > 0) {
-          content.appendChild(el$3("h6", "mt-3", t$1("rename.snippets", { name: p_plan.old_name })));
-          const list = el$3("div");
+          content.appendChild(el$5("h6", "mt-3", t$1("rename.snippets", { name: p_plan.old_name })));
+          const list = el$5("div");
           list.style.cssText = "max-height:30vh;overflow:auto;";
           for (const s2 of p_plan.snippets) {
-            const wrap = el$3("div", "form-check mb-2");
+            const wrap = el$5("div", "form-check mb-2");
             const box = (
               /** @type {HTMLInputElement} */
-              el$3("input", "form-check-input")
+              el$5("input", "form-check-input")
             );
             box.type = "checkbox";
             box.checked = true;
@@ -22676,14 +22677,14 @@ ${r2.message}`).join("\n\n");
             snippetBoxes.set(s2.id, box);
             const label = (
               /** @type {HTMLLabelElement} */
-              el$3("label", "form-check-label", s2.title)
+              el$5("label", "form-check-label", s2.title)
             );
             label.htmlFor = box.id;
             wrap.append(box, label);
             for (const l2 of s2.lines) {
-              const line = el$3("div", "small");
+              const line = el$5("div", "small");
               line.style.cssText = "font-family:monospace;white-space:pre-wrap;";
-              line.append(el$3("span", "text-danger", "- " + l2.before), document.createElement("br"), el$3("span", "text-success", "+ " + l2.after));
+              line.append(el$5("span", "text-danger", "- " + l2.before), document.createElement("br"), el$5("span", "text-success", "+ " + l2.after));
               wrap.appendChild(line);
             }
             list.appendChild(wrap);
@@ -22861,7 +22862,7 @@ ${r2.message}`).join("\n\n");
     return PALETTE[index % PALETTE.length];
   }
   const CHART_TYPES = ["bar", "line", "pie", "doughnut"];
-  function el$2(tag, className, text) {
+  function el$4(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -22894,38 +22895,38 @@ ${r2.message}`).join("\n\n");
     document.getElementById("modal_message_content").style.whiteSpace = "normal";
     const typeSelect = (
       /** @type {HTMLSelectElement} */
-      el$2("select", "form-select form-select-sm")
+      el$4("select", "form-select form-select-sm")
     );
     for (const type of CHART_TYPES) {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$2("option", void 0, t$1("chart.type_" + type))
+        el$4("option", void 0, t$1("chart.type_" + type))
       );
       o2.value = type;
       typeSelect.appendChild(o2);
     }
     const xSelect = (
       /** @type {HTMLSelectElement} */
-      el$2("select", "form-select form-select-sm")
+      el$4("select", "form-select form-select-sm")
     );
     columns.forEach((name, i2) => {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$2("option", void 0, name)
+        el$4("option", void 0, name)
       );
       o2.value = String(i2);
       xSelect.appendChild(o2);
     });
     const firstText = numeric.indexOf(false);
     xSelect.value = String(firstText >= 0 ? firstText : 0);
-    const yBoxes = el$2("div", "d-flex flex-wrap gap-3");
+    const yBoxes = el$4("div", "d-flex flex-wrap gap-3");
     const yInputs = [];
     columns.forEach((name, i2) => {
       if (!numeric[i2]) return;
-      const wrap = el$2("div", "form-check");
+      const wrap = el$4("div", "form-check");
       const input = (
         /** @type {HTMLInputElement} */
-        el$2("input", "form-check-input")
+        el$4("input", "form-check-input")
       );
       input.type = "checkbox";
       input.id = "chart_y_" + i2;
@@ -22933,7 +22934,7 @@ ${r2.message}`).join("\n\n");
       input.checked = i2 === (i2 === Number(xSelect.value) ? -1 : firstNumeric);
       const label = (
         /** @type {HTMLLabelElement} */
-        el$2("label", "form-check-label", name)
+        el$4("label", "form-check-label", name)
       );
       label.htmlFor = input.id;
       wrap.append(input, label);
@@ -22941,18 +22942,18 @@ ${r2.message}`).join("\n\n");
       yInputs.push(input);
     });
     if (!yInputs.some((x2) => x2.checked) && yInputs.length) yInputs[0].checked = true;
-    const note = el$2("div", "small text-muted mt-1");
-    const holder = el$2("div", "mt-2");
+    const note = el$4("div", "small text-muted mt-1");
+    const holder = el$4("div", "mt-2");
     holder.style.cssText = "position:relative;height:50vh;";
     const canvas = (
       /** @type {HTMLCanvasElement} */
-      el$2("canvas")
+      el$4("canvas")
     );
     holder.appendChild(canvas);
-    const controls = el$2("div", "d-flex flex-wrap gap-3 align-items-end mb-2");
+    const controls = el$4("div", "d-flex flex-wrap gap-3 align-items-end mb-2");
     const field = (labelKey, control) => {
-      const w2 = el$2("div");
-      w2.append(el$2("label", "form-label small mb-1", t$1(labelKey)), control);
+      const w2 = el$4("div");
+      w2.append(el$4("label", "form-label small mb-1", t$1(labelKey)), control);
       return w2;
     };
     controls.append(field("chart.type", typeSelect), field("chart.x_axis", xSelect));
@@ -23094,7 +23095,7 @@ ${r2.message}`).join("\n\n");
   }
   const IDLE_MS = 8e3;
   const CONTEXT_LINES = 3;
-  function el$1(tag, className, text) {
+  function el$3(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -23130,11 +23131,11 @@ ${r2.message}`).join("\n\n");
   function openHistory(p_editor, p_connId, p_snapshot) {
     let selectedId = null;
     let selectedText = null;
-    const list = el$1("div", "list-group");
+    const list = el$3("div", "list-group");
     list.style.cssText = "width:16rem;flex:none;max-height:60vh;overflow:auto;";
-    const diff = el$1("pre", "m-0 p-2");
+    const diff = el$3("pre", "m-0 p-2");
     diff.style.cssText = "flex:1;min-width:0;max-height:60vh;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:12px;border:1px solid var(--border-color);";
-    const hint = el$1("div", "mb-2 text-muted", t$1("history.diff_hint"));
+    const hint = el$3("div", "mb-2 text-muted", t$1("history.diff_hint"));
     const showDiff = (versionText) => {
       diff.innerHTML = "";
       const lines = diffLines(p_editor.getValue(), versionText);
@@ -23143,7 +23144,7 @@ ${r2.message}`).join("\n\n");
         return;
       }
       for (const item of collapseUnchanged(lines, CONTEXT_LINES)) {
-        const row = el$1("div");
+        const row = el$3("div");
         if (item.type === "gap") {
           row.className = "text-muted fst-italic";
           row.textContent = "… " + t$1("history.unchanged_lines", { count: item.count });
@@ -23191,8 +23192,8 @@ ${r2.message}`).join("\n\n");
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        const body = el$1("div", "d-flex gap-3");
-        const right = el$1("div");
+        const body = el$3("div", "d-flex gap-3");
+        const right = el$3("div");
         right.style.cssText = "flex:1;min-width:0;";
         right.append(hint, diff);
         body.append(list, right);
@@ -23202,14 +23203,14 @@ ${r2.message}`).join("\n\n");
           JSON.stringify({ p_conn_id: p_connId }),
           function(r2) {
             if (r2.v_data.length === 0) {
-              body.replaceChildren(el$1("div", "text-muted", t$1("history.empty")));
+              body.replaceChildren(el$3("div", "text-muted", t$1("history.empty")));
               return;
             }
             r2.v_data.forEach((version, index) => {
-              const row = el$1("button", "list-group-item list-group-item-action text-start");
+              const row = el$3("button", "list-group-item list-group-item-action text-start");
               row.setAttribute("type", "button");
-              const when2 = el$1("div", "fw-bold small", new Date(version.date).toLocaleString());
-              const preview = el$1("div", "small text-truncate", version.preview || "—");
+              const when2 = el$3("div", "fw-bold small", new Date(version.date).toLocaleString());
+              const preview = el$3("div", "small text-truncate", version.preview || "—");
               row.append(when2, preview);
               row.addEventListener("click", () => select(version, row));
               list.appendChild(row);
@@ -39322,7 +39323,7 @@ ${r2.message}`).join("\n\n");
     updateExplainComponent,
     v_connected_users_action_whitelist
   }, Symbol.toStringTag, { value: "Module" }));
-  function el(id) {
+  function el$2(id) {
     return document.getElementById(id);
   }
   var v_conn_data, v_conn_div, v_conn_obj;
@@ -39336,7 +39337,7 @@ ${r2.message}`).join("\n\n");
       "mousedown",
       (event2) => resizeConnectionsHorizontal(event2)
     );
-    bindConnectionListDrop(el("connection_card_list"));
+    bindConnectionListDrop(el$2("connection_card_list"));
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
   else setTimeout(initConnections, 0);
@@ -39361,7 +39362,7 @@ ${r2.message}`).join("\n\n");
       function(p_return) {
         v_connections_data.list_items = [];
         v_connections_data.technologies = p_return.v_data.v_technologies;
-        var v_target_div = el("connection_card_list");
+        var v_target_div = el$2("connection_card_list");
         v_target_div.innerHTML = '<div id="connections_management_empty_all" class="omnidb__connections__empty" style="display:none;"><i class="fas fa-plug"></i><h6>' + escapeHtml(t$1("connections.no_connections")) + '</h6><button id="bt_empty_all_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t$1("connections.new_connection")) + '</button></div><div id="connections_management_empty_with_public" class="omnidb__connections__empty" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h6>' + escapeHtml(t$1("connections.no_connections_public_available")) + '</h6><button id="bt_empty_public_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t$1("connections.new_connection")) + '</button></div><div id="connections_management_empty_group" class="omnidb__connections__empty" style="display:none;"><h6>' + escapeHtml(t$1("connections.no_connections_in_group")) + '</h6><button id="bt_empty_group_manage_groups" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t$1("connections.manage_groups")) + "</button></div>";
         v_target_div.querySelector("#bt_empty_all_new_connection").addEventListener(
           "click",
@@ -39509,9 +39510,9 @@ ${r2.message}`).join("\n\n");
           switchSection("connections");
         }
         if (p_change_group) {
-          groupChange(el("group_selector").value);
+          groupChange(el$2("group_selector").value);
         }
-        el("conn_list_public_counter").innerHTML = v_total_public_conn;
+        el$2("conn_list_public_counter").innerHTML = v_total_public_conn;
         updateConnectionsTitleInfo();
         updateConnectionSelectionHighlight();
         if (p_callback) p_callback();
@@ -39545,7 +39546,7 @@ ${r2.message}`).join("\n\n");
   function currentConnectionOrder() {
     var v_order = [];
     var v_items = v_connections_data.list_items || [];
-    var v_rows = el("connection_card_list").querySelectorAll(".omnidb__connections__list-item");
+    var v_rows = el$2("connection_card_list").querySelectorAll(".omnidb__connections__list-item");
     for (var i2 = 0; i2 < v_rows.length; i2++) {
       for (var j2 = 0; j2 < v_items.length; j2++) {
         if (v_items[j2].item_div === v_rows[i2]) {
@@ -39627,9 +39628,9 @@ ${r2.message}`).join("\n\n");
     });
   }
   function groupChange(p_value) {
-    var v_empty_group_div = el("connections_management_empty_group");
+    var v_empty_group_div = el$2("connections_management_empty_group");
     if (p_value != -1) {
-      el("button_group_actions").style.display = "";
+      el$2("button_group_actions").style.display = "";
       var v_group_obj = { conn_list: [] };
       for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
         if (p_value == v_connections_data.v_group_list[i2].id) {
@@ -39658,8 +39659,8 @@ ${r2.message}`).join("\n\n");
       if (v_empty_group_div) {
         v_empty_group_div.style.display = "none";
       }
-      el("button_group_actions").style.display = "none";
-      el("group_selector").value = -1;
+      el$2("button_group_actions").style.display = "none";
+      el$2("group_selector").value = -1;
       for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
         var v_conn_obj2 = v_connections_data.list_items[i2];
         v_conn_obj2.item_div.style.display = "";
@@ -39668,20 +39669,20 @@ ${r2.message}`).join("\n\n");
     updateConnectionsTitleInfo();
   }
   function manageGroup() {
-    el("group_actions_1").style.display = "none";
-    el("group_actions_2").style.display = "";
-    el("button_new_connection").setAttribute("disabled", true);
-    el("group_selector").setAttribute("disabled", true);
-    el("button_new_group").setAttribute("disabled", true);
-    el("button_group_actions").setAttribute("disabled", true);
-    var v_empty_group_div = el("connections_management_empty_group");
+    el$2("group_actions_1").style.display = "none";
+    el$2("group_actions_2").style.display = "";
+    el$2("button_new_connection").setAttribute("disabled", true);
+    el$2("group_selector").setAttribute("disabled", true);
+    el$2("button_new_group").setAttribute("disabled", true);
+    el$2("button_group_actions").setAttribute("disabled", true);
+    var v_empty_group_div = el$2("connections_management_empty_group");
     if (v_empty_group_div) {
       v_empty_group_div.style.display = "none";
     }
     document.querySelectorAll(".omnidb__connections__list").forEach((v_list_el) => {
       v_list_el.classList.add("omnidb__connections__list--connection-management");
     });
-    var v_current_group_id = el("group_selector").value;
+    var v_current_group_id = el$2("group_selector").value;
     var v_group_obj = null;
     for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
       if (v_current_group_id == v_connections_data.v_group_list[i2].id) {
@@ -39699,12 +39700,12 @@ ${r2.message}`).join("\n\n");
     updateConnectionsTitleInfo();
   }
   function manageGroupSave() {
-    el("group_actions_1").style.display = "";
-    el("group_actions_2").style.display = "none";
-    el("button_new_connection").removeAttribute("disabled");
-    el("group_selector").removeAttribute("disabled");
-    el("button_new_group").removeAttribute("disabled");
-    el("button_group_actions").removeAttribute("disabled");
+    el$2("group_actions_1").style.display = "";
+    el$2("group_actions_2").style.display = "none";
+    el$2("button_new_connection").removeAttribute("disabled");
+    el$2("group_selector").removeAttribute("disabled");
+    el$2("button_new_group").removeAttribute("disabled");
+    el$2("button_group_actions").removeAttribute("disabled");
     document.querySelectorAll(".omnidb__connections__list").forEach((v_list_el) => {
       v_list_el.classList.remove("omnidb__connections__list--connection-management");
     });
@@ -39723,7 +39724,7 @@ ${r2.message}`).join("\n\n");
         // parseInt because a <select>'s value is a string and the backend
         // unmarshals this into an integer, which rejects "1" outright and
         // fails the whole request. See flexInt in go-server/flex_int.go.
-        p_group: parseInt(el("group_selector").value, 10),
+        p_group: parseInt(el$2("group_selector").value, 10),
         p_conn_data_list: v_conn_data
       }),
       function(p_return) {
@@ -39759,7 +39760,7 @@ ${r2.message}`).join("\n\n");
     );
   }
   function deleteGroup() {
-    var v_group_id = parseInt(el("group_selector").value, 10);
+    var v_group_id = parseInt(el$2("group_selector").value, 10);
     showConfirm(t$1("connections.confirm_delete_group"), function() {
       deleteGroupConfirm(v_group_id);
     });
@@ -39778,25 +39779,25 @@ ${r2.message}`).join("\n\n");
   }
   function newGroup() {
     showConfirm("", function() {
-      newGroupConfirm(el("group_name_input").value);
+      newGroupConfirm(el$2("group_name_input").value);
     });
     var v_input = document.createElement("input");
     v_input.id = "group_name_input";
     v_input.className = "form-control";
     v_input.placeholder = t$1("connections.group_name");
     v_input.style.width = "100%";
-    el("modal_message_content").appendChild(v_input);
+    el$2("modal_message_content").appendChild(v_input);
     v_input.onkeydown = function() {
       if (
         /** @type {any} */
         event.keyCode == 13
       ) {
-        el("modal_message_ok").click();
+        el$2("modal_message_ok").click();
       } else if (
         /** @type {any} */
         event.keyCode == 27
       ) {
-        el("modal_message_cancel").click();
+        el$2("modal_message_cancel").click();
       }
     };
     setTimeout(function() {
@@ -39804,9 +39805,9 @@ ${r2.message}`).join("\n\n");
     }, 500);
   }
   function renameGroup() {
-    var v_select = el("group_selector");
+    var v_select = el$2("group_selector");
     showConfirm("", function() {
-      renameGroupConfirm(parseInt(el("group_selector").value, 10), el("group_name_input").value);
+      renameGroupConfirm(parseInt(el$2("group_selector").value, 10), el$2("group_name_input").value);
     });
     var v_input = document.createElement("input");
     v_input.id = "group_name_input";
@@ -39814,18 +39815,18 @@ ${r2.message}`).join("\n\n");
     v_input.placeholder = t$1("connections.group_name");
     v_input.style.width = "100%";
     v_input.value = v_select.options[v_select.selectedIndex].text;
-    el("modal_message_content").appendChild(v_input);
+    el$2("modal_message_content").appendChild(v_input);
     v_input.onkeydown = function() {
       if (
         /** @type {any} */
         event.keyCode == 13
       ) {
-        el("modal_message_ok").click();
+        el$2("modal_message_ok").click();
       } else if (
         /** @type {any} */
         event.keyCode == 27
       ) {
-        el("modal_message_cancel").click();
+        el$2("modal_message_cancel").click();
       }
     };
     setTimeout(function() {
@@ -39839,7 +39840,7 @@ ${r2.message}`).join("\n\n");
       JSON.stringify({}),
       function(p_return) {
         v_connections_data.v_group_list = p_return.v_data;
-        var select = el("group_selector");
+        var select = el$2("group_selector");
         var current_value = select.value;
         select.innerHTML = "";
         var option = document.createElement("option");
@@ -39860,7 +39861,7 @@ ${r2.message}`).join("\n\n");
         if (!found && current_value != -1) {
           groupChange(-1);
         } else {
-          groupChange(el("group_selector").value);
+          groupChange(el$2("group_selector").value);
         }
       },
       null,
@@ -39870,24 +39871,24 @@ ${r2.message}`).join("\n\n");
   function testConnection(p_password = null) {
     var input = JSON.stringify({
       id: v_connections_data.current_id,
-      type: el("conn_form_type").value,
-      connstring: el("conn_form_connstring").value,
-      server: el("conn_form_server").value,
-      port: el("conn_form_port").value,
-      database: el("conn_form_database").value,
-      user: el("conn_form_user").value,
-      password: el("conn_form_user_pass").value,
+      type: el$2("conn_form_type").value,
+      connstring: el$2("conn_form_connstring").value,
+      server: el$2("conn_form_server").value,
+      port: el$2("conn_form_port").value,
+      database: el$2("conn_form_database").value,
+      user: el$2("conn_form_user").value,
+      password: el$2("conn_form_user_pass").value,
       temp_password: p_password,
       auth_method: authMethodValue(),
       aws: awsIAMRequestData(),
       oauth: oauthRequestData(),
       tunnel: {
-        enabled: el("conn_form_use_tunnel").checked,
-        server: el("conn_form_ssh_server").value,
-        port: el("conn_form_ssh_port").value,
-        user: el("conn_form_ssh_user").value,
-        password: el("conn_form_ssh_password").value,
-        key: el("conn_form_ssh_key").value
+        enabled: el$2("conn_form_use_tunnel").checked,
+        server: el$2("conn_form_ssh_server").value,
+        port: el$2("conn_form_ssh_port").value,
+        user: el$2("conn_form_ssh_user").value,
+        password: el$2("conn_form_ssh_password").value,
+        key: el$2("conn_form_ssh_key").value
       }
     });
     execAjax$2(
@@ -39904,11 +39905,11 @@ ${r2.message}`).join("\n\n");
         showConfirm(
           "",
           function() {
-            testConnection(el("txt_test_password_prompt").value);
+            testConnection(el$2("txt_test_password_prompt").value);
           },
           null,
           function() {
-            var v_content_div = el("modal_message_content");
+            var v_content_div = el$2("modal_message_content");
             v_content_div.appendChild(document.createTextNode(p_return.v_data));
             var v_input = document.createElement("input");
             v_input.id = "txt_test_password_prompt";
@@ -39923,11 +39924,11 @@ ${r2.message}`).join("\n\n");
               if (
                 /** @type {any} */
                 event.keyCode == 13
-              ) el("modal_message_ok").click();
+              ) el$2("modal_message_ok").click();
               else if (
                 /** @type {any} */
                 event.keyCode == 27
-              ) el("modal_message_cancel").click();
+              ) el$2("modal_message_cancel").click();
             };
             v_input.focus();
           }
@@ -39943,27 +39944,27 @@ ${r2.message}`).join("\n\n");
     var v_saved_id = v_connections_data.current_id;
     var input = JSON.stringify({
       id: v_connections_data.current_id,
-      type: el("conn_form_type").value,
-      public: el("conn_form_public").checked,
-      environment: el("conn_form_environment").value,
-      read_only: el("conn_form_read_only").checked,
-      connstring: el("conn_form_connstring").value,
-      server: el("conn_form_server").value,
-      port: el("conn_form_port").value,
-      database: el("conn_form_database").value,
-      user: el("conn_form_user").value,
-      password: el("conn_form_user_pass").value,
-      title: el("conn_form_title").value,
+      type: el$2("conn_form_type").value,
+      public: el$2("conn_form_public").checked,
+      environment: el$2("conn_form_environment").value,
+      read_only: el$2("conn_form_read_only").checked,
+      connstring: el$2("conn_form_connstring").value,
+      server: el$2("conn_form_server").value,
+      port: el$2("conn_form_port").value,
+      database: el$2("conn_form_database").value,
+      user: el$2("conn_form_user").value,
+      password: el$2("conn_form_user_pass").value,
+      title: el$2("conn_form_title").value,
       auth_method: authMethodValue(),
       aws: awsIAMRequestData(),
       oauth: oauthRequestData(),
       tunnel: {
-        enabled: el("conn_form_use_tunnel").checked,
-        server: el("conn_form_ssh_server").value,
-        port: el("conn_form_ssh_port").value,
-        user: el("conn_form_ssh_user").value,
-        password: el("conn_form_ssh_password").value,
-        key: el("conn_form_ssh_key").value
+        enabled: el$2("conn_form_use_tunnel").checked,
+        server: el$2("conn_form_ssh_server").value,
+        port: el$2("conn_form_ssh_port").value,
+        user: el$2("conn_form_ssh_user").value,
+        password: el$2("conn_form_ssh_password").value,
+        key: el$2("conn_form_ssh_key").value
       }
     });
     execAjax$2(
@@ -40027,7 +40028,7 @@ ${r2.message}`).join("\n\n");
         showAlert$1(t$1("connections.pgpass_picker_unreachable", { error: p_err }));
       });
     } else {
-      el("connections_pgpass_import_input").click();
+      el$2("connections_pgpass_import_input").click();
     }
   }
   function handlePgpassImportFileChosen(e2) {
@@ -40168,7 +40169,7 @@ ${r2.message}`).join("\n\n");
     return 1;
   }
   function adjustTechSelector() {
-    var select = el("conn_form_type");
+    var select = el$2("conn_form_type");
     select.innerHTML = "";
     var v_sorted = v_connections_data.technologies.slice().sort(function(a2, b2) {
       var v_rank_a = technologySortRank(a2);
@@ -40187,15 +40188,15 @@ ${r2.message}`).join("\n\n");
     }
   }
   function showConnectionDetail(p_conn_obj, p_is_new) {
-    el("omnidb__connections__detail_empty").style.display = "none";
-    el("omnidb__connections__detail_form").classList.add("omnidb__connections__detail-form--active");
-    el("conn_detail_icon").innerHTML = p_is_new ? '<i class="fas fa-plug"></i>' : p_conn_obj.technology === "terminal" ? '<i class="fas fa-terminal"></i>' : '<i class="technology-icon node-' + escapeHtml(p_conn_obj.technology) + '"></i>';
-    el("conn_form_button_connect").style.display = p_is_new ? "none" : "";
+    el$2("omnidb__connections__detail_empty").style.display = "none";
+    el$2("omnidb__connections__detail_form").classList.add("omnidb__connections__detail-form--active");
+    el$2("conn_detail_icon").innerHTML = p_is_new ? '<i class="fas fa-plug"></i>' : p_conn_obj.technology === "terminal" ? '<i class="fas fa-terminal"></i>' : '<i class="technology-icon node-' + escapeHtml(p_conn_obj.technology) + '"></i>';
+    el$2("conn_form_button_connect").style.display = p_is_new ? "none" : "";
     updateDeleteButtonState(p_conn_obj);
     updateConnectionSelectionHighlight();
   }
   function updateDeleteButtonState(p_conn_obj) {
-    var v_btn = el("button_delete_connection");
+    var v_btn = el$2("button_delete_connection");
     if (!p_conn_obj || p_conn_obj.locked === true) {
       v_btn.setAttribute("disabled", "disabled");
     } else {
@@ -40205,8 +40206,8 @@ ${r2.message}`).join("\n\n");
   function clearConnectionDetail() {
     v_connections_data.current_id = -1;
     v_connections_data.current_obj = null;
-    el("omnidb__connections__detail_form").classList.remove("omnidb__connections__detail-form--active");
-    el("omnidb__connections__detail_empty").style.display = "";
+    el$2("omnidb__connections__detail_form").classList.remove("omnidb__connections__detail-form--active");
+    el$2("omnidb__connections__detail_empty").style.display = "";
     updateDeleteButtonState(null);
     updateConnectionSelectionHighlight();
   }
@@ -40233,73 +40234,73 @@ ${r2.message}`).join("\n\n");
     v_connections_data.current_id = p_conn_obj.id;
     v_connections_data.current_obj = p_conn_obj;
     adjustTechSelector();
-    el("conn_form_type").value = p_conn_obj.technology;
-    el("conn_form_title").value = p_conn_obj.alias;
-    el("conn_form_environment").value = p_conn_obj.environment || "";
-    el("conn_form_read_only").checked = !!p_conn_obj.read_only;
-    el("conn_form_connstring").value = p_conn_obj.conn_string;
-    el("conn_form_server").value = p_conn_obj.server;
-    el("conn_form_port").value = p_conn_obj.port;
-    el("conn_form_database").value = p_conn_obj.service;
-    el("conn_form_user").value = p_conn_obj.user;
-    el("conn_form_user_pass").value = "";
-    el("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
-    el("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
-    el("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
-    el("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
-    el("conn_form_ssh_password").value = "";
-    el("conn_form_ssh_key").value = "";
-    el("conn_form_public").checked = p_conn_obj.public;
+    el$2("conn_form_type").value = p_conn_obj.technology;
+    el$2("conn_form_title").value = p_conn_obj.alias;
+    el$2("conn_form_environment").value = p_conn_obj.environment || "";
+    el$2("conn_form_read_only").checked = !!p_conn_obj.read_only;
+    el$2("conn_form_connstring").value = p_conn_obj.conn_string;
+    el$2("conn_form_server").value = p_conn_obj.server;
+    el$2("conn_form_port").value = p_conn_obj.port;
+    el$2("conn_form_database").value = p_conn_obj.service;
+    el$2("conn_form_user").value = p_conn_obj.user;
+    el$2("conn_form_user_pass").value = "";
+    el$2("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
+    el$2("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
+    el$2("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
+    el$2("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
+    el$2("conn_form_ssh_password").value = "";
+    el$2("conn_form_ssh_key").value = "";
+    el$2("conn_form_public").checked = p_conn_obj.public;
     var v_aws = p_conn_obj.aws || {};
-    el("conn_form_use_aws_iam").checked = p_conn_obj.auth_method === "aws_iam";
-    el("conn_form_aws_credentials").value = v_aws.access_key_id ? "access_key" : "profile";
-    el("conn_form_aws_region").value = v_aws.region || "";
-    el("conn_form_aws_profile").value = v_aws.profile || "";
-    el("conn_form_aws_access_key_id").value = v_aws.access_key_id || "";
-    el("conn_form_aws_secret_access_key").value = "";
+    el$2("conn_form_use_aws_iam").checked = p_conn_obj.auth_method === "aws_iam";
+    el$2("conn_form_aws_credentials").value = v_aws.access_key_id ? "access_key" : "profile";
+    el$2("conn_form_aws_region").value = v_aws.region || "";
+    el$2("conn_form_aws_profile").value = v_aws.profile || "";
+    el$2("conn_form_aws_access_key_id").value = v_aws.access_key_id || "";
+    el$2("conn_form_aws_secret_access_key").value = "";
     setStoredSecretIcon("conn_form_aws_secret_access_key", !!v_aws.secret);
     var v_oauth = p_conn_obj.oauth || {};
-    el("conn_form_use_oauth").checked = p_conn_obj.auth_method === "oauth";
-    el("conn_form_oauth_preset").value = v_oauth.preset || "custom";
-    el("conn_form_oauth_mode").value = v_oauth.mode || "command";
-    el("conn_form_oauth_delivery").value = v_oauth.delivery || "oauthbearer";
-    el("conn_form_oauth_command").value = v_oauth.command || "";
-    el("conn_form_oauth_token_url").value = v_oauth.token_url || "";
-    el("conn_form_oauth_client_id").value = v_oauth.client_id || "";
-    el("conn_form_oauth_scope").value = v_oauth.scope || "";
-    el("conn_form_oauth_secret").value = "";
+    el$2("conn_form_use_oauth").checked = p_conn_obj.auth_method === "oauth";
+    el$2("conn_form_oauth_preset").value = v_oauth.preset || "custom";
+    el$2("conn_form_oauth_mode").value = v_oauth.mode || "command";
+    el$2("conn_form_oauth_delivery").value = v_oauth.delivery || "oauthbearer";
+    el$2("conn_form_oauth_command").value = v_oauth.command || "";
+    el$2("conn_form_oauth_token_url").value = v_oauth.token_url || "";
+    el$2("conn_form_oauth_client_id").value = v_oauth.client_id || "";
+    el$2("conn_form_oauth_scope").value = v_oauth.scope || "";
+    el$2("conn_form_oauth_secret").value = "";
     setStoredSecretIcon("conn_form_oauth_secret", !!v_oauth.secret);
     let v_enable_list = [];
     let v_disable_list = [];
     if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
-      if (!el("conn_form_user_pass_check_icon")) {
-        el("conn_form_user_pass").previousElementSibling.insertAdjacentHTML(
+      if (!el$2("conn_form_user_pass_check_icon")) {
+        el$2("conn_form_user_pass").previousElementSibling.insertAdjacentHTML(
           "beforeend",
           '<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ms-2"></i>'
         );
       }
     } else {
-      el("conn_form_user_pass_check_icon")?.remove();
+      el$2("conn_form_user_pass_check_icon")?.remove();
     }
     if (p_conn_obj.tunnel.password && p_conn_obj.tunnel.password !== null && p_conn_obj.tunnel.password !== "") {
-      if (!el("conn_form_ssh_password_check_icon")) {
-        el("conn_form_ssh_password").previousElementSibling.insertAdjacentHTML(
+      if (!el$2("conn_form_ssh_password_check_icon")) {
+        el$2("conn_form_ssh_password").previousElementSibling.insertAdjacentHTML(
           "beforeend",
           '<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ms-2"></i>'
         );
       }
     } else {
-      el("conn_form_ssh_password_check_icon")?.remove();
+      el$2("conn_form_ssh_password_check_icon")?.remove();
     }
     if (p_conn_obj.tunnel.key && p_conn_obj.tunnel.key !== null && p_conn_obj.tunnel.key !== "") {
-      if (!el("conn_form_ssh_key_check_icon")) {
-        el("conn_form_ssh_key").previousElementSibling.insertAdjacentHTML(
+      if (!el$2("conn_form_ssh_key_check_icon")) {
+        el$2("conn_form_ssh_key").previousElementSibling.insertAdjacentHTML(
           "beforeend",
           '<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ms-2"></i>'
         );
       }
     } else {
-      el("conn_form_ssh_key_check_icon")?.remove();
+      el$2("conn_form_ssh_key_check_icon")?.remove();
     }
     if (p_conn_obj.technology === "terminal") {
       v_disable_list = [
@@ -40318,8 +40319,8 @@ ${r2.message}`).join("\n\n");
         "conn_form_ssh_key",
         "conn_form_ssh_key_input"
       ];
-      el("conn_form_use_tunnel").checked = true;
-      el("conn_form_use_tunnel").setAttribute("disabled", true);
+      el$2("conn_form_use_tunnel").checked = true;
+      el$2("conn_form_use_tunnel").setAttribute("disabled", true);
     } else if (p_conn_obj.technology === "sqlite") {
       v_disable_list = ["conn_form_connstring", "conn_form_server", "conn_form_port", "conn_form_user", "conn_form_user_pass"];
       v_enable_list = ["conn_form_database"];
@@ -40379,42 +40380,42 @@ ${r2.message}`).join("\n\n");
     v_connections_data.current_id = -1;
     v_connections_data.current_obj = null;
     adjustTechSelector();
-    el("conn_form_button_test_connection").setAttribute("disabled", true);
-    el("conn_form_button_save_connection").setAttribute("disabled", true);
-    el("conn_form_type").value = "postgresql";
-    el("conn_form_title").value = "";
-    el("conn_form_environment").value = "";
-    el("conn_form_read_only").checked = false;
-    el("conn_form_public").checked = false;
-    el("conn_form_connstring").value = "";
-    el("conn_form_server").value = "";
-    el("conn_form_port").value = "";
-    el("conn_form_database").value = "";
-    el("conn_form_user").value = "";
-    el("conn_form_user_pass").value = "";
-    el("conn_form_use_tunnel").checked = false;
-    el("conn_form_ssh_server").value = "";
-    el("conn_form_ssh_port").value = "22";
-    el("conn_form_ssh_user").value = "";
-    el("conn_form_ssh_password").value = "";
-    el("conn_form_ssh_key").value = "";
-    el("conn_form_ssh_key_input").value = null;
-    el("conn_form_ssh_key_input_label").textContent = t$1("connections.click_to_select");
-    el("conn_form_use_aws_iam").checked = false;
-    el("conn_form_aws_credentials").value = "profile";
-    el("conn_form_aws_region").value = "";
-    el("conn_form_aws_profile").value = "";
-    el("conn_form_aws_access_key_id").value = "";
-    el("conn_form_aws_secret_access_key").value = "";
+    el$2("conn_form_button_test_connection").setAttribute("disabled", true);
+    el$2("conn_form_button_save_connection").setAttribute("disabled", true);
+    el$2("conn_form_type").value = "postgresql";
+    el$2("conn_form_title").value = "";
+    el$2("conn_form_environment").value = "";
+    el$2("conn_form_read_only").checked = false;
+    el$2("conn_form_public").checked = false;
+    el$2("conn_form_connstring").value = "";
+    el$2("conn_form_server").value = "";
+    el$2("conn_form_port").value = "";
+    el$2("conn_form_database").value = "";
+    el$2("conn_form_user").value = "";
+    el$2("conn_form_user_pass").value = "";
+    el$2("conn_form_use_tunnel").checked = false;
+    el$2("conn_form_ssh_server").value = "";
+    el$2("conn_form_ssh_port").value = "22";
+    el$2("conn_form_ssh_user").value = "";
+    el$2("conn_form_ssh_password").value = "";
+    el$2("conn_form_ssh_key").value = "";
+    el$2("conn_form_ssh_key_input").value = null;
+    el$2("conn_form_ssh_key_input_label").textContent = t$1("connections.click_to_select");
+    el$2("conn_form_use_aws_iam").checked = false;
+    el$2("conn_form_aws_credentials").value = "profile";
+    el$2("conn_form_aws_region").value = "";
+    el$2("conn_form_aws_profile").value = "";
+    el$2("conn_form_aws_access_key_id").value = "";
+    el$2("conn_form_aws_secret_access_key").value = "";
     setStoredSecretIcon("conn_form_aws_secret_access_key", false);
-    el("conn_form_use_oauth").checked = false;
+    el$2("conn_form_use_oauth").checked = false;
     applyOAuthPreset("custom");
-    el("conn_form_oauth_secret").value = "";
+    el$2("conn_form_oauth_secret").value = "";
     setStoredSecretIcon("conn_form_oauth_secret", false);
-    el("conn_form_user_pass_check_icon")?.remove();
-    el("conn_form_ssh_password_check_icon")?.remove();
-    el("conn_form_ssh_key_check_icon")?.remove();
-    updateModalEditConnectionState({ target: el("conn_form_type") });
+    el$2("conn_form_user_pass_check_icon")?.remove();
+    el$2("conn_form_ssh_password_check_icon")?.remove();
+    el$2("conn_form_ssh_key_check_icon")?.remove();
+    updateModalEditConnectionState({ target: el$2("conn_form_type") });
     showConnectionDetail(null, true);
   }
   function selectConnection(p_conn_obj) {
@@ -40438,7 +40439,7 @@ ${r2.message}`).join("\n\n");
   }
   function toggleConnectionsPublic() {
     updateConnectionsTitleInfo();
-    var v_public = el("conn_list_public").checked;
+    var v_public = el$2("conn_list_public").checked;
     if (v_public) {
       v_connections_data.show_public = true;
       document.querySelectorAll(".omnidb__connections__list-item--public").forEach((v_item_el) => {
@@ -40466,16 +40467,16 @@ ${r2.message}`).join("\n\n");
     let v_disable_list = [];
     let v_enable_list = [];
     let v_form_cases = ["conn_form_type"];
-    let v_technology = el("conn_form_type").value;
-    let v_allow_tunnel = el("conn_form_use_tunnel").checked;
-    let v_use_connection_string = el("conn_form_connstring").value;
-    el("conn_form_ssh_key_input").value;
+    let v_technology = el$2("conn_form_type").value;
+    let v_allow_tunnel = el$2("conn_form_use_tunnel").checked;
+    let v_use_connection_string = el$2("conn_form_connstring").value;
+    el$2("conn_form_ssh_key_input").value;
     if (v_technology === "terminal") {
       v_allow_tunnel = true;
-      el("conn_form_use_tunnel").checked = true;
-      el("conn_form_use_tunnel").setAttribute("disabled", true);
+      el$2("conn_form_use_tunnel").checked = true;
+      el$2("conn_form_use_tunnel").setAttribute("disabled", true);
     } else {
-      el("conn_form_use_tunnel").removeAttribute("disabled");
+      el$2("conn_form_use_tunnel").removeAttribute("disabled");
     }
     if (typeof v_use_connection_string === "string") {
       v_use_connection_string = v_use_connection_string.trim();
@@ -40522,7 +40523,7 @@ ${r2.message}`).join("\n\n");
       ];
       let v_check_inputs_empty = true;
       for (let i2 = 0; i2 < v_check_inputs.length; i2++) {
-        var v_check_input_value = el(v_check_inputs[i2]).value;
+        var v_check_input_value = el$2(v_check_inputs[i2]).value;
         if (typeof v_check_input_value === "string") {
           v_check_input_value = v_check_input_value.trim();
         }
@@ -40576,8 +40577,8 @@ ${r2.message}`).join("\n\n");
           "conn_form_ssh_key",
           "conn_form_ssh_key_input"
         ];
-        el("conn_form_use_tunnel").checked = true;
-        el("conn_form_use_tunnel").setAttribute("disabled", true);
+        el$2("conn_form_use_tunnel").checked = true;
+        el$2("conn_form_use_tunnel").setAttribute("disabled", true);
         v_form_cases.push("conn_form_ssh_server");
         v_form_cases.push("conn_form_ssh_port");
         v_form_cases.push("conn_form_ssh_user");
@@ -40589,15 +40590,15 @@ ${r2.message}`).join("\n\n");
   }
   const AWS_IAM_TECHNOLOGIES = ["postgresql", "mysql", "mariadb"];
   function awsIAMAuthMethod() {
-    return AWS_IAM_TECHNOLOGIES.includes(el("conn_form_type").value) && el("conn_form_use_aws_iam").checked ? "aws_iam" : "";
+    return AWS_IAM_TECHNOLOGIES.includes(el$2("conn_form_type").value) && el$2("conn_form_use_aws_iam").checked ? "aws_iam" : "";
   }
   function awsIAMRequestData() {
-    var v_access_key = el("conn_form_aws_credentials").value === "access_key";
+    var v_access_key = el$2("conn_form_aws_credentials").value === "access_key";
     return {
-      region: el("conn_form_aws_region").value.trim(),
-      profile: v_access_key ? "" : el("conn_form_aws_profile").value.trim(),
-      access_key_id: v_access_key ? el("conn_form_aws_access_key_id").value.trim() : "",
-      secret_access_key: v_access_key ? el("conn_form_aws_secret_access_key").value : ""
+      region: el$2("conn_form_aws_region").value.trim(),
+      profile: v_access_key ? "" : el$2("conn_form_aws_profile").value.trim(),
+      access_key_id: v_access_key ? el$2("conn_form_aws_access_key_id").value.trim() : "",
+      secret_access_key: v_access_key ? el$2("conn_form_aws_secret_access_key").value : ""
     };
   }
   const OAUTH_PRESETS = {
@@ -40625,52 +40626,52 @@ ${r2.message}`).join("\n\n");
     }
   };
   function oauthAuthMethod() {
-    return el("conn_form_type").value === "postgresql" && el("conn_form_use_oauth").checked ? "oauth" : "";
+    return el$2("conn_form_type").value === "postgresql" && el$2("conn_form_use_oauth").checked ? "oauth" : "";
   }
   function authMethodValue() {
     return oauthAuthMethod() || awsIAMAuthMethod();
   }
   function oauthRequestData() {
-    var v_mode = el("conn_form_oauth_mode").value;
+    var v_mode = el$2("conn_form_oauth_mode").value;
     var v_cc = v_mode === "client_credentials";
     return {
-      preset: el("conn_form_oauth_preset").value,
+      preset: el$2("conn_form_oauth_preset").value,
       mode: v_mode,
-      delivery: el("conn_form_oauth_delivery").value,
-      command: v_mode === "command" ? el("conn_form_oauth_command").value.trim() : "",
-      token_url: v_cc ? el("conn_form_oauth_token_url").value.trim() : "",
-      client_id: v_cc ? el("conn_form_oauth_client_id").value.trim() : "",
-      scope: v_cc ? el("conn_form_oauth_scope").value.trim() : "",
-      secret: v_mode === "command" ? "" : el("conn_form_oauth_secret").value
+      delivery: el$2("conn_form_oauth_delivery").value,
+      command: v_mode === "command" ? el$2("conn_form_oauth_command").value.trim() : "",
+      token_url: v_cc ? el$2("conn_form_oauth_token_url").value.trim() : "",
+      client_id: v_cc ? el$2("conn_form_oauth_client_id").value.trim() : "",
+      scope: v_cc ? el$2("conn_form_oauth_scope").value.trim() : "",
+      secret: v_mode === "command" ? "" : el$2("conn_form_oauth_secret").value
     };
   }
   function applyOAuthPreset(p_preset) {
     var v_preset = OAUTH_PRESETS[p_preset] || OAUTH_PRESETS.custom;
-    el("conn_form_oauth_preset").value = OAUTH_PRESETS[p_preset] ? p_preset : "custom";
-    el("conn_form_oauth_mode").value = v_preset.mode;
-    el("conn_form_oauth_delivery").value = v_preset.delivery;
-    el("conn_form_oauth_command").value = v_preset.command;
-    el("conn_form_oauth_token_url").value = v_preset.token_url;
-    el("conn_form_oauth_client_id").value = "";
-    el("conn_form_oauth_scope").value = v_preset.scope;
+    el$2("conn_form_oauth_preset").value = OAUTH_PRESETS[p_preset] ? p_preset : "custom";
+    el$2("conn_form_oauth_mode").value = v_preset.mode;
+    el$2("conn_form_oauth_delivery").value = v_preset.delivery;
+    el$2("conn_form_oauth_command").value = v_preset.command;
+    el$2("conn_form_oauth_token_url").value = v_preset.token_url;
+    el$2("conn_form_oauth_client_id").value = "";
+    el$2("conn_form_oauth_scope").value = v_preset.scope;
   }
   function oauthPresetChanged() {
-    applyOAuthPreset(el("conn_form_oauth_preset").value);
+    applyOAuthPreset(el$2("conn_form_oauth_preset").value);
     updateOAuthFields();
   }
   function updateOAuthFields(p_changed) {
-    var v_supported = el("conn_form_type").value === "postgresql";
-    el("conn_form_oauth_card").style.display = v_supported ? "" : "none";
-    if (p_changed === "oauth" && el("conn_form_use_oauth").checked) {
-      el("conn_form_use_aws_iam").checked = false;
+    var v_supported = el$2("conn_form_type").value === "postgresql";
+    el$2("conn_form_oauth_card").style.display = v_supported ? "" : "none";
+    if (p_changed === "oauth" && el$2("conn_form_use_oauth").checked) {
+      el$2("conn_form_use_aws_iam").checked = false;
       updateAWSIAMFields();
     }
-    var v_on = v_supported && el("conn_form_use_oauth").checked;
-    var v_mode = el("conn_form_oauth_mode").value;
-    el("conn_form_oauth_command_row").style.display = v_mode === "command" ? "" : "none";
-    el("conn_form_oauth_cc_row").style.display = v_mode === "client_credentials" ? "" : "none";
-    el("conn_form_oauth_secret_row").style.display = v_mode === "command" ? "none" : "";
-    el("conn_form_oauth_secret_label").textContent = v_mode === "token" ? t$1("connections.oauth_token") : t$1("connections.oauth_client_secret");
+    var v_on = v_supported && el$2("conn_form_use_oauth").checked;
+    var v_mode = el$2("conn_form_oauth_mode").value;
+    el$2("conn_form_oauth_command_row").style.display = v_mode === "command" ? "" : "none";
+    el$2("conn_form_oauth_cc_row").style.display = v_mode === "client_credentials" ? "" : "none";
+    el$2("conn_form_oauth_secret_row").style.display = v_mode === "command" ? "none" : "";
+    el$2("conn_form_oauth_secret_label").textContent = v_mode === "token" ? t$1("connections.oauth_token") : t$1("connections.oauth_client_secret");
     for (const v_id of [
       "conn_form_oauth_preset",
       "conn_form_oauth_mode",
@@ -40681,11 +40682,11 @@ ${r2.message}`).join("\n\n");
       "conn_form_oauth_scope",
       "conn_form_oauth_secret"
     ]) {
-      if (v_on) el(v_id).removeAttribute("disabled");
-      else el(v_id).setAttribute("disabled", true);
+      if (v_on) el$2(v_id).removeAttribute("disabled");
+      else el$2(v_id).setAttribute("disabled", true);
     }
     if (v_on) {
-      var v_pass = el("conn_form_user_pass");
+      var v_pass = el$2("conn_form_user_pass");
       v_pass.value = "";
       v_pass.setAttribute("disabled", true);
       v_pass.setAttribute("readonly", true);
@@ -40694,24 +40695,24 @@ ${r2.message}`).join("\n\n");
   function setStoredSecretIcon(p_input_id, p_stored) {
     var v_icon_id = p_input_id + "_check_icon";
     if (!p_stored) {
-      el(v_icon_id)?.remove();
-    } else if (!el(v_icon_id)) {
-      el(p_input_id).previousElementSibling.insertAdjacentHTML(
+      el$2(v_icon_id)?.remove();
+    } else if (!el$2(v_icon_id)) {
+      el$2(p_input_id).previousElementSibling.insertAdjacentHTML(
         "beforeend",
         '<i id="' + v_icon_id + '" class="fas fa-check text-success ms-2"></i>'
       );
     }
   }
   function updateAWSIAMFields() {
-    if (el("conn_form_use_aws_iam").checked && el("conn_form_use_oauth").checked && el("conn_form_type").value === "postgresql") {
-      el("conn_form_use_oauth").checked = false;
+    if (el$2("conn_form_use_aws_iam").checked && el$2("conn_form_use_oauth").checked && el$2("conn_form_type").value === "postgresql") {
+      el$2("conn_form_use_oauth").checked = false;
     }
-    var v_supported = AWS_IAM_TECHNOLOGIES.includes(el("conn_form_type").value);
-    el("conn_form_aws_card").style.display = v_supported ? "" : "none";
-    var v_on = v_supported && el("conn_form_use_aws_iam").checked;
-    var v_access_key = el("conn_form_aws_credentials").value === "access_key";
-    el("conn_form_aws_profile_row").style.display = v_access_key ? "none" : "";
-    el("conn_form_aws_key_row").style.display = v_access_key ? "" : "none";
+    var v_supported = AWS_IAM_TECHNOLOGIES.includes(el$2("conn_form_type").value);
+    el$2("conn_form_aws_card").style.display = v_supported ? "" : "none";
+    var v_on = v_supported && el$2("conn_form_use_aws_iam").checked;
+    var v_access_key = el$2("conn_form_aws_credentials").value === "access_key";
+    el$2("conn_form_aws_profile_row").style.display = v_access_key ? "none" : "";
+    el$2("conn_form_aws_key_row").style.display = v_access_key ? "" : "none";
     for (const [v_id, v_enabled] of [
       ["conn_form_aws_credentials", v_on],
       ["conn_form_aws_region", v_on],
@@ -40719,17 +40720,17 @@ ${r2.message}`).join("\n\n");
       ["conn_form_aws_access_key_id", v_on && v_access_key],
       ["conn_form_aws_secret_access_key", v_on && v_access_key]
     ]) {
-      if (v_enabled) el(v_id).removeAttribute("disabled");
-      else el(v_id).setAttribute("disabled", true);
+      if (v_enabled) el$2(v_id).removeAttribute("disabled");
+      else el$2(v_id).setAttribute("disabled", true);
     }
     if (v_on) {
-      var v_pass = el("conn_form_user_pass");
+      var v_pass = el$2("conn_form_user_pass");
       v_pass.value = "";
       v_pass.setAttribute("disabled", true);
       v_pass.setAttribute("readonly", true);
-      if (v_access_key && el("conn_form_aws_access_key_id").value.trim() === "") {
-        el("conn_form_button_test_connection").setAttribute("disabled", true);
-        el("conn_form_button_save_connection").setAttribute("disabled", true);
+      if (v_access_key && el$2("conn_form_aws_access_key_id").value.trim() === "") {
+        el$2("conn_form_button_test_connection").setAttribute("disabled", true);
+        el$2("conn_form_button_save_connection").setAttribute("disabled", true);
       }
     }
     refreshAWSConfigGrantRow(v_on && !v_access_key);
@@ -40737,7 +40738,7 @@ ${r2.message}`).join("\n\n");
   var v_aws_config_status = null;
   var v_aws_config_status_pending = false;
   function refreshAWSConfigGrantRow(p_relevant) {
-    var v_row = el("conn_form_aws_grant_row");
+    var v_row = el$2("conn_form_aws_grant_row");
     if (!p_relevant || !gv_desktopMode) {
       v_row.style.display = "none";
       return;
@@ -40763,11 +40764,11 @@ ${r2.message}`).join("\n\n");
     }
     v_row.style.display = "";
     if (v_aws_config_status.needed) {
-      el("conn_form_aws_grant_text").textContent = t$1("connections.aws_grant_needed");
-      el("conn_form_aws_grant_button").textContent = t$1("connections.aws_grant_button");
+      el$2("conn_form_aws_grant_text").textContent = t$1("connections.aws_grant_needed");
+      el$2("conn_form_aws_grant_button").textContent = t$1("connections.aws_grant_button");
     } else {
-      el("conn_form_aws_grant_text").textContent = t$1("connections.aws_granted", { path: v_aws_config_status.path });
-      el("conn_form_aws_grant_button").textContent = t$1("connections.aws_grant_change");
+      el$2("conn_form_aws_grant_text").textContent = t$1("connections.aws_granted", { path: v_aws_config_status.path });
+      el$2("conn_form_aws_grant_button").textContent = t$1("connections.aws_grant_change");
     }
   }
   function grantAWSConfigAccess() {
@@ -40787,13 +40788,13 @@ ${r2.message}`).join("\n\n");
   }
   function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
     for (let i2 = 0; i2 < p_disable_list.length; i2++) {
-      var v_item = el(p_disable_list[i2]);
+      var v_item = el$2(p_disable_list[i2]);
       v_item.setAttribute("readonly", true);
       v_item.setAttribute("disabled", true);
       v_item.value = null;
     }
     for (let i2 = 0; i2 < p_enable_list.length; i2++) {
-      var v_item = el(p_enable_list[i2]);
+      var v_item = el$2(p_enable_list[i2]);
       v_item.removeAttribute("readonly");
       v_item.removeAttribute("disabled");
     }
@@ -40803,16 +40804,16 @@ ${r2.message}`).join("\n\n");
     let v_has_invalid = false;
     if (p_form_cases) {
       for (let i2 = 0; i2 < p_form_cases.length; i2++) {
-        el(p_form_cases[i2]).parentElement.classList.add("required");
+        el$2(p_form_cases[i2]).parentElement.classList.add("required");
       }
       for (let i2 = 0; i2 < p_form_cases.length; i2++) {
         if (p_form_cases[i2] === "conn_form_type") {
-          if (el(p_form_cases[i2]).value === "-1") {
+          if (el$2(p_form_cases[i2]).value === "-1") {
             v_has_invalid = true;
             break;
           }
         } else {
-          let v_value_check = el(p_form_cases[i2]).value.trim();
+          let v_value_check = el$2(p_form_cases[i2]).value.trim();
           if (v_value_check === "" || v_value_check === null) {
             v_has_invalid = true;
             break;
@@ -40821,20 +40822,20 @@ ${r2.message}`).join("\n\n");
       }
     }
     if (v_has_invalid) {
-      el("conn_form_button_test_connection").setAttribute("disabled", true);
-      el("conn_form_button_save_connection").setAttribute("disabled", true);
+      el$2("conn_form_button_test_connection").setAttribute("disabled", true);
+      el$2("conn_form_button_save_connection").setAttribute("disabled", true);
     } else {
-      el("conn_form_button_test_connection").removeAttribute("disabled");
-      el("conn_form_button_save_connection").removeAttribute("disabled");
+      el$2("conn_form_button_test_connection").removeAttribute("disabled");
+      el$2("conn_form_button_save_connection").removeAttribute("disabled");
     }
   }
   function updateConnectionKey(e2) {
     var file = e2.target.files ? e2.target.files[0] : false;
-    var v_input = el("conn_form_ssh_key");
+    var v_input = el$2("conn_form_ssh_key");
     if (!file) {
       v_input.value = null;
-      el("conn_form_ssh_key_input_label").textContent = t$1("connections.click_to_select");
-      updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
+      el$2("conn_form_ssh_key_input_label").textContent = t$1("connections.click_to_select");
+      updateModalEditConnectionState({ target: el$2("conn_form_ssh_key_input") });
       return;
     }
     var reader = new FileReader();
@@ -40844,24 +40845,24 @@ ${r2.message}`).join("\n\n");
         e3.target.result
       );
       v_input.value = v_contents;
-      el("conn_form_ssh_key_input_label").textContent = t$1("connections.key_text_loaded");
-      updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
+      el$2("conn_form_ssh_key_input_label").textContent = t$1("connections.key_text_loaded");
+      updateModalEditConnectionState({ target: el$2("conn_form_ssh_key_input") });
     };
     reader.readAsText(file);
   }
   function updateConnectionsTitleInfo() {
-    var v_public = el("conn_list_public").checked;
-    var v_group_context = el("group_selector").value;
+    var v_public = el$2("conn_list_public").checked;
+    var v_group_context = el$2("group_selector").value;
     var v_connection_owner = false;
-    var v_managing_group = v_group_context && el("group_selector").getAttribute("disabled");
+    var v_managing_group = v_group_context && el$2("group_selector").getAttribute("disabled");
     for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
       var v_conn_obj2 = v_connections_data.list_items[i2].data;
       if (v_conn_obj2.is_mine) {
         v_connection_owner = true;
       }
     }
-    var v_empty_cards = el("connections_management_empty_all");
-    var v_empty_with_public = el("connections_management_empty_with_public");
+    var v_empty_cards = el$2("connections_management_empty_all");
+    var v_empty_with_public = el$2("connections_management_empty_with_public");
     if (v_empty_cards) {
       if (v_connections_data.list_items.length === 0) {
         v_empty_with_public.style.display = "none";
@@ -41823,7 +41824,7 @@ ${r2.message}`).join("\n\n");
     __proto__: null,
     startTutorial
   }, Symbol.toStringTag, { value: "Module" }));
-  const CONTENT_ID = "omnidb__section_bookmarks";
+  const CONTENT_ID$1 = "omnidb__section_bookmarks";
   function openBookmark(p_bookmark) {
     var v_tab = v_connTabControl.tabList.find(function(p_tab) {
       return p_tab.tag && p_tab.tag.selectedDatabaseIndex === p_bookmark.conn_id;
@@ -41840,7 +41841,7 @@ ${r2.message}`).join("\n\n");
     execAjax$2("/delete_bookmark/", JSON.stringify({ p_id }), refreshBookmarksPane, null, "box", false);
   }
   function refreshBookmarksPane() {
-    var v_found = document.getElementById(CONTENT_ID);
+    var v_found = document.getElementById(CONTENT_ID$1);
     if (!v_found) return;
     var v_root = v_found;
     execAjax$2(
@@ -41910,7 +41911,223 @@ ${r2.message}`).join("\n\n");
       false
     );
   }
-  const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "bookmarks", "snippets", "settings"];
+  const CONTENT_ID = "omnidb__section_schedules";
+  function el$1(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  function when(unixSeconds) {
+    return unixSeconds ? new Date(unixSeconds * 1e3).toLocaleString() : "—";
+  }
+  function call(url, body, done) {
+    execAjax$2(
+      url,
+      JSON.stringify(body),
+      (r2) => done(r2.v_data),
+      (r2) => showAlert$1(typeof r2.v_data === "string" ? r2.v_data : r2.v_data && r2.v_data.message || t$1("errors.request_error")),
+      "box",
+      false
+    );
+  }
+  function renderRuns(box, runs) {
+    box.innerHTML = "";
+    if (runs.length === 0) {
+      box.appendChild(el$1("div", "text-muted small", t$1("schedules.no_runs")));
+      return;
+    }
+    const pre = el$1("pre", "p-2 small mb-0");
+    pre.style.cssText = "max-height:24vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
+    pre.textContent = runs.map((r2) => `${when(r2.started)}  ${r2.status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")}  ${r2.duration_ms} ms
+${r2.message}`).join("\n\n");
+    box.appendChild(pre);
+  }
+  function buildForm(schedule, done) {
+    const form = el$1("div", "p-3 mb-3");
+    form.style.cssText = "border:1px solid var(--border-color);border-radius:4px;";
+    form.appendChild(el$1("div", "fw-bold mb-2", schedule ? t$1("schedules.edit_title") : t$1("schedules.new")));
+    const name = (
+      /** @type {HTMLInputElement} */
+      el$1("input", "form-control form-control-sm")
+    );
+    name.type = "text";
+    name.placeholder = t$1("schedules.name_placeholder");
+    name.value = schedule ? schedule.name : "";
+    const target = (
+      /** @type {HTMLSelectElement} */
+      el$1("select", "form-select form-select-sm")
+    );
+    const connections2 = (v_connTabControl.tag.connections || []).filter((c2) => c2.v_db_type !== "terminal");
+    for (const c2 of connections2) {
+      const o2 = (
+        /** @type {HTMLOptionElement} */
+        el$1("option", void 0, c2.v_alias || c2.v_details1 || String(c2.v_conn_id))
+      );
+      o2.value = String(c2.v_conn_id);
+      target.appendChild(o2);
+    }
+    if (schedule) {
+      target.value = String(schedule.conn_id);
+      target.disabled = true;
+    }
+    const interval = (
+      /** @type {HTMLInputElement} */
+      el$1("input", "form-control form-control-sm")
+    );
+    interval.type = "number";
+    interval.min = "1";
+    interval.max = "10080";
+    interval.value = schedule ? String(schedule.interval) : "60";
+    const sql = (
+      /** @type {HTMLTextAreaElement} */
+      el$1("textarea", "form-control form-control-sm")
+    );
+    sql.rows = 6;
+    sql.spellcheck = false;
+    sql.style.fontFamily = "monospace";
+    sql.value = schedule ? schedule.sql : "";
+    const field = (key, control) => {
+      const w2 = el$1("div", "mb-2");
+      w2.append(el$1("label", "form-label small fw-bold mb-1", t$1(key)), control);
+      return w2;
+    };
+    form.append(field("schedules.name", name), field("schedules.connection", target), field("schedules.interval", interval), field("schedules.sql", sql));
+    const buttons = el$1("div", "d-flex gap-2");
+    const save = (
+      /** @type {HTMLButtonElement} */
+      el$1("button", "btn btn-sm omnidb__theme__btn--primary", t$1("common.save"))
+    );
+    save.type = "button";
+    save.addEventListener("click", () => {
+      if (schedule) {
+        call("/update_schedule/", { p_id: schedule.id, p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, done);
+      } else {
+        call("/add_schedule/", { p_conn_id: Number(target.value), p_name: name.value, p_sql: sql.value, p_interval: Number(interval.value) }, done);
+      }
+    });
+    const cancel = (
+      /** @type {HTMLButtonElement} */
+      el$1("button", "btn btn-sm omnidb__theme__btn--secondary", t$1("common.cancel"))
+    );
+    cancel.type = "button";
+    cancel.addEventListener("click", done);
+    buttons.append(save, cancel);
+    form.appendChild(buttons);
+    return form;
+  }
+  function buildCard(s2, refresh, edit) {
+    const card = el$1("div", "mb-3 p-3");
+    card.style.cssText = "border:1px solid var(--border-color);border-radius:4px;";
+    const head = el$1("div", "d-flex align-items-baseline gap-2");
+    head.append(el$1("span", "fw-bold", s2.name), el$1("span", "text-muted small", s2.alias));
+    if (!s2.enabled) head.appendChild(el$1("span", "badge text-bg-secondary", t$1("schedules.paused")));
+    const meta = el$1("div", "small text-muted", t$1("schedules.meta", { interval: s2.interval, last: when(s2.last_started), next: s2.enabled ? when(s2.next_run) : t$1("schedules.paused") }));
+    const status = el$1("div", "small", s2.last_status ? (s2.last_status === "ok" ? t$1("schedules.status_ok") : t$1("schedules.status_error")) + ": " + s2.last_message.split("\n").slice(-1)[0] : "");
+    if (s2.last_status === "error") status.style.color = "var(--bs-danger, #dc3545)";
+    const sql = el$1("pre", "p-2 small my-2", s2.sql);
+    sql.style.cssText = "max-height:12vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
+    const runs = el$1("div", "mt-2");
+    const buttons = el$1("div", "d-flex flex-wrap gap-2");
+    const button = (label, onClick) => {
+      const b2 = (
+        /** @type {HTMLButtonElement} */
+        el$1("button", "btn btn-sm omnidb__theme__btn--secondary", label)
+      );
+      b2.type = "button";
+      b2.addEventListener("click", onClick);
+      buttons.appendChild(b2);
+    };
+    button(t$1("schedules.run_now"), () => call("/run_schedule_now/", { p_id: s2.id }, refresh));
+    button(s2.enabled ? t$1("schedules.pause") : t$1("schedules.resume"), () => call("/set_schedule_enabled/", { p_id: s2.id, p_enabled: !s2.enabled }, refresh));
+    button(t$1("schedules.history"), () => call("/get_schedule_runs/", { p_id: s2.id }, (data) => renderRuns(runs, data)));
+    button(t$1("common.edit"), () => edit(s2));
+    button(t$1("schedules.delete"), () => showConfirm(t$1("schedules.confirm_delete", { name: s2.name }), () => call("/delete_schedule/", { p_id: s2.id }, refresh)));
+    card.append(head, meta, status, sql, buttons, runs);
+    return card;
+  }
+  function refreshSchedulesPane(editing) {
+    const root = document.getElementById(CONTENT_ID);
+    if (!root) return;
+    call("/get_schedules/", {}, (rows) => {
+      const redraw = () => refreshSchedulesPane();
+      root.innerHTML = "";
+      const wrap = el$1("div", "omnidb__schedules p-3");
+      wrap.style.maxWidth = "900px";
+      const title = el$1("div", "d-flex align-items-center justify-content-between mb-3");
+      title.appendChild(el$1("h5", "m-0", t$1("nav.schedules")));
+      const add = (
+        /** @type {HTMLButtonElement} */
+        el$1("button", "btn btn-sm omnidb__theme__btn--primary", t$1("schedules.new"))
+      );
+      add.type = "button";
+      add.addEventListener("click", () => refreshSchedulesPane(null));
+      title.appendChild(add);
+      wrap.appendChild(title);
+      wrap.appendChild(el$1("p", "text-muted small", t$1("schedules.hint")));
+      if (editing !== void 0) wrap.appendChild(buildForm(editing, redraw));
+      if (rows.length === 0 && editing === void 0) wrap.appendChild(el$1("p", "text-muted", t$1("schedules.none")));
+      for (const s2 of rows) {
+        if (editing && editing.id === s2.id) continue;
+        wrap.appendChild(buildCard(s2, redraw, (row) => refreshSchedulesPane(row)));
+      }
+      root.appendChild(wrap);
+    });
+  }
+  const NAV_DIVIDER = "|";
+  const DEFAULT_NAV_ORDER = [
+    "welcome",
+    "connections",
+    "database",
+    "monitoring",
+    "notify",
+    "permissions",
+    "connected_users",
+    "schedules",
+    "snippets",
+    "bookmarks",
+    NAV_DIVIDER,
+    "getting_started",
+    "account"
+  ];
+  function resolveNavLayout(saved, available) {
+    let parsed = {};
+    try {
+      parsed = typeof saved === "string" ? saved ? JSON.parse(saved) : {} : saved || {};
+    } catch {
+      parsed = {};
+    }
+    const known = /* @__PURE__ */ new Set([...available, NAV_DIVIDER]);
+    const savedOrder = Array.isArray(parsed.order) ? parsed.order : [];
+    const order = [];
+    for (const id of savedOrder) {
+      if (typeof id === "string" && known.has(id) && !order.includes(id)) order.push(id);
+    }
+    const defaultDivider = DEFAULT_NAV_ORDER.indexOf(NAV_DIVIDER);
+    const belowDefault = new Set(DEFAULT_NAV_ORDER.slice(defaultDivider + 1));
+    if (!order.includes(NAV_DIVIDER)) {
+      const firstBelow = order.findIndex((id) => belowDefault.has(id));
+      order.splice(firstBelow < 0 ? order.length : firstBelow, 0, NAV_DIVIDER);
+    }
+    for (const id of DEFAULT_NAV_ORDER) {
+      if (id === NAV_DIVIDER || !available.includes(id) || order.includes(id)) continue;
+      if (belowDefault.has(id)) order.push(id);
+      else order.splice(order.indexOf(NAV_DIVIDER), 0, id);
+    }
+    for (const id of available) {
+      if (!order.includes(id)) order.splice(order.indexOf(NAV_DIVIDER), 0, id);
+    }
+    const hidden = Array.isArray(parsed.hidden) ? parsed.hidden.filter((id, i2, all) => typeof id === "string" && available.includes(id) && all.indexOf(id) === i2) : [];
+    return { order, hidden };
+  }
+  function moveNavEntry(order, index, delta) {
+    const target = Math.max(0, Math.min(order.length - 1, index + delta));
+    const out = order.slice();
+    const [entry] = out.splice(index, 1);
+    out.splice(target, 0, entry);
+    return out;
+  }
+  const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "bookmarks", "schedules", "snippets", "settings"];
   const SECTION_TITLE_KEYS = {
     welcome: "nav.welcome",
     connections: "nav.connections",
@@ -41920,6 +42137,7 @@ ${r2.message}`).join("\n\n");
     permissions: "nav.permissions",
     connected_users: "nav.connected_users",
     bookmarks: "nav.bookmarks",
+    schedules: "nav.schedules",
     snippets: "tree.snippets_section",
     settings: "nav.settings"
   };
@@ -41972,6 +42190,8 @@ ${r2.message}`).join("\n\n");
       refreshConnectedUsersPane();
     } else if (p_name === "bookmarks") {
       refreshBookmarksPane();
+    } else if (p_name === "schedules") {
+      refreshSchedulesPane();
     } else if (p_name === "database") {
       refreshHeights();
     }
@@ -41983,111 +42203,71 @@ ${r2.message}`).join("\n\n");
     var v_div = v_sectionDivs[p_name];
     return v_div != null && v_div.classList.contains("omnidb__section--active");
   }
-  function initSectionSwitcher() {
-    for (let i2 = 0; i2 < SECTION_NAMES.length; i2++) {
-      v_sectionDivs[SECTION_NAMES[i2]] = /** @type {HTMLElement} */
-      document.getElementById("omnidb__section_" + SECTION_NAMES[i2]);
-    }
-    v_sectionNav = createTabControl({ p_div: "omnidb_section_nav", p_hierarchy: "sectionnav" });
-    v_sectionNavTabs.welcome = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-hand-spock"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        switchSection("welcome");
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.welcome")) + "</h5>"
-    });
-    v_sectionNavTabs.connections = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-plug"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        startConnectionManagement();
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.connections")) + "</h5>"
-    });
-    v_sectionNavTabs.database = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-database"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        switchSection("database");
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("tree.databases_section")) + "</h5>"
-    });
-    v_sectionNavTabs.monitoring = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-chart-line"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        switchSection("monitoring");
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.monitoring")) + "</h5>"
-    });
-    v_sectionNavTabs.notify = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-bell"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        switchSection("notify");
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.notify")) + "</h5>"
-    });
-    v_sectionNavTabs.permissions = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-users"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        switchSection("permissions");
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.permissions")) + "</h5>"
-    });
-    v_sectionNavTabs.connected_users = v_sectionNav.createTab({
-      // fa-server, not fa-users: represents the server-side connections/
-      // processes this section shows -- fa-users went to the Permissions
-      // section right above, once that was actually built.
-      p_icon: '<i class="fas fa-server"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        switchSection("connected_users");
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.connected_users")) + "</h5>"
-    });
-    v_sectionNavTabs.bookmarks = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-star"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        switchSection("bookmarks");
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.bookmarks")) + "</h5>"
-    });
-    v_sectionNavTabs.snippets = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-scroll"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectFunction: function() {
-        toggleSnippetPanel();
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("tree.snippets_section")) + "</h5>"
-    });
-    var v_spacer = document.createElement("div");
-    v_spacer.className = "omnidb__section-nav__spacer";
-    v_sectionNav.tabListDiv.appendChild(v_spacer);
-    v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-lightbulb"></i>',
-      p_close: false,
-      p_isDraggable: false,
-      p_selectable: false,
-      p_clickFunction: function(e2) {
-        startTutorial("getting_started", e2.currentTarget);
-      },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.getting_started")) + "</h5>"
-    });
-    if (!gv_desktopMode) {
+  const NAV_ITEMS = {
+    welcome: { icon: "fa-hand-spock", titleKey: "nav.welcome", select: () => switchSection("welcome") },
+    // Also refreshes the connection list from the server -- see connections.js,
+    // which shows this section as its last step.
+    connections: { icon: "fa-plug", titleKey: "nav.connections", select: () => startConnectionManagement() },
+    database: { icon: "fa-database", titleKey: "tree.databases_section", select: () => switchSection("database") },
+    monitoring: { icon: "fa-chart-line", titleKey: "nav.monitoring", select: () => switchSection("monitoring") },
+    notify: { icon: "fa-bell", titleKey: "nav.notify", select: () => switchSection("notify") },
+    permissions: { icon: "fa-users", titleKey: "nav.permissions", select: () => switchSection("permissions") },
+    // fa-server, not fa-users: the server-side connections/processes this
+    // section shows -- fa-users belongs to Permissions.
+    connected_users: { icon: "fa-server", titleKey: "nav.connected_users", select: () => switchSection("connected_users") },
+    schedules: { icon: "fa-calendar-alt", titleKey: "nav.schedules", select: () => switchSection("schedules") },
+    snippets: { icon: "fa-scroll", titleKey: "tree.snippets_section", select: () => toggleSnippetPanel() },
+    bookmarks: { icon: "fa-star", titleKey: "nav.bookmarks", select: () => switchSection("bookmarks") },
+    // Getting Started used to be reachable only by the floating omnis icon in
+    // the bottom-right corner (see workspace.js); a click trigger, not selectable.
+    getting_started: {
+      icon: "fa-lightbulb",
+      titleKey: "nav.getting_started",
+      click: (e2) => startTutorial(
+        "getting_started",
+        /** @type {HTMLElement} */
+        e2.currentTarget
+      )
+    },
+    // The account popup (username/version/sign-out) has anything to show only
+    // in server mode -- the desktop (Wails) build has no user concept.
+    account: { icon: "fa-user", titleKey: "nav.account", serverOnly: true }
+  };
+  function availableNavItems() {
+    return Object.keys(NAV_ITEMS).filter((id) => !(NAV_ITEMS[id].serverOnly && gv_desktopMode));
+  }
+  function navItemDescriptions() {
+    return availableNavItems().map((id) => ({ id, icon: NAV_ITEMS[id].icon, title: t$1(NAV_ITEMS[id].titleKey) }));
+  }
+  function createNavItem(id) {
+    if (id === "account") {
       initAccountMenu();
+      return;
+    }
+    const item = NAV_ITEMS[id];
+    const config = {
+      p_icon: '<i class="fas ' + item.icon + '"></i>',
+      p_close: false,
+      p_isDraggable: false,
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1(item.titleKey)) + "</h5>"
+    };
+    if (item.select) config.p_selectFunction = item.select;
+    if (item.click) {
+      config.p_selectable = false;
+      config.p_clickFunction = item.click;
+    }
+    v_sectionNavTabs[id] = v_sectionNav.createTab(config);
+  }
+  function buildSectionNav() {
+    const layout = resolveNavLayout(typeof v_nav_layout === "string" ? v_nav_layout : "", availableNavItems());
+    for (const id of layout.order) {
+      if (id === NAV_DIVIDER) {
+        var v_spacer = document.createElement("div");
+        v_spacer.className = "omnidb__section-nav__spacer";
+        v_sectionNav.tabListDiv.appendChild(v_spacer);
+      } else if (!layout.hidden.includes(id)) {
+        createNavItem(id);
+      }
     }
     v_sectionNavTabs.settings = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-cog"></i>',
@@ -42099,7 +42279,43 @@ ${r2.message}`).join("\n\n");
       p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.settings")) + "</h5>"
     });
   }
+  function rebuildSectionNav(layoutJSON) {
+    v_nav_layout = layoutJSON;
+    var v_active = SECTION_NAMES.find(function(p_name) {
+      return isSectionActive(p_name);
+    });
+    v_sectionNav.selectedTab = null;
+    v_sectionNav.selectedA = null;
+    v_sectionNav.selectedDiv = null;
+    v_sectionNav.tabList.slice().forEach(function(p_tab) {
+      v_sectionNav.removeTab(p_tab);
+    });
+    v_sectionNav.tabListDiv.innerHTML = "";
+    Object.keys(v_sectionNavTabs).forEach(function(p_key) {
+      delete v_sectionNavTabs[p_key];
+    });
+    buildSectionNav();
+    var v_tab = v_active ? v_sectionNavTabs[v_active] : null;
+    if (v_tab) {
+      var v_select = v_tab.selectFunction;
+      v_tab.selectFunction = null;
+      v_sectionNav.selectTab(v_tab);
+      v_tab.selectFunction = v_select;
+    }
+  }
+  function initSectionSwitcher() {
+    for (let i2 = 0; i2 < SECTION_NAMES.length; i2++) {
+      v_sectionDivs[SECTION_NAMES[i2]] = /** @type {HTMLElement} */
+      document.getElementById("omnidb__section_" + SECTION_NAMES[i2]);
+    }
+    v_sectionNav = createTabControl({ p_div: "omnidb_section_nav", p_hierarchy: "sectionnav" });
+    buildSectionNav();
+  }
+  var v_accountTab = null;
+  var v_accountOutsideClickBound = false;
   function initAccountMenu() {
+    var v_old_menu = document.getElementById("omnidb_section_nav__account_menu");
+    if (v_old_menu) v_old_menu.remove();
     var v_tab = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-user"></i>',
       p_close: false,
@@ -42130,12 +42346,17 @@ ${r2.message}`).join("\n\n");
         }
       );
     }
-    document.addEventListener("click", function(e2) {
-      if (!(e2.target instanceof Node)) return;
-      if (!v_menu.contains(e2.target) && !v_tab.elementA.contains(e2.target)) {
-        hideAccountMenu();
-      }
-    });
+    v_accountTab = v_tab;
+    if (!v_accountOutsideClickBound) {
+      v_accountOutsideClickBound = true;
+      document.addEventListener("click", function(e2) {
+        var v_current = document.getElementById("omnidb_section_nav__account_menu");
+        if (!v_current || !v_accountTab || !(e2.target instanceof Node)) return;
+        if (!v_current.contains(e2.target) && !v_accountTab.elementA.contains(e2.target)) {
+          hideAccountMenu();
+        }
+      });
+    }
   }
   function toggleAccountMenu() {
     document.getElementById("omnidb_section_nav__account_menu").classList.toggle(
@@ -42149,9 +42370,12 @@ ${r2.message}`).join("\n\n");
   }
   const sectionSwitcher = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
+    availableNavItems,
     getSectionEntries,
     initSectionSwitcher,
     isSectionActive,
+    navItemDescriptions,
+    rebuildSectionNav,
     switchSection
   }, Symbol.toStringTag, { value: "Module" }));
   const v_current_os = (function() {
@@ -42834,6 +43058,102 @@ ${r2.message}`).join("\n\n");
     }
     return out;
   }
+  function el(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  function applyLayout(layoutJSON) {
+    rebuildSectionNav(layoutJSON);
+    execAjax$2(
+      "/save_nav_layout/",
+      JSON.stringify({ p_layout: layoutJSON }),
+      () => {
+      },
+      (r2) => showAlert$1(typeof r2.v_data === "string" ? r2.v_data : t$1("errors.request_error")),
+      "box",
+      false
+    );
+  }
+  function renderNavLayoutEditor() {
+    const root = document.getElementById("nav_layout_editor");
+    if (!root) return;
+    const layout = resolveNavLayout(typeof v_nav_layout === "string" ? v_nav_layout : "", availableNavItems());
+    let order = layout.order.slice();
+    const hidden = new Set(layout.hidden);
+    const info = new Map(navItemDescriptions().map((d2) => [d2.id, d2]));
+    const commit = () => applyLayout(JSON.stringify({ order, hidden: [...hidden] }));
+    const draw = () => {
+      root.innerHTML = "";
+      const list = el("div", "d-flex flex-column gap-1 mb-3");
+      list.style.maxWidth = "480px";
+      order.forEach((id, index) => {
+        const row = el("div", "d-flex align-items-center gap-2 p-1");
+        row.style.cssText = "border:1px solid var(--border-color);border-radius:4px;";
+        if (id === NAV_DIVIDER) {
+          row.style.borderStyle = "dashed";
+          const label = el("span", "flex-grow-1 text-muted small", t$1("settings.navigation.divider"));
+          row.append(el("i", "fas fa-ellipsis-h"), label);
+        } else {
+          const d2 = (
+            /** @type {{ id: string, icon: string, title: string }} */
+            info.get(id)
+          );
+          const box = (
+            /** @type {HTMLInputElement} */
+            el("input", "form-check-input m-0")
+          );
+          box.type = "checkbox";
+          box.checked = !hidden.has(id);
+          box.title = t$1("settings.navigation.show");
+          box.setAttribute("aria-label", t$1("settings.navigation.show") + ": " + d2.title);
+          box.addEventListener("change", () => {
+            if (box.checked) hidden.delete(id);
+            else hidden.add(id);
+            commit();
+          });
+          const icon = el("i", "fas " + d2.icon);
+          icon.style.width = "1.4em";
+          row.append(box, icon, el("span", "flex-grow-1", d2.title));
+        }
+        const mover = (delta, label) => {
+          const b2 = (
+            /** @type {HTMLButtonElement} */
+            el("button", "btn btn-sm omnidb__theme__btn--secondary")
+          );
+          b2.type = "button";
+          b2.title = label;
+          b2.setAttribute("aria-label", label);
+          const arrow = el("i", "fas fa-arrow-up");
+          if (delta > 0) arrow.style.transform = "rotate(180deg)";
+          b2.appendChild(arrow);
+          b2.disabled = index + delta < 0 || index + delta >= order.length;
+          b2.addEventListener("click", () => {
+            order = moveNavEntry(order, index, delta);
+            commit();
+            draw();
+          });
+          row.appendChild(b2);
+        };
+        mover(-1, t$1("settings.navigation.move_up"));
+        mover(1, t$1("settings.navigation.move_down"));
+        list.appendChild(row);
+      });
+      root.appendChild(list);
+      const reset = (
+        /** @type {HTMLButtonElement} */
+        el("button", "btn btn-sm omnidb__theme__btn--secondary", t$1("settings.navigation.reset"))
+      );
+      reset.type = "button";
+      reset.addEventListener("click", () => {
+        applyLayout("");
+        renderNavLayoutEditor();
+      });
+      root.appendChild(reset);
+    };
+    draw();
+  }
   function showAbout() {
     var v_version_line = document.getElementById("about_version_line");
     if (v_version_line) v_version_line.textContent = t$1("modals.about.version_line", { version: v_version });
@@ -43117,6 +43437,7 @@ ${r2.message}`).join("\n\n");
       }
     }
     document.getElementById("sel_language").value = v_language_preference;
+    renderNavLayoutEditor();
     document.getElementById("txt_confirm_new_pwd").value = "";
     document.getElementById("txt_new_pwd").value = "";
     updatePasswordButtonState();

@@ -74,6 +74,7 @@ Object.assign(window, {
   v_language: cfg.language,
   v_language_preference: cfg.language_preference,
   v_i18n: cfg.i18n,
+  v_nav_layout: cfg.nav_layout,
 
   // Aliases the old inline block derived from the values above. Kept because
   // plenty of code reads them by these names.

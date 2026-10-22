@@ -148,6 +148,32 @@ func checkSchedulable(c *appConnection) error {
 	return nil
 }
 
+// updateSchedule changes a schedule's name, SQL and interval; its enabled
+// state and the countdown to its next run are left as they are, except that a
+// shorter interval pulls an already later run forward.
+func updateSchedule(db *sql.DB, userID, id int64, name, sqlText string, interval int, now time.Time) error {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return errors.New("a schedule needs a name")
+	}
+	if len(scriptStatements(sqlText)) == 0 {
+		return errors.New("a schedule needs SQL to run")
+	}
+	if interval < minScheduleInterval || interval > maxScheduleInterval {
+		return fmt.Errorf("the interval must be between %d and %d minutes", minScheduleInterval, maxScheduleInterval)
+	}
+	res, err := db.Exec(`update OmniDB_app_schedule set name = ?, sql = ?, interval_minutes = ?,
+		next_run = min(next_run, ? + ? * 60) where id = ? and user_id = ?`,
+		name, sqlText, interval, now.Unix(), interval, id, userID)
+	if err != nil {
+		return err
+	}
+	if n, _ := res.RowsAffected(); n == 0 {
+		return errors.New("schedule not found")
+	}
+	return nil
+}
+
 // setScheduleEnabled pauses or resumes one of the user's schedules; resuming
 // restarts its countdown so it does not fire at once for time spent paused.
 func setScheduleEnabled(db *sql.DB, userID, id int64, enabled bool, now time.Time) error {
@@ -473,6 +499,12 @@ func handleAddSchedule(upstream *url.URL) http.HandlerFunc {
 	return scheduleHandler(upstream, func(db *sql.DB, userID int64, req scheduleRequest) (any, error) {
 		id, err := addSchedule(db, userID, req.ConnID, req.Name, req.SQL, req.Interval, time.Now())
 		return id, err
+	})
+}
+
+func handleUpdateSchedule(upstream *url.URL) http.HandlerFunc {
+	return scheduleHandler(upstream, func(db *sql.DB, userID int64, req scheduleRequest) (any, error) {
+		return "", updateSchedule(db, userID, req.ID, req.Name, req.SQL, req.Interval, time.Now())
 	})
 }
 
