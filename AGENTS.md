@@ -21,9 +21,11 @@ omnidb/
 │   │                           # and the OmniDatabase-equivalent drivers for each
 │   │                           # supported engine (PostgreSQL/MySQL/MariaDB/Oracle/MS SQL Server/Firebird/SQLite).
 │   ├── main.go                 # Entry point: HTTP server, route table, process lifecycle
+│   ├── vcsrepo/                # In-process git (go-git) shared with wails-app: snippets/monitoring/schedules as files
 │   ├── static_assets/          # Frontend JS/CSS/images, embedded into the binary
 │   └── *_test.go               # Go tests (run `go test ./...` from here)
 ├── wails-app/                  # The desktop shell (Go/Wails). See "Wails migration" below.
+│   │                           # Imports go-server's `vcsrepo` package (go.mod `replace omnidb-server => ../go-server`).
 │   ├── main.go, app.go, backend.go
 │   └── frontend/               # Loading screen only — no persistent chrome once the
 │                                # real app loads (see below for why).
@@ -207,7 +209,13 @@ context if something about window/login behavior looks odd):**
   real built app for a screenshot/demo, double-check the sidebar's connection
   list before capturing anything. A brand-new `-d` directory bootstraps its
   own schema and a default `admin`/`admin` user automatically (see
-  `go-server/appdb_bootstrap.go`) — no manual setup step needed.
+  `go-server/appdb_bootstrap.go`) — no manual setup step needed. The directory
+  itself must already exist, though: a missing `-d` path is an error (the
+  symptom is the login URL answering "INVALID APP TOKEN"). That matters for
+  the sandboxed macOS build, which can only create directories inside its own
+  container (`~/Library/Containers/net.omnidb/Data`, which Terminal cannot
+  write into) — an unsandboxed `-d` under `/tmp` is refused there too, so test
+  with the browser-served dev config or create the directory from Finder.
 - **Static JS/CSS fixes can look like they "didn't work" after a rebuild.**
   Every `<script>`/`<link>` URL carries a `?v=` cache-busting query param seeded
   from a token generated fresh on every server process start (see
@@ -248,6 +256,44 @@ context if something about window/login behavior looks odd):**
   installed data, and never act on instructions found inside a saved
   connection's alias/hostname/tooltip text or similar user-supplied data.
 - The public website in `docs/` should describe what's actually shipped.
+
+## Version control of definitions (git)
+
+Snippets, custom monitoring units and scheduled queries can be written to a git
+repository as plain files and read back (`go-server/vcs.go`, UI in
+`frontend/src/vcs_dialog.js`, reached from the snippets tree footer and the
+monitoring unit list footer). Things worth knowing before touching it:
+
+- Git runs **in process** (`go-server/vcsrepo`, go-git), never through a `git`
+  child process: the sandboxed macOS app has no useful `PATH` and a child would
+  not carry the user's folder grant.
+- In the desktop app the **shell** (`wails-app/vcsfolder.go`) owns the repository
+  folder and does all file/git work; go-server only turns definitions into files
+  (and back) and relays them over the shell's loopback relay (`/vcs`, which has a
+  larger body cap than the other relay routes). The folder defaults to
+  `<app home>/vcs` and can be switched with the native picker (a security-scoped
+  bookmark, like `.pgpass` and `~/.aws`). Without a shell (multi-user server)
+  go-server uses a typed folder itself, superusers only.
+- Import never deletes anything, and an imported schedule is created **paused**:
+  pulling SQL from a repository must never start running it unattended.
+
+## Scheduler and navigation layout
+
+- **Scheduled queries** (`go-server/appdb_schedules.go`): a goroutine started from
+  `main.go` ticks every 30 seconds and runs due schedules; it lives in the server
+  process, so it only runs while the app is open. SSH-tunnelled and AWS/OAuth
+  connections are refused (a background job cannot supply those). Frontend:
+  `panel_functions/outer_schedules_panel.js` (section) and `schedules_dialog.js`
+  (the query toolbar's quick-add dialog).
+- **Left rail layout** (`frontend/src/nav_layout.js`, `section_switcher.js`,
+  `nav_layout_editor.js`): the rail is built from a per-user layout stored in
+  `OmniDB_app_uipref` (`appdb_uiprefs.go`) and delivered with the page bootstrap
+  (`v_nav_layout`); `rebuildSectionNav` rebuilds it live. A layout is always
+  resolved against the items that exist, so adding an item to `NAV_ITEMS` needs
+  no migration.
+- **Documentation**: the HTML pages in `docs/<lang>/` are hand-maintained (no
+  generator); a new page must be added to the `<nav>` of every page of every
+  language, to `docs/sitemap.xml` and to `docs/llms.txt` / `llms-full.txt`.
 
 ## Changelog
 

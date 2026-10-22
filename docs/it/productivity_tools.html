@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Strumenti di produttività – Documentazione OmniDB</title>
+	<meta name="description" content="Funzioni di produttività di OmniDB: Search Everywhere, segnalibri, pannello di navigazione personalizzabile, connessioni in sola lettura, aiuti dell&#x27;editor SQL, strumenti per i risultati, importazione, dump e ripristino, confronto, query pianificate e controllo versione con git.">
+	<link rel="canonical" href="https://www.omnidb.net/it/productivity_tools.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/productivity_tools.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/productivity_tools.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/productivity_tools.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/productivity_tools.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/productivity_tools.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/productivity_tools.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/productivity_tools.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/productivity_tools.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/it/productivity_tools.html">
+	<meta property="og:title" content="Strumenti di produttività - Documentazione OmniDB">
+	<meta property="og:description" content="Funzioni di produttività di OmniDB: Search Everywhere, segnalibri, pannello di navigazione personalizzabile, connessioni in sola lettura, aiuti dell&#x27;editor SQL, strumenti per i risultati, importazione, dump e ripristino, confronto, query pianificate e controllo versione con git.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/it/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentazione", "item": "https://www.omnidb.net/it/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Strumenti di produttività", "item": "https://www.omnidb.net/it/productivity_tools.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Attiva/disattiva navigazione">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentazione</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Sponsorizza" title="Sponsorizza">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Stella su GitHub" title="Stella su GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambia lingua" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambia tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatico</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Chiaro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Scuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Home</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Per iniziare</span>
+			<a href="introduction.html">Introduzione</a>
+			<a href="installation.html">Installazione</a>
+			<a href="desktop_app.html">App desktop</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="settings_and_languages.html">Impostazioni e lingue</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Lavorare con i dati</span>
+			<a href="managing_databases.html">Gestione dei database</a>
+			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
+			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="productivity_tools.html" class="active">Strumenti di produttività</a>
+			<a href="snippets.html">Snippet</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="visualizing_data.html">Visualizzazione dei dati</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzate</span>
+			<a href="additional_features.html">Funzionalità aggiuntive</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="notify.html">Notifiche</a>
+			<a href="connected_users.html">Utenti connessi</a>
+			<a href="permissions.html">Ruoli e permessi</a>
+			<a href="logical_replication.html">Replica logica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="security.html">Sicurezza e server multiutente</a>
+			<a href="console_tab.html">Scheda Console</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Riferimento</span>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+		</div>
+		</nav>
+		<main>
+<h1>Strumenti di produttività</h1>
+<p>OmniDB offre diversi strumenti che fanno risparmiare clic e battute. Funzionano con tutti i
+database supportati, salvo diversa indicazione, e tutto ciò che modificherebbe un database (una
+ridenominazione, una sincronizzazione dello schema, un ripristino) viene prima mostrato come SQL: lo
+esegue lei stesso.</p>
+
+<h4>Trovare le cose</h4>
+<p><strong>Cerca ovunque.</strong> Prema due volte <kbd>Shift</kbd> per aprire la palette. In un
+unico campo trova sezioni, connessioni, segnalibri, snippet e, per la connessione selezionata, tabelle
+(da due caratteri digitati), senza distinguere maiuscole e accenti. Le frecce spostano la selezione,
+<kbd>Invio</kbd> apre il risultato (una tabella si apre in Edit Data) ed <kbd>Esc</kbd> la chiude.</p>
+<p><strong>Segnalibri.</strong> Faccia clic con il tasto destro su una tabella nell'albero e
+scelga <em>Aggiungi ai segnalibri</em>. La sezione <em>Segnalibri</em> nella barra a sinistra elenca
+le tabelle fissate per connessione; un clic apre la connessione (se non è ancora aperta) e la tabella
+in Edit Data, e la croce la rimuove. I segnalibri sono privati per ogni utente di OmniDB.</p>
+
+<h4>La barra a sinistra e le connessioni</h4>
+<p><strong>Pannello di navigazione.</strong> In <em>Impostazioni &gt;
+Pannello di navigazione</em> sceglie quali voci mostra la barra a sinistra, le ordina con le
+frecce e sposta il separatore tra la sua parte superiore e inferiore. L'icona Impostazioni è sempre
+l'ultima e non si può nascondere. Ogni modifica ha effetto subito, senza ricaricare, e viene salvata
+per il suo utente.</p>
+<p><strong>Connessione di sola lettura.</strong> La selezioni nel modulo della connessione e le scritture
+attraverso quella connessione vengono rifiutate; l'elenco delle connessioni, la scheda del database e
+il menu della connessione mostrano un lucchetto. PostgreSQL, MySQL/MariaDB e SQLite portano inoltre la
+sessione stessa in sola lettura e, per ogni motore, l'editor di query, la console e Edit Data
+rifiutano tutto tranne le istruzioni di tipo SELECT. È una rete di sicurezza contro gli errori (la
+scheda di produzione lasciata aperta), non un confine di sicurezza: per una garanzia solida usi un
+ruolo del database senza privilegi di scrittura.</p>
+
+<h4>L'editor SQL</h4>
+<ul>
+<li><strong>Completamento contestuale.</strong> L'istruzione in modifica viene analizzata per capire in
+quale clausola si trova il cursore e da quali tabelle, sottoquery e CTE legge. <code>alias.</code>,
+<code>tabella.</code> e <code>cte.</code> elencano le colonne di quel riferimento; una parola isolata
+in SELECT, WHERE, GROUP BY, ORDER BY, HAVING, SET, RETURNING o nell'elenco colonne di un INSERT
+propone le colonne delle tabelle dell'istruzione; dopo <code>ON</code> in testa ci sono le condizioni
+di chiave esterna tra la tabella unita e le precedenti; dopo FROM, JOIN, UPDATE o INTO seguono i nomi
+delle CTE dell'istruzione e le tabelle della connessione.</li>
+<li><strong>Ispezioni in tempo reale.</strong> Dopo una pausa nella digitazione, i problemi vengono
+segnalati nel margine (passando il mouse compare il messaggio) e con una sottolineatura puntinata:
+<code>UPDATE</code> o <code>DELETE</code> senza <code>WHERE</code>, confronti con <code>NULL</code>
+tramite <code>=</code> o <code>&lt;&gt;</code>, un <code>JOIN</code> senza <code>ON</code> né
+<code>USING</code>, un alias a cui nulla fa riferimento e una tabella o vista che il database non
+conosce.</li>
+<li><strong>Vai alla definizione e Trova utilizzi.</strong>
+<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+clic (o <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>B</kbd>) su un nome: un
+alias o una CTE salta alla definizione, una tabella o vista apre il suo DDL in una nuova scheda.
+<kbd>Alt</kbd>+<kbd>F7</kbd> seleziona ogni menzione di un alias o di una CTE nell'istruzione e, per
+una tabella, elenca dove compare (nell'editor, nei suoi snippet e nella cronologia delle query); ogni
+voce è cliccabile.</li>
+<li><strong>Rinomina…</strong> (<kbd>Maiusc</kbd>+<kbd>F6</kbd> o il menu contestuale
+dell'editor). Un alias o una CTE viene rinominato in tutta l'istruzione in una volta. Una tabella o
+colonna apre un'anteprima: l'istruzione <code>ALTER</code>/<code>RENAME</code> per il suo database
+viene scritta in una nuova scheda perché la esegua lei, insieme alle righe dei suoi snippet che
+citano il vecchio nome (ciascuna con una casella) e alle menzioni nell'editor corrente. Viene
+riscritto solo il codice, mai stringhe o commenti.</li>
+<li><strong>Modelli dinamici.</strong> Digiti un'abbreviazione e prema <kbd>Tab</kbd> per espanderla
+nello scheletro di un'istruzione; poi <kbd>Tab</kbd> / <kbd>Maiusc</kbd>+<kbd>Tab</kbd> scorrono i
+segnaposto. Incorporati: <code>sel</code>, <code>cnt</code>, <code>grp</code>, <code>ins</code>,
+<code>upd</code>, <code>del</code>, <code>jn</code>, <code>cte</code>, <code>crt</code>. I suoi vivono
+nella sezione <em>Snippet</em> come snippet in una cartella chiamata <em>Live templates</em>: il nome
+dello snippet è l'abbreviazione, il suo testo il modello (<code>${1:valore}</code> per un segnaposto,
+<code>$0</code> per la posizione finale del cursore).</li>
+<li><strong>Parametri con nome.</strong> Un'istruzione con segnaposto <code>:nome</code> chiede un
+valore per ogni parametro prima di essere eseguita. Ogni valore viene indovinato (numeri,
+<code>NULL</code> e <code>TRUE</code>/<code>FALSE</code> restano com'è, tutto il resto diventa una
+stringa tra apici), forzato a testo o incollato come SQL grezzo. I segnaposto dentro stringhe,
+commenti, <code>::cast</code> e slice di array vengono lasciati stare.</li>
+<li><strong>Cronologia locale.</strong> Ciò che digita viene salvato come versione (dopo una pausa
+nella digitazione e quando l'editor perde il focus), fino a 100 per connessione e utente. Il pulsante
+cronologia della barra degli strumenti delle query le elenca e mostra le righe che sparirebbero e
+tornerebbero se ripristinasse quella selezionata; <em>Ripristina</em> la mette nell'editor,
+salvando prima il testo che sostituisce.</li>
+<li><strong>Riduzione e multi-cursore.</strong> Le istruzioni su più righe hanno un controllo di
+riduzione nel margine; <kbd>Alt</kbd>+<kbd>J</kbd> seleziona l'occorrenza successiva della parola sotto
+il cursore (<kbd>Alt</kbd>+<kbd>Maiusc</kbd>+<kbd>J</kbd> la precedente) per modificare più punti
+insieme.</li>
+<li><strong>Genera</strong> (menu contestuale di una tabella).
+<em>SELECT con JOIN (chiavi esterne)</em> scrive una SELECT delle colonne della tabella più quelle di ogni
+tabella a cui puntano le sue chiavi esterne, ciascuna come LEFT JOIN; <em>Script CRUD</em>
+scrive INSERT / SELECT / UPDATE / DELETE per una riga indirizzata dalla chiave primaria, con parametri
+<code>:con_nome</code>. Entrambi si aprono in una nuova scheda di query.</li>
+</ul>
+
+<h4>Risultati delle query</h4>
+<ul>
+<li><strong>Filtro.</strong> Il campo accanto al pulsante di esportazione restringe la griglia alle
+righe che contengono ogni parola digitata (in qualsiasi cella, senza distinguere le maiuscole;
+<code>null</code> corrisponde alle celle NULL) e mostra «N di M». Guarda solo le righe già
+recuperate.</li>
+<li><strong>Azioni sulla riga</strong> (clic destro su una cella): <em>Vista record</em>
+mostra la riga come tabella verticale colonna / valore; <em>Copia riga come INSERT</em>,
+<em>Copia riga come JSON</em>, <em>Copia riga come Markdown</em> e <em>Copia riga come CSV</em> la copiano
+in quel formato; <em>Statistiche della colonna</em> conta i valori non vuoti, NULL e distinti e, per i
+numerici, somma, media e limiti sulle righe caricate.</li>
+<li><strong>Visualizzatore del contenuto di una cella.</strong> L'apertura del contenuto di una cella
+offre <em>Format JSON</em> e <em>Minify JSON</em> finché il testo è JSON valido (numeri e stringhe
+restano carattere per carattere), un interruttore <em>Wrap lines</em> e un pulsante
+<em>Copy</em>.</li>
+<li><strong>Grafico del risultato.</strong> Il pulsante del grafico nella barra degli strumenti delle
+query disegna le righe che la griglia mostra come grafico a barre, a linee, a torta o ad anello:
+scelga la colonna dell'asse x e spunti le colonne numeriche da tracciare (fino alle prime 500
+righe).</li>
+<li><strong>Esportazione SQL.</strong> Tra i formati di esportazione c'è <em>SQL</em>, che scrive
+istruzioni <code>INSERT INTO … VALUES …;</code>, una per riga, con gli apici adatti al database della
+connessione.</li>
+</ul>
+
+<h4>Edit Data e importazione</h4>
+<ul>
+<li><strong>Duplica riga</strong> copia una riga in un nuovo INSERT in sospeso (le
+colonne della chiave primaria restano vuote perché il database le generi).</li>
+<li><strong>Vai alla riga referenziata</strong> (clic destro su una cella di chiave esterna) apre
+la tabella referenziata in Edit Data, già filtrata sulla riga a cui punta il valore; le chiavi
+composte sono supportate.</li>
+<li><strong>Importa dati…</strong> (clic destro su una tabella) carica un file CSV, TSV o JSON (un
+array di oggetti o di array). Il delimitatore viene rilevato o scelto, le colonne del file vengono
+associate a quelle della tabella con un'anteprima delle prime righe, e i valori vuoti possono diventare
+NULL. Le righe vengono inserite in un'unica transazione, quindi una riga errata (indicata nell'errore)
+lascia la tabella intatta; fino a 200.000 righe per volta e mai su una connessione in sola
+lettura.</li>
+</ul>
+
+<h4>Dump, ripristino ed esecuzione di file di script</h4>
+<p><em>Esporta tabella (struttura e dati) in file SQL</em> e <em>Esporta tabella (solo struttura) in file SQL</em> (menu
+<em>Genera</em> di una tabella) scrivono il DDL della tabella, seguito da un INSERT per riga,
+in un file SQL: non serve alcun programma esterno. Il pulsante <em>Esegui uno script SQL da file (ripristina un dump)</em> nella
+barra degli strumenti delle query esegue un tale file (o qualsiasi script SQL) istruzione per
+istruzione in una transazione, così un'istruzione che fallisce (indicata nell'errore) annulla il resto
+ovunque il database abbia DDL transazionale. Fino a 48 MB e 1.000.000 di istruzioni; rifiutato su una
+connessione in sola lettura.</p>
+
+<h4>Confronta</h4>
+<p>Il pulsante con le frecce nella barra degli strumenti delle query confronta la connessione attuale
+con un'altra: o lo schema (tabelle, colonne e i loro tipi) o le righe di una tabella per chiave
+primaria. Il risultato è un riepilogo più uno script che porta la destinazione a coincidere con
+l'origine (<code>CREATE TABLE</code>, <code>ADD COLUMN</code>, cambi di tipo,
+<code>INSERT</code>/<code>UPDATE</code> di righe), aperto in una scheda della connessione di
+destinazione perché lo legga e lo esegua: confrontare non cambia nulla. Le istruzioni distruttive
+(<code>DROP</code>, <code>DELETE</code> di righe) vengono scritte solo come commenti, a meno che non
+chieda le eliminazioni. Nullabilità, valori predefiniti, indici e vincoli non vengono confrontati.</p>
+
+<h4>Query pianificate</h4>
+<p>La sezione <em>Query pianificate</em> nella barra a sinistra esegue SQL su una connessione ogni N
+minuti (da 1 minuto a una settimana). Le pianificazioni sono elencate a sinistra, con un piè di pagina
++ / −; le impostazioni di quella selezionata (nome, intervallo, SQL) sono a destra, con
+<em>Esegui ora</em>, <em>Metti in pausa</em> / <em>Riprendi</em> e le sue
+ultime 50 esecuzioni (stato, durata e cosa ha fatto ogni istruzione, oppure l'errore su cui si è
+fermata). Il pulsante calendario nella barra degli strumenti delle query salva l'SQL dell'editor (la
+selezione, altrimenti tutto il testo) come nuova pianificazione. Lo scheduler vive nel processo server
+di OmniDB, quindi funziona solo finché OmniDB è aperto; un'esecuzione scaduta mentre era chiuso avviene
+una volta al successivo avvio. Le connessioni in sola lettura rifiutano comunque le scritture e le
+connessioni con tunnel SSH o autenticazione a token non possono essere pianificate.</p>
+
+<h4>Controllo versione (git)</h4>
+<p>Il pulsante del ramo sotto l'albero degli snippet (e sotto l'elenco delle unità di monitoraggio)
+conserva le sue definizioni condivisibili in un repository git come file di testo: gli snippet come
+file <code>.sql</code> in <code>snippets/</code> (una directory per cartella di snippet), le unità di
+monitoraggio personalizzate come <code>monitoring/&lt;motore&gt;/*.json</code> e le query pianificate
+come <code>schedules/&lt;alias della connessione&gt;/*.json</code> (solo alias e SQL: mai un indirizzo
+o delle credenziali). <em>Esegui il commit</em> scrive i file, rimuove i file
+<code>.sql</code>/<code>.json</code> che non corrispondono più a nulla e li registra con commit;
+<em>Importa dalla cartella</em> li rilegge, creando o aggiornando definizioni senza mai eliminarne. Una
+pianificazione importata parte in pausa, perché nulla giri senza supervisione.</p>
+<p>Git gira dentro OmniDB, quindi non serve avere <code>git</code> installato. Nell'app desktop il
+repository vive in una cartella nella home di OmniDB finché non ne sceglie un'altra con
+<em>Scegli cartella…</em> (ricordata tra gli avvii). Su macOS quella cartella integrata si trova dentro
+il contenitore dell'app, che gli altri programmi non possono aprire: scelga una cartella sua se vuole
+fare il push del repository con i suoi strumenti git. Su un server multiutente si digita il percorso
+della cartella e la funzione è limitata ai superutenti. Push e pull restano ai suoi strumenti git.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

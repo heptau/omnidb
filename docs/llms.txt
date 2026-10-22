@@ -143,6 +143,21 @@ URL: https://www.omnidb.net/en/snippets.html
 
 ---
 
+## Productivity Tools
+
+URL: https://www.omnidb.net/en/productivity_tools.html
+
+**Description:** Productivity features of OmniDB: Search Everywhere, bookmarks, a customizable navigation panel, read-only connections, context-aware completion, live SQL inspections, go to definition / find usages / rename, live templates, named parameters, local editor history, result filter / record view / chart, import, dump and restore, compare, scheduled queries and version control with git.
+
+**Key Topics:**
+- Search Everywhere (double Shift) and bookmarks
+- Navigation panel layout (Settings > Navigation panel) and read-only connections
+- SQL editor aids: completion, inspections, navigation, rename, live templates, parameters, history
+- Query result tools, importing data, dump and restore, running script files
+- Compare (schema and table data), scheduled queries, version control of snippets, monitoring units and schedules with git
+
+---
+
 ## Visualizing Query Plans
 
 URL: https://www.omnidb.net/en/visualizing_query_plans.html

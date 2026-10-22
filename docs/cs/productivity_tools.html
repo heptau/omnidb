@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nástroje pro rychlejší práci – Dokumentace OmniDB</title>
+	<meta name="description" content="Nástroje OmniDB pro rychlejší práci: Search Everywhere, záložky, přizpůsobitelný navigační panel, připojení jen pro čtení, pomůcky SQL editoru, nástroje pro výsledky, import, dump a obnova, porovnání, naplánované dotazy a verzování v gitu.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/productivity_tools.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/productivity_tools.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/productivity_tools.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/productivity_tools.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/productivity_tools.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/productivity_tools.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/productivity_tools.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/productivity_tools.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/productivity_tools.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/productivity_tools.html">
+	<meta property="og:title" content="Nástroje pro rychlejší práci - Dokumentace OmniDB">
+	<meta property="og:description" content="Nástroje OmniDB pro rychlejší práci: Search Everywhere, záložky, přizpůsobitelný navigační panel, připojení jen pro čtení, pomůcky SQL editoru, nástroje pro výsledky, import, dump a obnova, porovnání, naplánované dotazy a verzování v gitu.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Nástroje pro rychlejší práci", "item": "https://www.omnidb.net/cs/productivity_tools.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Podpora" title="Podpora">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Hvězdička na GitHubu" title="Hvězdička na GitHubu">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="productivity_tools.html" class="active">Nástroje pro rychlejší práci</a>
+			<a href="snippets.html">Snippety</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+<h1>Nástroje pro rychlejší práci</h1>
+<p>OmniDB má řadu nástrojů, které šetří kliknutí i stisky kláves. Fungují s každou podporovanou
+databází, pokud není uvedeno jinak, a cokoli, co by databázi změnilo (přejmenování, synchronizace
+schématu, obnovení), se vám nejdřív ukáže jako SQL — spouštíte si to sami.</p>
+
+<h4>Hledání</h4>
+<p><strong>Hledat všude.</strong> Dvojitým stisknutím <kbd>Shift</kbd> otevřete paletu. V jednom
+poli hledá sekce, připojení, záložky, snippety a u vybraného připojení také tabulky (od dvou
+napsaných znaků), bez ohledu na velikost písmen a diakritiku. Šipkami se pohybujete,
+<kbd>Enter</kbd> otevře vybranou položku (tabulka se otevře v Edit Data) a <kbd>Esc</kbd> paletu
+zavře.</p>
+<p><strong>Záložky.</strong> Klikněte pravým tlačítkem na tabulku ve stromu a zvolte
+<em>Přidat do záložek</em>. Sekce <em>Záložky</em> v levém panelu vypisuje připnuté
+tabulky podle připojení; kliknutí otevře připojení (pokud ještě není otevřené) a tabulku v Edit Data,
+křížek záložku odebere. Záložky jsou soukromé pro každého uživatele OmniDB.</p>
+
+<h4>Levý panel a připojení</h4>
+<p><strong>Navigační panel.</strong> V <em>Nastavení &gt;
+Navigační panel</em> zvolíte, které položky panel vlevo zobrazuje, šipkami je
+seřadíte a přesunete oddělovač mezi jeho horní a dolní částí. Ikona Nastavení je vždy poslední a
+nejde skrýt. Každá změna se projeví okamžitě, bez opětovného načtení, a ukládá se pro vašeho
+uživatele.</p>
+<p><strong>Připojení pouze pro čtení.</strong> Zaškrtněte ji ve formuláři připojení a zápisy přes
+toto připojení se odmítnou; seznam připojení, karta Databáze i nabídka připojení zobrazují zámek.
+PostgreSQL, MySQL/MariaDB a SQLite navíc přepnou samotnou relaci do režimu jen pro čtení a u všech
+databází editor dotazů, konzole i Edit Data odmítnou cokoli kromě příkazů typu SELECT. Je to pojistka
+proti nehodám (otevřená karta s produkcí), ne bezpečnostní hranice — pro pevnou záruku použijte
+databázovou roli bez práv k zápisu.</p>
+
+<h4>SQL editor</h4>
+<ul>
+<li><strong>Doplňování podle kontextu.</strong> Upravovaný příkaz se prohledá, aby se zjistilo,
+v jaké klauzuli je kurzor a z jakých tabulek, poddotazů a CTE se čte. <code>alias.</code>,
+<code>tabulka.</code> a <code>cte.</code> nabídnou sloupce dané reference; samostatné slovo ve SELECT,
+WHERE, GROUP BY, ORDER BY, HAVING, SET, RETURNING nebo v seznamu sloupců INSERT nabídne sloupce
+tabulek příkazu; po <code>ON</code> vedou podmínky z cizích klíčů mezi připojovanou tabulkou a
+předchozími; po FROM, JOIN, UPDATE nebo INTO následují názvy CTE příkazu a tabulky připojení.</li>
+<li><strong>Průběžné kontroly.</strong> Po krátké pauze v psaní se problémy označí v okraji editoru
+(po najetí myší se zobrazí zpráva) a tečkovaným podtržením: <code>UPDATE</code> nebo
+<code>DELETE</code> bez <code>WHERE</code>, porovnání s <code>NULL</code> pomocí <code>=</code> nebo
+<code>&lt;&gt;</code>, <code>JOIN</code> bez <code>ON</code> i <code>USING</code>, alias, na který
+se nic neodkazuje, a tabulka či pohled, které databáze nezná.</li>
+<li><strong>Přejít na definici a Najít použití.</strong>
+<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+klik (nebo <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>B</kbd>) na název:
+alias nebo CTE skočí na místo definice, tabulka či pohled otevře své DDL v nové záložce.
+<kbd>Alt</kbd>+<kbd>F7</kbd> vybere všechny výskyty aliasu nebo CTE v příkazu a u tabulky vypíše, kde
+se vyskytuje — v editoru, ve vašich snippetech a v historii dotazů — každou položku lze rozkliknout.</li>
+<li><strong>Přejmenovat…</strong> (<kbd>Shift</kbd>+<kbd>F6</kbd> nebo kontextová nabídka
+editoru). Alias nebo CTE se přejmenuje v celém příkazu najednou. U tabulky nebo sloupce se otevře
+náhled: příkaz <code>ALTER</code>/<code>RENAME</code> pro vaši databázi se zapíše do nové záložky,
+abyste ho spustili sami, spolu s řádky snippetů, které zmiňují starý název (každý se zaškrtávátkem),
+a s výskyty v aktuálním editoru. Přepisuje se jen kód, nikdy řetězce ani komentáře.</li>
+<li><strong>Živé šablony.</strong> Napište zkratku a stiskněte <kbd>Tab</kbd> — rozbalí se do kostry
+příkazu, a pak <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> procházíte její zástupné hodnoty.
+Vestavěné: <code>sel</code>, <code>cnt</code>, <code>grp</code>, <code>ins</code>, <code>upd</code>,
+<code>del</code>, <code>jn</code>, <code>cte</code>, <code>crt</code>. Vlastní šablony žijí v sekci
+<em>Snippety</em> jako snippety ve složce nazvané <em>Live templates</em>: název snippetu je zkratka,
+jeho text šablona (<code>${1:výchozí}</code> pro zástupnou hodnotu, <code>$0</code> pro konečnou
+polohu kurzoru).</li>
+<li><strong>Pojmenované parametry.</strong> Příkaz s místy <code>:nazev</code> se před spuštěním zeptá
+na hodnotu každého parametru. Hodnota se odhadne (čísla, <code>NULL</code> a
+<code>TRUE</code>/<code>FALSE</code> zůstanou holé, vše ostatní se stane řetězcem v uvozovkách),
+vynutí se jako text, nebo se vloží jako surové SQL. Zástupná místa uvnitř řetězců, komentářů,
+<code>::přetypování</code> a řezů polí se nechají být.</li>
+<li><strong>Lokální historie.</strong> To, co píšete, se ukládá jako verze (po pauze v psaní a při
+ztrátě fokusu editoru), nejvýše 100 na připojení a uživatele. Tlačítko historie v panelu nástrojů
+dotazu je vypíše a ukáže řádky, které by zmizely a vrátily se, kdybyste obnovili vybranou verzi;
+<em>Obnovit</em> ji vloží do editoru a nahrazovaný text předtím uloží.</li>
+<li><strong>Sbalování a více kurzorů.</strong> Víceřádkové příkazy mají v okraji ovladač sbalení;
+<kbd>Alt</kbd>+<kbd>J</kbd> vybere další výskyt slova pod kurzorem
+(<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>J</kbd> předchozí) pro úpravu více míst najednou.</li>
+<li><strong>Generovat</strong> (kontextová nabídka tabulky). <em>SELECT s JOINy (cizí klíče)</em>
+napíše SELECT sloupců tabulky a sloupců každé tabulky, na kterou míří její cizí klíče, každou jako
+LEFT JOIN; <em>CRUD skript</em> napíše INSERT / SELECT / UPDATE / DELETE pro jeden řádek
+určený primárním klíčem s parametry <code>:pojmenovanými</code>. Obojí se otevře v nové záložce
+dotazu.</li>
+</ul>
+
+<h4>Výsledky dotazů</h4>
+<ul>
+<li><strong>Filtr.</strong> Pole vedle tlačítka exportu zúží mřížku na řádky obsahující každé
+napsané slovo (v libovolné buňce, bez ohledu na velikost písmen; <code>null</code> odpovídá buňkám
+NULL) a ukáže „N z M“. Dívá se jen na už načtené řádky.</li>
+<li><strong>Akce s řádkem</strong> (pravé tlačítko na buňce): <em>Zobrazit řádek</em> ukáže
+řádek jako svislou tabulku sloupec / hodnota; <em>Kopírovat řádek jako INSERT</em>,
+<em>Kopírovat řádek jako JSON</em>, <em>Kopírovat řádek jako Markdown</em> a <em>Kopírovat řádek jako CSV</em> ho
+zkopírují v daném formátu; <em>Statistiky sloupce</em> spočítá neprázdné, NULL a různé hodnoty
+a u číselných součet, průměr a meze přes načtené řádky.</li>
+<li><strong>Prohlížeč obsahu buňky.</strong> Otevření obsahu buňky nabízí <em>Format JSON</em> a
+<em>Minify JSON</em>, dokud je text platný JSON (čísla a řetězce zůstanou znak po znaku), přepínač
+<em>Wrap lines</em> a tlačítko <em>Copy</em>.</li>
+<li><strong>Graf z výsledku.</strong> Tlačítko grafu v panelu nástrojů dotazu vykreslí řádky,
+které mřížka právě ukazuje, jako sloupcový, čárový, koláčový nebo prstencový graf: zvolíte sloupec
+pro osu x a zaškrtnete číselné sloupce k vykreslení (nejvýše prvních 500 řádků).</li>
+<li><strong>Export SQL.</strong> Mezi formáty exportu je <em>SQL</em>, který zapíše příkazy
+<code>INSERT INTO … VALUES …;</code>, jeden na řádek, s uvozením pro databázi připojení.</li>
+</ul>
+
+<h4>Edit Data a import</h4>
+<ul>
+<li><strong>Duplikovat řádek</strong> zkopíruje řádek do nové čekající vložky (sloupce
+primárního klíče zůstanou prázdné, aby je mohla vygenerovat databáze).</li>
+<li><strong>Přejít na odkazovaný řádek</strong> (pravé tlačítko na buňce cizího klíče) otevře
+odkazovanou tabulku v Edit Data už filtrovanou na řádek, na který hodnota ukazuje; složené klíče
+jsou podporovány.</li>
+<li><strong>Importovat data…</strong> (pravé tlačítko na tabulce) načte soubor CSV, TSV nebo JSON
+(pole objektů nebo polí). Oddělovač se zjistí nebo zvolí, sloupce souboru se přiřadí ke sloupcům
+tabulky s náhledem prvních řádků a prázdné hodnoty mohou být NULL. Řádky se vloží v jedné transakci,
+takže chybný řádek (uvedený v chybě) nechá tabulku nedotčenou; najednou nejvýše 200 000 řádků a
+nikdy ne na připojení jen pro čtení.</li>
+</ul>
+
+<h4>Dump, obnova a spouštění skriptů ze souboru</h4>
+<p><em>Zálohovat tabulku (struktura i data) do SQL souboru</em> a <em>Zálohovat tabulku (jen struktura) do SQL souboru</em> (nabídka
+<em>Generovat</em> tabulky) zapíší DDL tabulky a za ním jeden INSERT na řádek do souboru SQL —
+nepotřebujete žádný externí program. Tlačítko <em>Spustit SQL skript ze souboru (obnovit zálohu)</em> v panelu nástrojů
+dotazu takový soubor (nebo jakýkoli skript SQL) spustí příkaz po příkazu v jedné transakci, takže
+selhávající příkaz, uvedený v chybě, vrátí zpět zbytek všude, kde databáze má transakční DDL. Až
+48 MB a 1 000 000 příkazů; na připojení jen pro čtení se odmítne.</p>
+
+<h4>Porovnání</h4>
+<p>Tlačítko se šipkami v panelu nástrojů dotazu porovná aktuální připojení s jiným: buď schéma
+(tabulky, sloupce a jejich typy), nebo řádky jedné tabulky podle primárního klíče. Výsledkem je
+souhrn a skript, který cíl přizpůsobí zdroji (<code>CREATE TABLE</code>, <code>ADD COLUMN</code>,
+změny typů, <code>INSERT</code>/<code>UPDATE</code> řádků), otevřený v záložce cílového připojení,
+abyste si ho přečetli a spustili — porovnání samo nic nemění. Destruktivní příkazy
+(<code>DROP</code>, <code>DELETE</code> řádků) se zapíšou jen jako komentáře, pokud o mazání
+nepožádáte. Nullovatelnost, výchozí hodnoty, indexy a omezení se neporovnávají.</p>
+
+<h4>Naplánované dotazy</h4>
+<p>Sekce <em>Naplánované dotazy</em> v levém panelu spouští SQL na připojení každých N minut (od 1
+minuty do týdne). Plány jsou vlevo v seznamu se zápatím + / −; nastavení vybraného — název, interval,
+SQL — je vpravo, spolu s tlačítky <em>Spustit teď</em>, <em>Pozastavit</em> /
+<em>Obnovit</em> a posledními 50 běhy (stav, doba trvání a co každý příkaz udělal, nebo
+chyba, na které se zastavil). Tlačítko s kalendářem v panelu nástrojů dotazu uloží SQL z editoru
+(výběr, jinak celý text) jako nový plán. Plánovač běží v serverovém procesu OmniDB, takže jede jen,
+dokud je OmniDB spuštěné; běh, který přišel na řadu při vypnutí, proběhne jednou při dalším startu.
+Připojení jen pro čtení dál odmítají zápisy a připojení přes SSH tunel nebo s tokenovým ověřením
+naplánovat nejde.</p>
+
+<h4>Správa verzí (git)</h4>
+<p>Tlačítko s větví pod stromem snippetů (a pod seznamem monitorovacích jednotek) drží vaše sdílitelné
+definice v repozitáři git jako obyčejné soubory: snippety jako soubory <code>.sql</code> ve složce
+<code>snippets/</code> (adresář pro každou složku snippetů), vlastní monitorovací jednotky jako
+<code>monitoring/&lt;databáze&gt;/*.json</code> a naplánované dotazy jako
+<code>schedules/&lt;alias připojení&gt;/*.json</code> (jen alias a SQL — nikdy adresa ani přihlašovací
+údaje). <em>Commitnout</em> soubory zapíše, odstraní soubory <code>.sql</code>/<code>.json</code>,
+které už ničemu neodpovídají, a commitne je; <em>Importovat ze složky</em> je načte zpět, definice vytvoří
+nebo upraví a žádnou nikdy nesmaže. Importovaný plán začíná pozastavený, aby nic neběželo bez
+dohledu.</p>
+<p>Git běží uvnitř OmniDB, takže není potřeba mít nainstalovaný <code>git</code>. V desktopové
+aplikaci leží repozitář ve složce uvnitř domovského adresáře OmniDB, dokud nevyberete jinou tlačítkem
+<em>Vybrat složku…</em> (pamatuje se mezi spuštěními). Na macOS leží tato vestavěná složka uvnitř
+kontejneru aplikace, který jiné programy neotevřou — chcete-li repozitář pushovat vlastními nástroji
+gitu, vyberte vlastní složku. Na vícemístném serveru zadáváte cestu ke složce a funkce je omezená na
+superuživatele. Push a pull zůstávají na vašich vlastních nástrojích gitu.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

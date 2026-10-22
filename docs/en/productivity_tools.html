@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Productivity Tools – OmniDB Documentation</title>
+	<meta name="description" content="Productivity features of OmniDB: Search Everywhere, bookmarks, a customizable navigation panel, read-only connections, SQL editor aids, result tools, import, dump and restore, compare, scheduled queries and version control with git.">
+	<link rel="canonical" href="https://www.omnidb.net/en/productivity_tools.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/productivity_tools.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/productivity_tools.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/productivity_tools.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/productivity_tools.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/productivity_tools.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/productivity_tools.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/productivity_tools.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/productivity_tools.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/en/productivity_tools.html">
+	<meta property="og:title" content="Productivity Tools - OmniDB Documentation">
+	<meta property="og:description" content="Productivity features of OmniDB: Search Everywhere, bookmarks, a customizable navigation panel, read-only connections, SQL editor aids, result tools, import, dump and restore, compare, scheduled queries and version control with git.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/en/" },
+			{ "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://www.omnidb.net/en/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Productivity Tools", "item": "https://www.omnidb.net/en/productivity_tools.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Docs</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Sponsor" title="Sponsor">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Star on GitHub" title="Star on GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Change language" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Change theme" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Light</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Dark</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Home</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Getting Started</span>
+			<a href="introduction.html">Introduction</a>
+			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
+			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Working with Data</span>
+			<a href="managing_databases.html">Managing Databases</a>
+			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
+			<a href="managing_table_data.html">Managing Table Data</a>
+			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="productivity_tools.html" class="active">Productivity Tools</a>
+			<a href="snippets.html">Snippets</a>
+			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
+			<a href="visualizing_data.html">Visualizing Data</a>
+			<a href="managing_other_elements.html">Managing other Elements</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Advanced</span>
+			<a href="additional_features.html">Additional Features</a>
+			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
+			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
+			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
+			<a href="logical_replication.html">Logical Replication</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server &amp; Tooling</span>
+			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
+			<a href="console_tab.html">Console Tab</a>
+			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Legacy Features &amp; History</a>
+		</div>
+		</nav>
+		<main>
+<h1>Productivity Tools</h1>
+<p>OmniDB has a number of tools that save clicks and keystrokes. They work with every supported
+database unless noted otherwise, and anything that would change a database (a rename, a schema
+sync, a restore) is first shown to you as SQL — you run it yourself.</p>
+
+<h4>Finding things</h4>
+<p><strong>Search everywhere.</strong> Press <kbd>Shift</kbd> twice to open the palette. It finds
+sections, connections, bookmarks, snippets and, for the selected connection, tables (from two typed
+characters) in one box, ignoring case and diacritics. The arrow keys move, <kbd>Enter</kbd> opens
+the pick (a table opens in Edit Data) and <kbd>Esc</kbd> closes it.</p>
+<p><strong>Bookmarks.</strong> Right-click a table in the tree and choose
+<em>Add to bookmarks</em>. The <em>Bookmarks</em> section in the left rail lists the pinned
+tables per connection; clicking one opens the connection (if it is not open yet) and the table in
+Edit Data, and the cross removes it. Bookmarks are private to each OmniDB user.</p>
+
+<h4>The left rail and connections</h4>
+<p><strong>Navigation panel.</strong> Under <em>Settings &gt;
+Navigation panel</em> you choose which items the rail on the left shows, put them in
+the order you like with the arrows and move the divider between its upper and lower part. The
+Settings icon is always last and cannot be hidden. Every change takes effect at once, without a
+reload, and is saved for your user.</p>
+<p><strong>Read-only connection.</strong> Tick it in the connection form and writes through that
+connection are refused; the Connections list, the Database tab and the connection menu show a lock.
+PostgreSQL, MySQL/MariaDB and SQLite also switch the session itself to read-only, and on every engine
+the query editor, the console and Edit Data refuse anything but SELECT-like statements. It is a
+safety net against accidents (the production tab left open), not a security boundary — use a
+database role without write privileges for a hard guarantee.</p>
+
+<h4>The SQL editor</h4>
+<ul>
+<li><strong>Context-aware completion.</strong> The statement being edited is scanned for the clause
+the cursor is in and for the tables, subqueries and CTEs it reads from. <code>alias.</code>,
+<code>table.</code> and <code>cte.</code> list that reference's columns; a bare word in SELECT, WHERE,
+GROUP BY, ORDER BY, HAVING, SET, RETURNING or an INSERT column list offers the columns of the
+statement's tables; after <code>ON</code> the foreign-key conditions between the table being joined
+and the ones before it lead the list; after FROM, JOIN, UPDATE or INTO come the statement's CTE names
+and the connection's tables.</li>
+<li><strong>Live inspections.</strong> After a pause in typing, problems are marked in the gutter
+(hover for the message) and with a dotted underline: <code>UPDATE</code> or <code>DELETE</code>
+without <code>WHERE</code>, comparisons with <code>NULL</code> using <code>=</code> or
+<code>&lt;&gt;</code>, a <code>JOIN</code> with neither <code>ON</code> nor <code>USING</code>, an
+alias nothing refers to, and a table or view the database does not know.</li>
+<li><strong>Go to definition and Find usages.</strong>
+<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+click (or <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>B</kbd>) on a name: an
+alias or CTE jumps to where it is defined, a table or view opens its DDL in a new tab.
+<kbd>Alt</kbd>+<kbd>F7</kbd> selects every mention of an alias or CTE in the statement, and for a
+table lists where it appears — in the editor, in your snippets and in your query history — each
+entry clickable.</li>
+<li><strong>Rename…</strong> (<kbd>Shift</kbd>+<kbd>F6</kbd>, or the editor's right-click
+menu). An alias or CTE is renamed in the whole statement at once. A table or column opens a preview:
+the <code>ALTER</code>/<code>RENAME</code> statement for your database is written into a new tab for
+you to run, together with the lines of your snippets that mention the old name (each with a
+checkbox) and the mentions in the current editor. Only code is rewritten, never strings or comments.</li>
+<li><strong>Live templates.</strong> Type an abbreviation and press <kbd>Tab</kbd> to expand it into
+a statement skeleton, then <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> through its placeholders.
+Built in: <code>sel</code>, <code>cnt</code>, <code>grp</code>, <code>ins</code>, <code>upd</code>,
+<code>del</code>, <code>jn</code>, <code>cte</code>, <code>crt</code>. Your own live in the
+<em>Snippets</em> section, as snippets inside a folder named <em>Live templates</em>: the snippet's
+name is the abbreviation, its text the template (<code>${1:default}</code> for a placeholder,
+<code>$0</code> for the final cursor position).</li>
+<li><strong>Named parameters.</strong> A statement containing <code>:name</code> placeholders asks for
+a value per parameter before it runs. Each value is guessed (numbers, <code>NULL</code> and
+<code>TRUE</code>/<code>FALSE</code> stay bare, anything else becomes a quoted string), forced to
+text, or pasted as raw SQL. Placeholders inside strings, comments, <code>::casts</code> and array
+slices are left alone.</li>
+<li><strong>Local history.</strong> What you type is saved as a version (after a pause in typing
+and when the editor loses focus), up to 100 per connection and user. The history button in the query
+toolbar lists them and shows the lines that would disappear and come back if you restored the
+selected one; <em>Restore</em> puts it into the editor, saving the text it replaces
+first.</li>
+<li><strong>Folding and multi-cursor.</strong> Multi-line statements get a fold widget in the gutter;
+<kbd>Alt</kbd>+<kbd>J</kbd> selects the next occurrence of the word under the cursor
+(<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>J</kbd> the previous one) for editing several places at once.</li>
+<li><strong>Generate</strong> (a table's context menu). <em>SELECT with JOINs (foreign keys)</em>
+writes a SELECT of the table's columns plus those of every table its foreign keys point at, each as
+a LEFT JOIN; <em>CRUD script</em> writes INSERT / SELECT / UPDATE / DELETE for one row addressed
+by the primary key, using <code>:named</code> parameters. Both open in a new query tab.</li>
+</ul>
+
+<h4>Query results</h4>
+<ul>
+<li><strong>Filter.</strong> The box next to the export button narrows the grid to the rows that
+contain every typed word (any cell, case-insensitive; <code>null</code> matches NULL cells) and shows
+“N of M”. It only looks at the rows already fetched.</li>
+<li><strong>Row actions</strong> (right-click a cell): <em>Record view</em> shows the row as a
+vertical column / value table; <em>Copy row as INSERT</em>, <em>Copy row as JSON</em>,
+<em>Copy row as Markdown</em> and <em>Copy row as CSV</em> copy it in that format;
+<em>Column statistics</em> counts non-empty, NULL and distinct values and sums, averages and
+bounds the numeric ones across the loaded rows.</li>
+<li><strong>Cell content viewer.</strong> Opening a cell's content offers <em>Format JSON</em> and
+<em>Minify JSON</em> while the text is valid JSON (numbers and strings are kept character for
+character), a <em>Wrap lines</em> toggle and a <em>Copy</em> button.</li>
+<li><strong>Chart the result.</strong> The chart button in the query toolbar draws the rows the
+grid currently shows as a bar, line, pie or doughnut chart: pick the column for the x axis and tick
+the numeric columns to plot (up to the first 500 rows).</li>
+<li><strong>SQL export.</strong> The export formats include <em>SQL</em>, which writes
+<code>INSERT INTO … VALUES …;</code> statements, one per row, quoted for the connection's database.</li>
+</ul>
+
+<h4>Edit Data and importing</h4>
+<ul>
+<li><strong>Duplicate row</strong> copies a row into a new pending insert (primary key
+columns are left empty so the database can generate them).</li>
+<li><strong>Go to referenced row</strong> (right-click a foreign key cell) opens the
+referenced table in Edit Data, already filtered to the row the value points at; composite keys are
+supported.</li>
+<li><strong>Import data…</strong> (right-click a table) loads a CSV, TSV or JSON file (an array of
+objects or of arrays). The delimiter is detected or picked, file columns are mapped onto the table's
+columns with a preview of the first rows, and empty values can become NULL. The rows are inserted in
+a single transaction, so a bad row (named in the error) leaves the table untouched; up to 200,000
+rows at once, and never on a read-only connection.</li>
+</ul>
+
+<h4>Dump, restore and running script files</h4>
+<p><em>Dump table (structure and data) to SQL file</em> and <em>Dump table (structure only) to SQL file</em> (a table's
+<em>Generate</em> menu) write the table's DDL, followed by one INSERT per row, as an SQL file —
+no external program is needed. The <em>Run an SQL script from a file (restore a dump)</em> button in the query toolbar runs
+such a file (or any SQL script) statement by statement in one transaction, so a failing statement,
+named in the error, undoes the rest wherever the database has transactional DDL. Up to 48 MB and
+1,000,000 statements; refused on a read-only connection.</p>
+
+<h4>Compare</h4>
+<p>The exchange button in the query toolbar compares the current connection with another one: either
+the schema (tables, columns and their types) or one table's rows by primary key. The result is a
+summary plus a script that makes the target match the source (<code>CREATE TABLE</code>,
+<code>ADD COLUMN</code>, type changes, <code>INSERT</code>/<code>UPDATE</code> for rows), opened in a
+tab of the target connection for you to read and run — comparing changes nothing. Destructive
+statements (<code>DROP</code>, row <code>DELETE</code>) are only written as comments unless you ask
+for deletes. Nullability, defaults, indexes and constraints are not compared.</p>
+
+<h4>Scheduled queries</h4>
+<p>The <em>Scheduled queries</em> section in the left rail runs SQL on a connection every N minutes
+(from 1 minute to a week). The schedules are listed on the left with a + / − footer; the selected
+one's settings — name, interval, SQL — are on the right, with <em>Run now</em>,
+<em>Pause</em> / <em>Resume</em> and its last 50 runs (status, duration
+and what each statement did, or the error it stopped on). The calendar button in the query toolbar
+saves the editor's SQL (the selection, else the whole text) as a new schedule. The scheduler lives in
+the OmniDB server process, so it runs only while OmniDB is open; a run that came due while it was
+closed happens once at the next start. Read-only connections still refuse writes, and connections that
+use an SSH tunnel or token authentication cannot be scheduled.</p>
+
+<h4>Version control (git)</h4>
+<p>The branch button under the snippets tree (and under the monitoring units list) keeps your
+shareable definitions in a git repository as plain files: snippets as <code>.sql</code> files in
+<code>snippets/</code> (one directory per snippet folder), custom monitoring units as
+<code>monitoring/&lt;engine&gt;/*.json</code> and scheduled queries as
+<code>schedules/&lt;connection alias&gt;/*.json</code> (the alias and SQL only — never an address or a
+credential). <em>Commit</em> writes the files, removes the <code>.sql</code>/<code>.json</code>
+files that no longer match anything and commits them; <em>Import from folder</em> reads them back,
+creating or updating definitions and never deleting any. An imported schedule starts paused so
+nothing runs unattended.</p>
+<p>Git runs inside OmniDB, so no <code>git</code> installation is needed. In the desktop app the
+repository lives in a folder inside OmniDB's own home until you pick another one with
+<em>Choose folder…</em> (remembered between launches). On macOS that built-in folder sits inside the
+app's container, which other programs cannot open — pick your own folder if you want to push the
+repository with your own git tools. On a multi-user server you type the folder's path and the feature
+is limited to superusers. Pushing and pulling are left to your own git tools.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

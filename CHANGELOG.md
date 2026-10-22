@@ -9,21 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Version control (the branch button under the snippets tree): writes your snippets, custom monitoring units and
-  scheduled queries to a git repository folder as plain files (`snippets/`, `monitoring/<engine>/`,
-  `schedules/<connection alias>/`; schedules carry the alias and SQL only, never an address or credential), removes
-  the `.sql`/`.json` files there that no longer match anything, and commits them. Committing into a folder that is not
-  yet a repository initializes it (a folder inside another repository is refused); the dialog shows its branch,
-  uncommitted changes and recent commits. Importing reads the files back, creating or updating definitions and never
-  deleting any; an imported schedule is created paused so nothing runs unattended. Git runs inside OmniDB (no `git`
-  install needed). In the desktop app the repository lives in a folder inside OmniDB's own home until you pick another
-  one with a native folder picker (remembered between launches); the built-in folder is what makes it work in the
-  sandboxed macOS app with no setup, but a container is hidden from other apps, so pick your own folder to push it
-  with your own git tools. On a multi-user server the folder is typed in and the feature is limited to superusers.
-  Pushing and pulling stay with your own git tools.
+- Version control (the branch button under the snippets tree and under the monitoring unit list): writes your
+  snippets, custom monitoring units and scheduled queries to a git repository folder as plain files (`snippets/`,
+  `monitoring/<engine>/`, `schedules/<connection alias>/`; schedules carry the alias and SQL only, never an address or
+  credential), removes the `.sql`/`.json` files there that no longer match anything, and commits them. Committing into
+  a folder that is not yet a repository initializes it (a folder inside another repository is refused); the dialog
+  shows its branch, uncommitted changes and recent commits. Importing reads the files back, creating or updating
+  definitions and never deleting any; an imported schedule is created paused so nothing runs unattended. Git runs
+  inside OmniDB (no `git` install needed). In the desktop app the repository lives in a folder inside OmniDB's own
+  home until you pick another one with a native folder picker (remembered between launches); the built-in folder is
+  what makes it work in the sandboxed macOS app with no setup, but a container is hidden from other apps, so pick your
+  own folder to push it with your own git tools. On a multi-user server the folder is typed in and the feature is
+  limited to superusers. Pushing and pulling stay with your own git tools.
 - Permissions: a role can now have a comment. The Create Role and Edit Attributes dialogs have a Comment field
   (`COMMENT ON ROLE`, shown in the SQL preview; clearing it removes the comment), the comment appears as a tooltip over
   the role's name in the list, and Clone Role and the permissions export carry it over.
+- Documentation: a new "Productivity Tools" page (in English, Czech, German, Spanish, French, Italian and Portuguese)
+  describes Search Everywhere, bookmarks, the navigation panel, read-only connections, the SQL editor aids, the result
+  tools, import, dump and restore, Compare, scheduled queries and version control; the Permissions, Settings,
+  Snippets, Monitoring and Connections pages point to or describe the new bits (role comments, the Navigation panel
+  category, live templates, version control, read-only connections), and the README, the sitemap and `llms.txt` /
+  `llms-full.txt` are updated.
 - Navigation panel layout (Settings > Navigation panel): choose which items the left rail shows, reorder them with the
   arrows, and move the divider between its upper and lower part; the Settings icon always stays last. Every change
   shows up at once — the rail is rebuilt in place, no Apply and no reload — and is saved per user in the background.
@@ -187,6 +193,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Tooling: `wails-app` now builds against `go-server` as a Go module (`replace omnidb-server => ../go-server`) to
+  share its `vcsrepo` package, and both depend on go-git (pure Go, no cgo); a few indirect dependencies
+  (`golang.org/x/*`) moved up with it. `AGENTS.md` notes that a `-d` directory must already exist, which matters for
+  the sandboxed macOS build.
 - Keyboard shortcuts reworked. Defaults now follow each platform's own conventions (`Mod` = Cmd on macOS, Ctrl on
   Windows/Linux): inner tabs open/close with `Mod+T` / `Mod+W` (in the Snippets section the same keys create/close a
   snippet tab), connection tabs with `Mod+Shift+T` / `Mod+Shift+W` (closing asks for confirmation), `Ctrl+Tab` /

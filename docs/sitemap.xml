@@ -163,6 +163,13 @@
   </url>
 
   <url>
+    <loc>https://www.omnidb.net/en/productivity_tools.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
     <loc>https://www.omnidb.net/en/notify.html</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>yearly</changefreq>
@@ -352,6 +359,13 @@
   </url>
 
   <url>
+    <loc>https://www.omnidb.net/cs/productivity_tools.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
     <loc>https://www.omnidb.net/cs/notify.html</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>yearly</changefreq>
@@ -518,6 +532,13 @@
   <url>
     <loc>https://www.omnidb.net/de/snippets.html</loc>
     <lastmod>2026-09-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/de/productivity_tools.html</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -694,6 +715,13 @@
   </url>
 
   <url>
+    <loc>https://www.omnidb.net/es/productivity_tools.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
     <loc>https://www.omnidb.net/es/notify.html</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>yearly</changefreq>
@@ -860,6 +888,13 @@
   <url>
     <loc>https://www.omnidb.net/fr/snippets.html</loc>
     <lastmod>2026-09-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/fr/productivity_tools.html</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -1036,6 +1071,13 @@
   </url>
 
   <url>
+    <loc>https://www.omnidb.net/it/productivity_tools.html</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
     <loc>https://www.omnidb.net/it/notify.html</loc>
     <lastmod>2026-09-26</lastmod>
     <changefreq>yearly</changefreq>
@@ -1202,6 +1244,13 @@
   <url>
     <loc>https://www.omnidb.net/pt/snippets.html</loc>
     <lastmod>2026-09-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/pt/productivity_tools.html</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>

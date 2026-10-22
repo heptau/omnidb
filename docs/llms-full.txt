@@ -288,6 +288,11 @@ But the database can be outside the SSH server, like this:
 
 Here the database Server needs to be `192.168.0.10`, as it is the relative address for the SSH server to connect to the database server.
 
+**Read-only connection**
+
+
+Tick Read-only connection in the connection form to have writes through it refused; a lock marks such a connection in the list and on its tab. It is a safety net against accidents, not a security boundary — see Productivity Tools.
+
 ---
 
 # Settings and Languages
@@ -361,6 +366,11 @@ Type the New Password and repeat it in Confirm; Change Password becomes availabl
 **Account**
 
 Shown to superusers only: Manage Users opens the User management window where OmniDB users are added, edited and removed — see Creating Users and Connections.
+
+**Navigation panel**
+
+
+Which items the rail on the left shows, in what order, and where the divider between its upper and lower part sits. Each item has a checkbox (shown or hidden) and up / down arrows; the divider (Divider between the upper and lower part) is a row of its own that you move the same way. The Settings icon is always last and cannot be hidden. Changes apply at once, without reloading, and are saved for your user; Reset to default restores the original layout.
 
 ---
 
@@ -594,6 +604,90 @@ Right-click inside the editor of a Query or Console tab:
 
 - Save as snippet saves the editor's text as a snippet, using the same menu as above (a new snippet, or overwrite an existing one, in any folder);
 - Use snippet (shown once you have at least one snippet) inserts the chosen snippet's text at the cursor.
+
+**Live templates and version control**
+
+
+A snippet inside a folder named Live templates becomes a live template: type its name in a SQL editor and press Tab to expand it. The branch button under the tree stores your snippets, custom monitoring units and scheduled queries in a git repository. Both are described in Productivity Tools.
+
+---
+
+# Productivity Tools
+URL: https://www.omnidb.net/en/productivity_tools.html
+
+**Full Content:**
+
+OmniDB has a number of tools that save clicks and keystrokes. They work with every supported database unless noted otherwise, and anything that would change a database (a rename, a schema sync, a restore) is first shown to you as SQL — you run it yourself.
+
+**Finding things**
+
+Search everywhere. Press Shift twice to open the palette. It finds sections, connections, bookmarks, snippets and, for the selected connection, tables (from two typed characters) in one box, ignoring case and diacritics. The arrow keys move, Enter opens the pick (a table opens in Edit Data) and Esc closes it.
+
+Bookmarks. Right-click a table in the tree and choose Add to bookmarks. The Bookmarks section in the left rail lists the pinned tables per connection; clicking one opens the connection (if it is not open yet) and the table in Edit Data, and the cross removes it. Bookmarks are private to each OmniDB user.
+
+**The left rail and connections**
+
+Navigation panel. Under Settings > Navigation panel you choose which items the rail on the left shows, put them in the order you like with the arrows and move the divider between its upper and lower part. The Settings icon is always last and cannot be hidden. Every change takes effect at once, without a reload, and is saved for your user.
+
+Read-only connection. Tick it in the connection form and writes through that connection are refused; the Connections list, the Database tab and the connection menu show a lock. PostgreSQL, MySQL/MariaDB and SQLite also switch the session itself to read-only, and on every engine the query editor, the console and Edit Data refuse anything but SELECT-like statements. It is a safety net against accidents (the production tab left open), not a security boundary — use a database role without write privileges for a hard guarantee.
+
+**The SQL editor**
+
+- Context-aware completion. The statement being edited is scanned for the clause the cursor is in and for the tables, subqueries and CTEs it reads from. alias., table. and cte. list that reference's columns; a bare word in SELECT, WHERE, GROUP BY, ORDER BY, HAVING, SET, RETURNING or an INSERT column list offers the columns of the statement's tables; after ON the foreign-key conditions between the table being joined and the ones before it lead the list; after FROM, JOIN, UPDATE or INTO come the statement's CTE names and the connection's tables.
+
+- Live inspections. After a pause in typing, problems are marked in the gutter (hover for the message) and with a dotted underline: UPDATE or DELETE without WHERE, comparisons with NULL using = or <>, a JOIN with neither ON nor USING, an alias nothing refers to, and a table or view the database does not know.
+
+- Go to definition and Find usages. Ctrl/Cmd+click (or Ctrl/Cmd+B) on a name: an alias or CTE jumps to where it is defined, a table or view opens its DDL in a new tab. Alt+F7 selects every mention of an alias or CTE in the statement, and for a table lists where it appears — in the editor, in your snippets and in your query history — each entry clickable.
+
+- Rename… (Shift+F6, or the editor's right-click menu). An alias or CTE is renamed in the whole statement at once. A table or column opens a preview: the ALTER/RENAME statement for your database is written into a new tab for you to run, together with the lines of your snippets that mention the old name (each with a checkbox) and the mentions in the current editor. Only code is rewritten, never strings or comments.
+
+- Live templates. Type an abbreviation and press Tab to expand it into a statement skeleton, then Tab / Shift+Tab through its placeholders. Built in: sel, cnt, grp, ins, upd, del, jn, cte, crt. Your own live in the Snippets section, as snippets inside a folder named Live templates: the snippet's name is the abbreviation, its text the template (${1:default} for a placeholder, $0 for the final cursor position).
+
+- Named parameters. A statement containing :name placeholders asks for a value per parameter before it runs. Each value is guessed (numbers, NULL and TRUE/FALSE stay bare, anything else becomes a quoted string), forced to text, or pasted as raw SQL. Placeholders inside strings, comments, ::casts and array slices are left alone.
+
+- Local history. What you type is saved as a version (after a pause in typing and when the editor loses focus), up to 100 per connection and user. The history button in the query toolbar lists them and shows the lines that would disappear and come back if you restored the selected one; Restore puts it into the editor, saving the text it replaces first.
+
+- Folding and multi-cursor. Multi-line statements get a fold widget in the gutter; Alt+J selects the next occurrence of the word under the cursor (Alt+Shift+J the previous one) for editing several places at once.
+
+- Generate (a table's context menu). SELECT with JOINs (foreign keys) writes a SELECT of the table's columns plus those of every table its foreign keys point at, each as a LEFT JOIN; CRUD script writes INSERT / SELECT / UPDATE / DELETE for one row addressed by the primary key, using :named parameters. Both open in a new query tab.
+
+**Query results**
+
+- Filter. The box next to the export button narrows the grid to the rows that contain every typed word (any cell, case-insensitive; null matches NULL cells) and shows “N of M”. It only looks at the rows already fetched.
+
+- Row actions (right-click a cell): Record view shows the row as a vertical column / value table; Copy row as INSERT, Copy row as JSON, Copy row as Markdown and Copy row as CSV copy it in that format; Column statistics counts non-empty, NULL and distinct values and sums, averages and bounds the numeric ones across the loaded rows.
+
+- Cell content viewer. Opening a cell's content offers Format JSON and Minify JSON while the text is valid JSON (numbers and strings are kept character for character), a Wrap lines toggle and a Copy button.
+
+- Chart the result. The chart button in the query toolbar draws the rows the grid currently shows as a bar, line, pie or doughnut chart: pick the column for the x axis and tick the numeric columns to plot (up to the first 500 rows).
+
+- SQL export. The export formats include SQL, which writes INSERT INTO … VALUES …; statements, one per row, quoted for the connection's database.
+
+**Edit Data and importing**
+
+- Duplicate row copies a row into a new pending insert (primary key columns are left empty so the database can generate them).
+
+- Go to referenced row (right-click a foreign key cell) opens the referenced table in Edit Data, already filtered to the row the value points at; composite keys are supported.
+
+- Import data… (right-click a table) loads a CSV, TSV or JSON file (an array of objects or of arrays). The delimiter is detected or picked, file columns are mapped onto the table's columns with a preview of the first rows, and empty values can become NULL. The rows are inserted in a single transaction, so a bad row (named in the error) leaves the table untouched; up to 200,000 rows at once, and never on a read-only connection.
+
+**Dump, restore and running script files**
+
+Dump table (structure and data) to SQL file and Dump table (structure only) to SQL file (a table's Generate menu) write the table's DDL, followed by one INSERT per row, as an SQL file — no external program is needed. The Run an SQL script from a file (restore a dump) button in the query toolbar runs such a file (or any SQL script) statement by statement in one transaction, so a failing statement, named in the error, undoes the rest wherever the database has transactional DDL. Up to 48 MB and 1,000,000 statements; refused on a read-only connection.
+
+**Compare**
+
+The exchange button in the query toolbar compares the current connection with another one: either the schema (tables, columns and their types) or one table's rows by primary key. The result is a summary plus a script that makes the target match the source (CREATE TABLE, ADD COLUMN, type changes, INSERT/UPDATE for rows), opened in a tab of the target connection for you to read and run — comparing changes nothing. Destructive statements (DROP, row DELETE) are only written as comments unless you ask for deletes. Nullability, defaults, indexes and constraints are not compared.
+
+**Scheduled queries**
+
+The Scheduled queries section in the left rail runs SQL on a connection every N minutes (from 1 minute to a week). The schedules are listed on the left with a + / − footer; the selected one's settings — name, interval, SQL — are on the right, with Run now, Pause / Resume and its last 50 runs (status, duration and what each statement did, or the error it stopped on). The calendar button in the query toolbar saves the editor's SQL (the selection, else the whole text) as a new schedule. The scheduler lives in the OmniDB server process, so it runs only while OmniDB is open; a run that came due while it was closed happens once at the next start. Read-only connections still refuse writes, and connections that use an SSH tunnel or token authentication cannot be scheduled.
+
+**Version control (git)**
+
+The branch button under the snippets tree (and under the monitoring units list) keeps your shareable definitions in a git repository as plain files: snippets as .sql files in snippets/ (one directory per snippet folder), custom monitoring units as monitoring/<engine>/*.json and scheduled queries as schedules/<connection alias>/*.json (the alias and SQL only — never an address or a credential). Commit writes the files, removes the .sql/.json files that no longer match anything and commits them; Import from folder reads them back, creating or updating definitions and never deleting any. An imported schedule starts paused so nothing runs unattended.
+
+Git runs inside OmniDB, so no git installation is needed. In the desktop app the repository lives in a folder inside OmniDB's own home until you pick another one with Choose folder… (remembered between launches). On macOS that built-in folder sits inside the app's container, which other programs cannot open — pick your own folder if you want to push the repository with your own git tools. On a multi-user server you type the folder's path and the feature is limited to superusers. Pushing and pulling are left to your own git tools.
 
 ---
 
@@ -902,6 +996,8 @@ WHERE NOT datistemplate
 
 Click Test to run the query once and see the result rendered below the editor — as many times as you like. When you are happy with it, give the unit a name, set the refresh interval and click Save. The unit then appears in the Manage Units list; tick it to show it on the dashboard.
 
+The branch button below the list stores your custom units in a git repository, together with snippets and scheduled queries; see Productivity Tools.
+
 ---
 
 # Notify
@@ -1098,6 +1194,8 @@ The Default privileges folder of a database lists the `ALTER DEFAULT PRIVILEGES`
 The dialogs for creating, altering, renaming and cloning roles, adding memberships, granting or editing privileges, default privileges and changing owners have a collapsible Show SQL box. It shows the exact statements the current form values would run — built by the same server code as the real call, nothing is executed, passwords are masked — and keeps them up to date as the form changes. Copy SQL copies them.
 
 Important: confirming a dialog executes the statements on the server immediately — there is no undo. Review them with Show SQL first. Drop Role, Remove Membership and Remove Default Privileges also ask for confirmation. If the server rejects a statement, its error message is shown.
+
+The Create Role and Alter Attributes dialogs also have a Comment field (COMMENT ON ROLE, shown in the SQL preview; clearing it removes the comment). A role's comment appears as a tooltip when you hover over its name in the list, and Clone Role and the permissions export carry it over. In the lists the pseudo-role is displayed in lower case, public.
 
 ---
 

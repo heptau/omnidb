@@ -17,7 +17,13 @@ A user-friendly, lightweight, cross-platform database management tool with stron
 - **Multi-Database Support**: PostgreSQL, MySQL, MariaDB, SQLite, Oracle, MS SQL Server, Firebird
 - **Cross-Platform**: Runs on Windows, macOS, and Linux
 - **Modern UI**: Dark/Light theme, either following the OS preference or set manually
-- **Advanced SQL Editor**: Syntax highlighting, auto-completion, code formatting
+- **Advanced SQL Editor**: Syntax highlighting, context-aware completion on every engine, live inspections (`UPDATE` without `WHERE`, `= NULL`, unknown tables…), go to definition / find usages / rename, live templates, named `:parameters`, local history, code formatting
+- **Query Results**: Filter, record view, copy as `INSERT`/JSON/Markdown/CSV, column statistics, chart (bar, line, pie, doughnut), export as SQL `INSERT`
+- **Table Tools**: Edit Data with go-to-referenced-row, import CSV/TSV/JSON, dump and restore to SQL, generate JOIN/CRUD scripts
+- **Compare**: Schema and table-data comparison between two connections, with a sync script you review and run
+- **Scheduled Queries**: Run SQL on a connection every N minutes, with a history of the runs
+- **Version Control**: Snippets, custom monitoring units and scheduled queries kept in a git repository (built in, no `git` install needed)
+- **Workspace**: Search Everywhere (double Shift), bookmarks, read-only connections, and a navigation panel whose items, order and divider you configure
 - **Visual Explain**: Graphical display of query execution plans
 - **Notify Panel**: Live `LISTEN`/`NOTIFY` (PostgreSQL), `DBMS_ALERT` (Oracle) and `POST_EVENT` (Firebird) message streaming
 - **SSH Tunneling**: Secure database connections via SSH

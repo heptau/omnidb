@@ -110,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="productivity_tools.html">Herramientas de productividad</a>
 			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
 			<a href="visualizing_data.html">Visualización de datos</a>
@@ -182,6 +183,7 @@ y <em>Omite la seguridad a nivel de fila</em>, además de <em>Límite de conexio
 <li><strong>−</strong> elimina el rol seleccionado (deshabilitado para <code>PUBLIC</code>).</li>
 </ul>
 <p><img alt="The Create Role dialog with the SQL preview" src="../assets/img/ui-perm-create-role.webp"/></p>
+<p>Los diálogos <em>Crear rol</em> y <em>Modificar atributos</em> tienen además un campo <em>Comentario</em> (<code>COMMENT ON ROLE</code>, visible en la vista previa de SQL; al vaciarlo se elimina el comentario). El comentario de un rol aparece como información emergente al pasar el ratón sobre su nombre en la lista, y <em>Clonar rol</em> y la exportación de permisos lo conservan. En las listas el pseudorrol se muestra en minúsculas, <code>public</code>.</p>
 <p>Al hacer clic derecho en un rol (que no sea <code>PUBLIC</code>) se ofrece:</p>
 <ul>
 <li><em>Cambiar contraseña</em>: pide la nueva contraseña dos veces. La contraseña se convierte en hash, en el
