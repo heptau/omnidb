@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Compare (the exchange button in the query toolbar): the schema of the current connection against another
+  connection's (tables, columns, column types), or one table's rows by primary key. The result is a summary plus a
+  script that makes the target match the source (`CREATE TABLE`, `ADD COLUMN`, type changes; `INSERT`/`UPDATE` for
+  rows), opened in a tab of the target connection for you to read and run — comparing changes nothing. Destructive
+  statements (`DROP`, row `DELETE`) are only written as comments unless you ask for deletes. Nullability, defaults,
+  indexes and constraints are not compared; tables are read up to 200,000 rows. Only SQLite has been exercised against
+  a live database; the other engines' scripts are covered by unit tests of the generated SQL.
 - Rename (Shift+F6, or "Rename…" in the editor's right-click menu) for the name under the cursor. An alias or CTE is
   renamed in the whole statement at once. A table or column opens a preview instead: the `ALTER`/`RENAME` statement for
   the engine (`ALTER TABLE … RENAME TO`, `RENAME TABLE`, `sp_rename`, `RENAME COLUMN`, Firebird's `ALTER COLUMN … TO`; Firebird

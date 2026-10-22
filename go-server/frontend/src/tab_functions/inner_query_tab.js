@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { openCompareDialog } from "../compare_dialog.js";
 import { installEditorRename, renameMenuEntry } from "../editor_rename.js";
 import { installEditorNavigation, navigationMenuEntries } from "../editor_navigation.js";
 import { installEditorInspections } from "../editor_inspections.js";
@@ -183,6 +184,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<button id="bt_history_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button>' +
+		'<button id="bt_compare_' +
+		v_tab.id +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("compare.button_title")) + '"><i class="fas fa-exchange-alt fa-light"></i></button>' +
 		'<button id="bt_run_script_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("script.button_title")) + '"><i class="fas fa-file-import fa-light"></i></button>' +
@@ -685,6 +689,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		/** @type {HTMLElement} */ (document.getElementById("bt_local_history_" + v_tab.id)),
 	);
 	/** @type {HTMLElement} */ (document.getElementById("bt_chart_" + v_tab.id)).addEventListener("click", () => showResultChart(v_tag));
+	/** @type {HTMLElement} */ (document.getElementById("bt_compare_" + v_tab.id)).addEventListener("click", () => openCompareDialog());
 	installScriptRestore(
 		/** @type {HTMLElement} */ (document.getElementById("bt_run_script_" + v_tab.id)),
 		function () {

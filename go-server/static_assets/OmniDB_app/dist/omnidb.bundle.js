@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$7 = document.getElementById("omnidb_bootstrap");
-  if (!el$7) {
+  const el$8 = document.getElementById("omnidb_bootstrap");
+  if (!el$8) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$7.textContent);
+  const cfg = JSON.parse(el$8.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -949,7 +949,7 @@
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$6(id) {
+  function el$7(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -971,7 +971,7 @@
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    var v_modal_message = el$6("modal_message");
+    var v_modal_message = el$7("modal_message");
     v_modal_message.addEventListener("hide.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
@@ -979,7 +979,7 @@
       v_message_modal_animating = true;
     });
     v_modal_message.addEventListener("hidden.bs.modal", function(e2) {
-      el$6("modal_message_content").innerHTML = "";
+      el$7("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -999,21 +999,21 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$6("modal_message_dialog");
+    var v_dialog = el$7("modal_message_dialog");
     var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
     if (v_old_title) v_old_title.remove();
     v_dialog.classList.toggle("modal-xl", p_large === true);
     v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$6("modal_message")).show();
+      bootstrap.Modal.getOrCreateInstance(el$7("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
   }
   function setMessageModalTitle(p_text, p_icon_class = null) {
-    var v_header = el$6("modal_message_dialog").querySelector(".modal-header");
+    var v_header = el$7("modal_message_dialog").querySelector(".modal-header");
     if (!v_header) return;
     var v_title = document.createElement("h5");
     v_title.className = "modal-title";
@@ -1027,11 +1027,11 @@
     v_header.insertBefore(v_title, v_header.firstChild);
   }
   function showError(p_message) {
-    var v_content_div = el$6("modal_message_content");
-    var v_button_yes = el$6("modal_message_yes");
-    var v_button_ok = el$6("modal_message_ok");
-    var v_button_no = el$6("modal_message_no");
-    var v_button_cancel = el$6("modal_message_cancel");
+    var v_content_div = el$7("modal_message_content");
+    var v_button_yes = el$7("modal_message_yes");
+    var v_button_ok = el$7("modal_message_ok");
+    var v_button_no = el$7("modal_message_no");
+    var v_button_cancel = el$7("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_ok.textContent = t$1("common.ok");
     v_button_yes.style.display = "none";
@@ -1045,11 +1045,11 @@
   }
   function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el$6("modal_message_content");
-      var v_button_yes = el$6("modal_message_yes");
-      var v_button_ok = el$6("modal_message_ok");
-      var v_button_no = el$6("modal_message_no");
-      var v_button_cancel = el$6("modal_message_cancel");
+      var v_content_div = el$7("modal_message_content");
+      var v_button_yes = el$7("modal_message_yes");
+      var v_button_ok = el$7("modal_message_ok");
+      var v_button_no = el$7("modal_message_no");
+      var v_button_cancel = el$7("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -1069,11 +1069,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$6("modal_message_content");
-      var v_button_yes = el$6("modal_message_yes");
-      var v_button_ok = el$6("modal_message_ok");
-      var v_button_no = el$6("modal_message_no");
-      var v_button_cancel = el$6("modal_message_cancel");
+      var v_content_div = el$7("modal_message_content");
+      var v_button_yes = el$7("modal_message_yes");
+      var v_button_ok = el$7("modal_message_ok");
+      var v_button_no = el$7("modal_message_no");
+      var v_button_cancel = el$7("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.textContent = p_yes_label || t$1("common.ok");
       v_button_ok.onclick = function() {
@@ -1090,11 +1090,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$6("modal_message_content");
-    var v_button_yes = el$6("modal_message_yes");
-    var v_button_ok = el$6("modal_message_ok");
-    var v_button_no = el$6("modal_message_no");
-    var v_button_cancel = el$6("modal_message_cancel");
+    var v_content_div = el$7("modal_message_content");
+    var v_button_yes = el$7("modal_message_yes");
+    var v_button_ok = el$7("modal_message_ok");
+    var v_button_no = el$7("modal_message_no");
+    var v_button_cancel = el$7("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1113,11 +1113,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$6("modal_message_content");
-    var v_button_yes = el$6("modal_message_yes");
-    var v_button_ok = el$6("modal_message_ok");
-    var v_button_no = el$6("modal_message_no");
-    var v_button_cancel = el$6("modal_message_cancel");
+    var v_content_div = el$7("modal_message_content");
+    var v_button_yes = el$7("modal_message_yes");
+    var v_button_ok = el$7("modal_message_ok");
+    var v_button_no = el$7("modal_message_no");
+    var v_button_cancel = el$7("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -1404,7 +1404,7 @@
   }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   var v_pgpass_lookup_info = null;
-  function el$5(id) {
+  function el$6(id) {
     return document.getElementById(id);
   }
   function initPasswordModal() {
@@ -1435,15 +1435,15 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-    if (gv_desktopMode) el$5("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
-    el$5("modal_password_pgpass_button").addEventListener("click", function() {
+    if (gv_desktopMode) el$6("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
+    el$6("modal_password_pgpass_button").addEventListener("click", function() {
       if (gv_desktopMode) {
         grantPgpassAccess(v_pgpass_lookup_info);
       } else {
-        el$5("modal_password_pgpass_input").click();
+        el$6("modal_password_pgpass_input").click();
       }
     });
-    el$5("modal_password_pgpass_input").addEventListener("change", function(e2) {
+    el$6("modal_password_pgpass_input").addEventListener("change", function(e2) {
       var v_file = e2.target.files ? e2.target.files[0] : null;
       e2.target.value = "";
       if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
@@ -1484,12 +1484,12 @@
     return null;
   }
   function showPgpassError(p_message) {
-    var v_error_div = el$5("modal_password_pgpass_error");
+    var v_error_div = el$6("modal_password_pgpass_error");
     v_error_div.textContent = p_message;
     v_error_div.style.display = "block";
   }
   function hidePgpassError() {
-    el$5("modal_password_pgpass_error").style.display = "none";
+    el$6("modal_password_pgpass_error").style.display = "none";
   }
   function readPgpassFileViaInput(p_file, p_lookup_info) {
     var v_reader = new FileReader();
@@ -1629,7 +1629,7 @@
     v_modal_password_input = /** @type {HTMLInputElement} */
     document.getElementById("txt_password_prompt");
     v_pgpass_lookup_info = resolvePgpassLookupInfo(p_database_index);
-    el$5("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
+    el$6("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
     hidePgpassError();
     if (p_message) v_content_div.textContent = p_message;
     bootstrap.Modal.getOrCreateInstance(
@@ -12795,7 +12795,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       rows: rows.map((r2) => r2.concat(Array(width - r2.length).fill("")))
     };
   }
-  function el$4(tag, className, text) {
+  function el$5(tag, className, text) {
     const e2 = document.createElement(tag);
     if (className) e2.className = className;
     if (text !== void 0) e2.textContent = text;
@@ -12833,14 +12833,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     };
     const fileInput = (
       /** @type {HTMLInputElement} */
-      el$4("input", "form-control mb-2")
+      el$5("input", "form-control mb-2")
     );
     fileInput.type = "file";
     fileInput.accept = ".csv,.tsv,.txt,.json,text/csv,application/json";
     fileInput.setAttribute("aria-label", t$1("import.file"));
     const delimiterSelect = (
       /** @type {HTMLSelectElement} */
-      el$4("select", "form-select form-select-sm")
+      el$5("select", "form-select form-select-sm")
     );
     for (const [value, key] of [
       ["auto", "import.delim_auto"],
@@ -12851,23 +12851,23 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     ]) {
       const o2 = (
         /** @type {HTMLOptionElement} */
-        el$4("option", void 0, t$1(key))
+        el$5("option", void 0, t$1(key))
       );
       o2.value = value;
       delimiterSelect.appendChild(o2);
     }
     const checkbox = (labelKey, checked) => {
-      const wrap = el$4("div", "form-check form-check-inline");
+      const wrap = el$5("div", "form-check form-check-inline");
       const input = (
         /** @type {HTMLInputElement} */
-        el$4("input", "form-check-input")
+        el$5("input", "form-check-input")
       );
       input.type = "checkbox";
       input.checked = checked;
       input.id = "import_opt_" + labelKey.replace(/\W/g, "_");
       const label = (
         /** @type {HTMLLabelElement} */
-        el$4("label", "form-check-label", t$1(labelKey))
+        el$5("label", "form-check-label", t$1(labelKey))
       );
       label.htmlFor = input.id;
       wrap.append(input, label);
@@ -12876,8 +12876,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     const header = checkbox("import.header", true);
     const emptyNullBox = checkbox("import.empty_null", true);
     const emptyNull = emptyNullBox.input;
-    const status = el$4("div", "my-2");
-    const table = el$4("div", "mt-2");
+    const status = el$5("div", "my-2");
+    const table = el$5("div", "mt-2");
     table.style.maxHeight = "45vh";
     table.style.overflow = "auto";
     const render2 = () => {
@@ -12895,29 +12895,29 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       }
       if (mapping.length !== parsed.width) mapping = suggestMapping(parsed.fileColumns, parsed.width, p_columns);
       status.textContent = t$1("import.rows_found", { count: parsed.rows.length });
-      const grid = el$4("table", "table table-sm mb-0");
+      const grid = el$5("table", "table table-sm mb-0");
       grid.style.setProperty("--bs-table-bg", "transparent");
       grid.style.setProperty("--bs-table-color", "inherit");
-      const head = el$4("tr");
-      const sel = el$4("tr");
+      const head = el$5("tr");
+      const sel = el$5("tr");
       for (let i2 = 0; i2 < parsed.width; i2++) {
-        head.appendChild(el$4("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
-        const cell = el$4("td");
+        head.appendChild(el$5("th", void 0, parsed.fileColumns ? parsed.fileColumns[i2] || "#" + (i2 + 1) : "#" + (i2 + 1)));
+        const cell = el$5("td");
         const select = (
           /** @type {HTMLSelectElement} */
-          el$4("select", "form-select form-select-sm")
+          el$5("select", "form-select form-select-sm")
         );
         select.setAttribute("aria-label", t$1("import.col_target"));
         const skip = (
           /** @type {HTMLOptionElement} */
-          el$4("option", void 0, t$1("import.map_skip"))
+          el$5("option", void 0, t$1("import.map_skip"))
         );
         skip.value = "";
         select.appendChild(skip);
         for (const c2 of p_columns) {
           const o2 = (
             /** @type {HTMLOptionElement} */
-            el$4("option", void 0, c2)
+            el$5("option", void 0, c2)
           );
           o2.value = c2;
           select.appendChild(o2);
@@ -12929,14 +12929,14 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         cell.appendChild(select);
         sel.appendChild(cell);
       }
-      const thead = el$4("thead");
+      const thead = el$5("thead");
       thead.append(head, sel);
-      const tbody = el$4("tbody");
+      const tbody = el$5("tbody");
       for (const row of parsed.rows.slice(0, PREVIEW_ROWS)) {
-        const tr = el$4("tr");
+        const tr = el$5("tr");
         for (let i2 = 0; i2 < parsed.width; i2++) {
           const v2 = row[i2];
-          const td = el$4("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
+          const td = el$5("td", v2 === null || v2 === void 0 ? "text-muted fst-italic" : "", v2 === null || v2 === void 0 ? "NULL" : v2);
           td.style.maxWidth = "14rem";
           td.style.overflow = "hidden";
           td.style.textOverflow = "ellipsis";
@@ -12976,8 +12976,8 @@ ${t2 ? `    <#ArrowNext [${t2}] />
         );
         content.style.whiteSpace = "normal";
         content.innerHTML = "";
-        const options = el$4("div", "d-flex flex-wrap align-items-center gap-2");
-        const delimiterLabel = el$4("label", "me-1", t$1("import.delimiter"));
+        const options = el$5("div", "d-flex flex-wrap align-items-center gap-2");
+        const delimiterLabel = el$5("label", "me-1", t$1("import.delimiter"));
         options.append(delimiterLabel, delimiterSelect, header.wrap, emptyNullBox.wrap);
         delimiterSelect.style.width = "auto";
         content.append(fileInput, options, status, table);
@@ -21794,6 +21794,197 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     refreshTreePostgresqlConfirm,
     tabSQLTemplate
   }, Symbol.toStringTag, { value: "Module" }));
+  function el$4(tag, className, text) {
+    const e2 = document.createElement(tag);
+    if (className) e2.className = className;
+    if (text !== void 0) e2.textContent = text;
+    return e2;
+  }
+  function openConnectionTab(connId) {
+    const tab = v_connTabControl.tabList.find((x2) => x2.tag && x2.tag.selectedDatabaseIndex === connId);
+    switchSection("database");
+    if (tab) v_connTabControl.selectTab(tab);
+    else v_connTabControl.tag.createConnTab(connId);
+  }
+  function errorText$1(r2) {
+    const v2 = r2.v_data;
+    return typeof v2 === "string" ? v2 : v2 && v2.message || t$1("errors.request_error");
+  }
+  function openScript(title, sql, targetConn) {
+    openConnectionTab(targetConn);
+    tabSQLTemplate(title, sql);
+  }
+  function showResult(result, kind, targetConn, targetLabel) {
+    showConfirm(
+      "",
+      function() {
+        openScript(t$1(kind === "schema" ? "compare.script_tab_schema" : "compare.script_tab_data", { target: targetLabel }), result.script, targetConn);
+      },
+      null,
+      function() {
+        setMessageModalTitle(t$1("compare.result_title"));
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        const lines = [];
+        if (kind === "schema") {
+          lines.push(
+            t$1("compare.sum_missing_tables", { count: (result.missing_tables || []).length }),
+            t$1("compare.sum_extra_tables", { count: (result.extra_tables || []).length }),
+            t$1("compare.sum_added_columns", { count: (result.added_columns || []).length }),
+            t$1("compare.sum_removed_columns", { count: (result.removed_columns || []).length }),
+            t$1("compare.sum_type_changes", { count: (result.type_changes || []).length })
+          );
+        } else {
+          lines.push(t$1("compare.sum_rows", { inserts: result.inserts, updates: result.updates, deletes: result.deletes }));
+        }
+        const summary = el$4("ul", "mb-2");
+        for (const line of lines) summary.appendChild(el$4("li", void 0, line));
+        content.appendChild(summary);
+        if (kind === "data" && (result.samples || []).length > 0) {
+          const sample = el$4("pre", "p-2 small mb-2");
+          sample.style.cssText = "max-height:20vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
+          sample.textContent = result.samples.join("\n") + (result.inserts + result.updates + result.deletes > result.samples.length ? "\n…" : "");
+          content.appendChild(sample);
+        }
+        const pre = el$4("pre", "p-2 small mb-2", result.script);
+        pre.style.cssText = "max-height:30vh;overflow:auto;white-space:pre-wrap;border:1px solid var(--border-color);";
+        content.append(pre, el$4("div", "small text-muted", t$1("compare.script_hint", { target: targetLabel })));
+      },
+      true,
+      t$1("compare.open_script")
+    );
+  }
+  function openCompareDialog() {
+    const tab = v_connTabControl.selectedTab;
+    if (!tab || !tab.tag || tab.tag.selectedDatabaseIndex === void 0) {
+      showAlert$1(t$1("compare.no_connection"));
+      return;
+    }
+    const sourceConn = tab.tag.selectedDatabaseIndex;
+    const connections2 = (v_connTabControl.tag.connections || []).filter((c2) => c2.v_db_type !== "terminal");
+    const label = (c2) => c2.v_alias || c2.v_details1 || String(c2.v_conn_id);
+    const sourceLabel = connections2.find((c2) => c2.v_conn_id === sourceConn) || { v_alias: "", v_details1: "" };
+    const field = (key, control) => {
+      const w2 = el$4("div", "mb-2");
+      w2.append(el$4("label", "form-label small mb-1", t$1(key)), control);
+      return w2;
+    };
+    const kindSelect = (
+      /** @type {HTMLSelectElement} */
+      el$4("select", "form-select form-select-sm")
+    );
+    for (const [value, key] of [
+      ["schema", "compare.kind_schema"],
+      ["data", "compare.kind_data"]
+    ]) {
+      const o2 = (
+        /** @type {HTMLOptionElement} */
+        el$4("option", void 0, t$1(key))
+      );
+      o2.value = value;
+      kindSelect.appendChild(o2);
+    }
+    const targetSelect = (
+      /** @type {HTMLSelectElement} */
+      el$4("select", "form-select form-select-sm")
+    );
+    for (const c2 of connections2) {
+      const o2 = (
+        /** @type {HTMLOptionElement} */
+        el$4("option", void 0, label(c2))
+      );
+      o2.value = String(c2.v_conn_id);
+      targetSelect.appendChild(o2);
+    }
+    const input = (placeholderKey) => {
+      const i2 = (
+        /** @type {HTMLInputElement} */
+        el$4("input", "form-control form-control-sm")
+      );
+      i2.type = "text";
+      i2.placeholder = t$1(placeholderKey);
+      return i2;
+    };
+    const sourceSchema = input("compare.schema_placeholder");
+    const targetSchema = input("compare.schema_placeholder");
+    const table = input("compare.table_placeholder");
+    const targetTable = input("compare.target_table_placeholder");
+    const deletes = (
+      /** @type {HTMLInputElement} */
+      el$4("input", "form-check-input")
+    );
+    deletes.type = "checkbox";
+    deletes.id = "compare_deletes";
+    const deletesWrap = el$4("div", "form-check mb-2");
+    const deletesLabel = (
+      /** @type {HTMLLabelElement} */
+      el$4("label", "form-check-label", t$1("compare.include_deletes"))
+    );
+    deletesLabel.htmlFor = deletes.id;
+    deletesWrap.append(deletes, deletesLabel);
+    const dataOnly = el$4("div");
+    dataOnly.append(field("compare.table", table), field("compare.target_table", targetTable), deletesWrap);
+    const sync = () => {
+      dataOnly.style.display = kindSelect.value === "data" ? "" : "none";
+    };
+    kindSelect.addEventListener("change", sync);
+    sync();
+    showConfirm(
+      "",
+      function() {
+        const kind = (
+          /** @type {"schema" | "data"} */
+          kindSelect.value
+        );
+        if (kind === "data" && !table.value.trim()) {
+          showAlert$1(t$1("compare.need_table"));
+          return;
+        }
+        const targetConn = Number(targetSelect.value);
+        const targetLabel = label(connections2.find((c2) => c2.v_conn_id === targetConn) || { v_conn_id: targetConn, v_alias: "", v_details1: "" });
+        execAjax$2(
+          "/compare/",
+          JSON.stringify({
+            p_database_index: sourceConn,
+            p_tab_id: tab.id,
+            p_kind: kind,
+            p_source_schema: sourceSchema.value.trim(),
+            p_target_conn: String(targetConn),
+            p_target_schema: targetSchema.value.trim(),
+            p_table: table.value.trim(),
+            p_target_table: targetTable.value.trim(),
+            p_include_deletes: deletes.checked
+          }),
+          function(r2) {
+            showResult(r2.v_data, kind, targetConn, targetLabel);
+          },
+          function(r2) {
+            showAlert$1(errorText$1(r2));
+          },
+          "box",
+          true
+        );
+      },
+      null,
+      function() {
+        setMessageModalTitle(t$1("compare.title"));
+        const content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        content.style.whiteSpace = "normal";
+        content.innerHTML = "";
+        const source = el$4("div", "mb-2 fw-bold", t$1("compare.source", { name: label(sourceLabel) }));
+        content.append(field("compare.what", kindSelect), source, field("compare.source_schema", sourceSchema), field("compare.target", targetSelect), field("compare.target_schema", targetSchema), dataOnly);
+      },
+      "form",
+      t$1("compare.run")
+    );
+  }
   function errorText(r2) {
     const v2 = r2.v_data;
     return typeof v2 === "string" ? v2 : v2 && v2.message || t$1("errors.request_error");
@@ -23258,7 +23449,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog omnidb__modal--fluid' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>" + escapeHtml(t$1("query.command_history_title")) + "</h5><button id='bt_close_command_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t$1("common.close")) + "'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_run_script_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("script.button_title")) + '"><i class="fas fa-file-import fa-light"></i></button><button id="bt_chart_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("chart.button_title")) + '"><i class="fas fa-chart-bar fa-light"></i></button><button id="bt_local_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("history.button_title")) + '"><i class="fas fa-code-branch fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
+    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_compare_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("compare.button_title")) + '"><i class="fas fa-exchange-alt fa-light"></i></button><button id="bt_run_script_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("script.button_title")) + '"><i class="fas fa-file-import fa-light"></i></button><button id="bt_chart_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("chart.button_title")) + '"><i class="fas fa-chart-bar fa-light"></i></button><button id="bt_local_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("history.button_title")) + '"><i class="fas fa-code-branch fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option><option value="sql">SQL</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
     v_tab.elementDiv.innerHTML = v_html;
     var v_curr_tabs = createTabControl({ p_div: "query_result_tabs_" + v_tab.id });
     var v_selectDataTabFunc = function() {
@@ -23595,6 +23786,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       document.getElementById("bt_local_history_" + v_tab.id)
     );
     document.getElementById("bt_chart_" + v_tab.id).addEventListener("click", () => showResultChart(v_tag));
+    document.getElementById("bt_compare_" + v_tab.id).addEventListener("click", () => openCompareDialog());
     installScriptRestore(
       /** @type {HTMLElement} */
       document.getElementById("bt_run_script_" + v_tab.id),

@@ -450,6 +450,7 @@ func run() error {
 	mux.Handle("/inspect_sql/", handleInspectSQL(upstream, proxy))
 	mux.Handle("/resolve_symbol/", handleResolveSymbol(upstream))
 	mux.Handle("/rename_plan/", handleRenamePlan(upstream, proxy))
+	mux.Handle("/compare/", handleCompare(upstream, proxy))
 	mux.Handle("/apply_snippet_rename/", handleApplySnippetRename(upstream))
 	mux.Handle("/table_ddl/", handleTableDDL(upstream, proxy))
 	mux.Handle("/find_usages/", handleFindUsages(upstream))
