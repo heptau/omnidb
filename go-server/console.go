@@ -78,7 +78,13 @@ func openOrReuseConsoleSession(clientID, tabID string, info *ConnectionInfo) (*c
 	defer mu.Unlock()
 	if v, ok := consoleSessions.Load(key); ok {
 		sess := v.(*consoleSession)
-		if sess.conn.PingContext(context.Background()) == nil {
+		// Bounded: after sleep or a dropped VPN the old connection is dead
+		// but TCP won't say so for minutes, and an unbounded ping would
+		// hold this tab's lock (and hang its console) all that time.
+		pingCtx, cancel := context.WithTimeout(context.Background(), connectTimeout)
+		err := sess.conn.PingContext(pingCtx)
+		cancel()
+		if err == nil {
 			return sess, nil
 		}
 		closeConsoleSession(clientID, tabID)

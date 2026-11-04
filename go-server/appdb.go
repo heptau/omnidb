@@ -86,6 +86,10 @@ func resolveTempDir(upstream *url.URL) (*tempDirInfo, error) {
 // the same "sqlite" database/sql driver registered by sqlite.go's blank
 // import — no need to import modernc.org/sqlite again here.
 //
+// busy_timeout makes a writer wait for another pool's lock instead of failing
+// at once with "database is locked": every call opens its own pool, so
+// requests, the scheduler and long polling routinely overlap.
+//
 // Each call returns a fresh pool with a single connection limit to avoid
 // SQLite lock contention on busy servers. The caller must close the returned
 // *sql.DB when done.
@@ -95,7 +99,7 @@ func openAppDB(upstream *url.URL) (*sql.DB, error) {
 		return nil, err
 	}
 
-	db, err := sql.Open("sqlite", path)
+	db, err := sql.Open("sqlite", path+"?_pragma=busy_timeout(10000)")
 	if err != nil {
 		return nil, err
 	}

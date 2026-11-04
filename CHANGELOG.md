@@ -249,6 +249,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Long-running sessions: the app database now waits up to 10 s for a lock instead of failing at once with
+  "database is locked" (requests, the scheduler and polling each open their own connection), and re-opening a
+  console tab after sleep or a dropped VPN checks the old connection with a timeout instead of hanging on it.
 - Reverse proxies that forward their own host name no longer get `421 invalid host` from a loopback-bound server:
   the new `OMNIDB_ALLOWED_HOSTS` environment variable lists extra accepted `Host` values (issue #8).
 - Permissions: the PUBLIC pseudo-role is now shown in lower case (`public`) in the role lists and column titles.
