@@ -249,6 +249,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Reverse proxies that forward their own host name no longer get `421 invalid host` from a loopback-bound server:
+  the new `OMNIDB_ALLOWED_HOSTS` environment variable lists extra accepted `Host` values (issue #8).
 - Permissions: the PUBLIC pseudo-role is now shown in lower case (`public`) in the role lists and column titles.
 - Opening a connection to a host that does not answer (a dead VPN, a firewall that drops packets) now gives up
   after 5 seconds with an error instead of leaving the spinner running for the operating system's own timeout.

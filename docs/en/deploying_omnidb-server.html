@@ -243,6 +243,11 @@ loopback, it only answers requests addressed to <code>127.0.0.1:&lt;port&gt;</co
 therefore has to forward the request with <code>Host</code> set to the local address, as above,
 rather than passing the public host name through. Keep <code>X-Forwarded-Proto https</code>: it
 tells OmniDB to mark its session cookies <code>Secure</code>.</p>
+<p>If your proxy cannot rewrite the <code>Host</code> header (for example oauth2-proxy or a load
+balancer that forwards the public or upstream name), list the names it sends in the
+<code>OMNIDB_ALLOWED_HOSTS</code> environment variable, comma-separated:
+<code>OMNIDB_ALLOWED_HOSTS=omnidb.example.com,omnidb-server:8000</code>. A bare name matches any
+port, <code>name:port</code> only that port. Only list names you control.</p>
 <p>Since everything (including background query/console updates) is served over
 plain HTTP long-polling rather than websockets, a single <code>location /</code> block
 covering the whole app is all that’s needed — there’s no separate websocket

@@ -251,6 +251,8 @@ erhält <code>421 Misdirected Request</code>) — ein Schutz gegen DNS-Rebinding
 Anfrage daher wie oben mit einem auf die lokale Adresse gesetzten <code>Host</code> weiterleiten, statt
 den öffentlichen Hostnamen durchzureichen. Behalten Sie <code>X-Forwarded-Proto https</code> bei: Es
 teilt OmniDB mit, seine Sitzungs-Cookies als <code>Secure</code> zu markieren.</p>
+<p>Kann Ihr Proxy den <code>Host</code>-Header nicht umschreiben (zum Beispiel oauth2-proxy oder ein Load Balancer, der den öffentlichen oder Upstream-Namen weiterreicht), tragen Sie die gesendeten Namen kommagetrennt in die Umgebungsvariable <code>OMNIDB_ALLOWED_HOSTS</code> ein:
+<code>OMNIDB_ALLOWED_HOSTS=omnidb.example.com,omnidb-server:8000</code>. Ein reiner Name gilt für jeden Port, <code>name:port</code> nur für diesen Port. Tragen Sie nur Namen ein, die Sie kontrollieren.</p>
 <p>Da alles (einschließlich Hintergrundaktualisierungen für Abfragen und Konsole)
 über einfaches HTTP-Long-Polling statt über WebSockets ausgeliefert wird, genügt
 ein einziger <code>location /</code>-Block für die gesamte Anwendung — es gibt keinen

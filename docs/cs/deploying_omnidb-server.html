@@ -245,6 +245,8 @@ na loopbacku, odpovídá jen na požadavky adresované na <code>127.0.0.1:&lt;po
 požadavek přeposlat s hlavičkou <code>Host</code> nastavenou na místní adresu, jako výše, a nesmí
 předávat veřejný název hostitele. Ponechte <code>X-Forwarded-Proto https</code>: podle ní OmniDB
 označí své cookies relace jako <code>Secure</code>.</p>
+<p>Pokud váš proxy nedokáže přepsat hlavičku <code>Host</code> (například oauth2-proxy nebo load balancer, který předává veřejné či upstream jméno), vypište jména, která posílá, do proměnné prostředí <code>OMNIDB_ALLOWED_HOSTS</code>, oddělená čárkou:
+<code>OMNIDB_ALLOWED_HOSTS=omnidb.example.com,omnidb-server:8000</code>. Samotné jméno platí pro libovolný port, <code>jméno:port</code> jen pro daný port. Uvádějte jen jména, která ovládáte.</p>
 <p>Protože je vše (včetně aktualizací dotazů/konzole na pozadí) obsluhováno
 přes obyčejný HTTP long-polling namísto websocketů, stačí jediný blok
 <code>location /</code> pokrývající celou aplikaci — už neexistuje samostatná cesta

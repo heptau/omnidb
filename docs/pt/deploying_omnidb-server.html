@@ -242,6 +242,8 @@ loopback, só responde a pedidos dirigidos a <code>127.0.0.1:&lt;porta&gt;</cod
 tem de encaminhar o pedido com <code>Host</code> definido para o endereço local, como acima,
 em vez de passar o nome de anfitrião público. Mantenha <code>X-Forwarded-Proto https</code>: indica
 ao OmniDB que deve marcar os seus cookies de sessão como <code>Secure</code>.</p>
+<p>Se o seu proxy não consegue reescrever o cabeçalho <code>Host</code> (por exemplo oauth2-proxy ou um balanceador que reencaminha o nome público ou do upstream), indique os nomes que envia na variável de ambiente <code>OMNIDB_ALLOWED_HOSTS</code>, separados por vírgulas:
+<code>OMNIDB_ALLOWED_HOSTS=omnidb.example.com,omnidb-server:8000</code>. Um nome sozinho vale para qualquer porta, <code>nome:porta</code> apenas para essa porta. Indique apenas nomes que controla.</p>
 <p>Como tudo (incluindo as atualizações em segundo plano de consultas/consola) é servido através de
 long-polling HTTP simples em vez de websockets, basta um único bloco <code>location /</code>
 a cobrir toda a aplicação — já não existe um caminho separado de atualização

@@ -244,6 +244,8 @@ la boucle locale, il ne répond qu’aux requêtes adressées à <code>127.0.0.1
 doit donc transmettre la requête avec <code>Host</code> défini sur l’adresse locale, comme ci-dessus,
 plutôt que de relayer le nom d’hôte public. Conservez <code>X-Forwarded-Proto https</code> : il
 indique à OmniDB de marquer ses cookies de session comme <code>Secure</code>.</p>
+<p>Si votre proxy ne peut pas réécrire l’en-tête <code>Host</code> (par exemple oauth2-proxy ou un répartiteur de charge qui transmet le nom public ou celui de l’upstream), indiquez les noms qu’il envoie dans la variable d’environnement <code>OMNIDB_ALLOWED_HOSTS</code>, séparés par des virgules :
+<code>OMNIDB_ALLOWED_HOSTS=omnidb.example.com,omnidb-server:8000</code>. Un nom seul vaut pour n’importe quel port, <code>nom:port</code> uniquement pour ce port. N’indiquez que des noms que vous contrôlez.</p>
 <p>Puisque tout (y compris les mises à jour en arrière-plan des requêtes/console) est servi via du long-polling
 HTTP simple plutôt que des websockets, un seul bloc <code>location /</code> couvrant toute l’application suffit
 — il n’y a plus de chemin de mise à niveau websocket séparé ni de motif <code>/wss</code> à router
