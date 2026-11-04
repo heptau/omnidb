@@ -95,3 +95,19 @@ func TestCommitInitializesAFolder(t *testing.T) {
 		t.Error("no repository may be created inside another one")
 	}
 }
+
+func TestWriteReadRefuseSymlinkEscape(t *testing.T) {
+	dir, outside := t.TempDir(), t.TempDir()
+	if err := os.Symlink(outside, filepath.Join(dir, "snippets")); err != nil {
+		t.Skip("symlinks unavailable:", err)
+	}
+	if err := Write(dir, nil, []File{{Path: "snippets/a.sql", Text: "select 1"}}); err == nil {
+		t.Error("Write followed a symlink out of the folder")
+	}
+	if _, err := os.Stat(filepath.Join(outside, "a.sql")); err == nil {
+		t.Error("a file was written outside the folder")
+	}
+	if _, err := Read(dir, []string{"snippets"}); err == nil {
+		t.Error("Read followed a symlink out of the folder")
+	}
+}

@@ -269,6 +269,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   via Wails) → 4.16.3, and the frontend toolchain `vite` → 6.4.5 and `source-map-js` → 1.2.2. Two Echo advisories
   (rate limiter `X-Forwarded-For` bypass, reverse proxy `X-Real-IP`) have no upstream fix yet; OmniDB uses no Echo
   middleware, so they are not reachable.
+- Version control: reading or writing definitions no longer follows a symlink inside the repository folder to a
+  location outside it (a repository pulled from elsewhere could otherwise make an export write outside the folder).
 
 ## [5.4.3] - 2026-10-02
 

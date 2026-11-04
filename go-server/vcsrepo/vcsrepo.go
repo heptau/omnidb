@@ -142,6 +142,32 @@ func safeRel(p string) (string, error) {
 	return filepath.FromSlash(clean), nil
 }
 
+// joinInside is filepath.Join(dir, rel) after checking that the result, with
+// every symlink along the way resolved, still lies inside dir. safeRel only
+// rules out "..": a repository pulled from elsewhere can hold a symlink
+// (snippets -> /etc) that would otherwise send a write outside the folder.
+func joinInside(dir, rel string) (string, error) {
+	base, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		return "", err
+	}
+	full := filepath.Join(dir, rel)
+	// Resolve the deepest part that exists; the rest is created below it.
+	for p := full; ; {
+		if real, err := filepath.EvalSymlinks(p); err == nil {
+			if r, err := filepath.Rel(base, real); err != nil || r == ".." || strings.HasPrefix(r, ".."+string(filepath.Separator)) {
+				return "", fmt.Errorf("invalid path %q: it leads outside the folder", filepath.ToSlash(rel))
+			}
+			return full, nil
+		}
+		parent := filepath.Dir(p)
+		if parent == p {
+			return "", fmt.Errorf("invalid path %q", filepath.ToSlash(rel))
+		}
+		p = parent
+	}
+}
+
 // Write stores files under dir and removes the managed (.sql/.json) files
 // under each of roots that are not among them. Anything else, the .git
 // directory included, is left alone.
@@ -152,7 +178,10 @@ func Write(dir string, roots []string, files []File) error {
 		if err != nil {
 			return err
 		}
-		full := filepath.Join(dir, rel)
+		full, err := joinInside(dir, rel)
+		if err != nil {
+			return err
+		}
 		keep[full] = true
 		if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
 			return err
@@ -169,7 +198,10 @@ func Write(dir string, roots []string, files []File) error {
 		if err != nil {
 			return err
 		}
-		start := filepath.Join(dir, rel)
+		start, err := joinInside(dir, rel)
+		if err != nil {
+			return err
+		}
 		if _, err := os.Stat(start); err != nil {
 			continue
 		}
@@ -198,7 +230,10 @@ func Read(dir string, roots []string) ([]File, error) {
 		if err != nil {
 			return nil, err
 		}
-		start := filepath.Join(dir, rel)
+		start, err := joinInside(dir, rel)
+		if err != nil {
+			return nil, err
+		}
 		if _, err := os.Stat(start); err != nil {
 			continue
 		}
