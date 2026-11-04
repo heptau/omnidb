@@ -256,6 +256,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   request data." (for all units refreshed in the same request, not just the grid) — the refresh request now accepts
   the grid's echoed row data instead of rejecting it.
 
+### Security
+
+- Dependency updates for open Dependabot alerts: `excelize` 2.11.0 → 2.11.1 (XLSX import panics/DoS), Echo (indirect,
+  via Wails) → 4.16.3, and the frontend toolchain `vite` → 6.4.5 and `source-map-js` → 1.2.2. Two Echo advisories
+  (rate limiter `X-Forwarded-For` bypass, reverse proxy `X-Real-IP`) have no upstream fix yet; OmniDB uses no Echo
+  middleware, so they are not reachable.
+
 ## [5.4.3] - 2026-10-02
 
 ### Fixed
