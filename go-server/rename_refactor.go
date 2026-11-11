@@ -249,6 +249,9 @@ func buildRenamePlan(db *sql.DB, technology, schema, table, column, newName stri
 
 // probeMissing reports whether "select from <ref>" fails with a missing-object error.
 func probeMissing(db *sql.DB, ref string) bool {
+	if !plainObjectRefRe.MatchString(ref) {
+		return false
+	}
 	rows, err := db.Query("select 1 from " + ref + " where 1 = 0")
 	if err != nil {
 		return missingObjectRe.MatchString(err.Error())

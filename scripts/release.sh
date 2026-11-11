@@ -13,10 +13,9 @@ set -euo pipefail
 #   GITHUB_REPO         GitHub repo (default: heptau/omnidb)
 #   HOMEBREW_TAP_REPO   GitHub repo of the Homebrew tap (default: heptau/homebrew-tap)
 #   HOMEBREW_TAP_CASK   Path to cask inside the tap (default: Casks/omnidb.rb)
-#   WINGET_PKGS_FORK    Your fork of microsoft/winget-pkgs, e.g. "heptau/winget-pkgs"
-#                       (`gh repo fork microsoft/winget-pkgs --clone=false` once,
-#                       ahead of time). Unset skips the winget PR step entirely —
-#                       the manifest still gets generated either way.
+#   WINGET_PKGS_FORK    Your fork of microsoft/winget-pkgs (default: heptau/winget-pkgs).
+#                       Set to "skip" to skip the winget PR step (the manifest is still
+#                       generated). The fork is verified up front, before any build.
 #
 # Prerequisites: Docker running locally, `gh auth login` with push access to
 # both GITHUB_REPO and HOMEBREW_TAP_REPO, a clean tree up to date with origin.
@@ -43,6 +42,30 @@ fi
 if git ls-remote --tags origin "refs/tags/v${VERSION}" | grep -q .; then
   echo "Error: tag v${VERSION} already exists on remote." >&2
   exit 1
+fi
+
+# Guard: winget PR prerequisites, checked now so a misconfiguration stops the
+# release before the (long) builds rather than after the GitHub release exists.
+WINGET_PKGS_FORK="${WINGET_PKGS_FORK:-heptau/winget-pkgs}"
+if [[ "$WINGET_PKGS_FORK" != "skip" ]]; then
+  echo "==> Checking winget prerequisites (fork ${WINGET_PKGS_FORK})..."
+  WINGET_FORK_INFO=$(gh api "repos/${WINGET_PKGS_FORK}" \
+    --jq '[.fork, .parent.full_name, .permissions.push] | @tsv' 2>/dev/null) || {
+    echo "Error: cannot access ${WINGET_PKGS_FORK} with the current gh login." >&2
+    echo "  Fork it (gh repo fork microsoft/winget-pkgs --clone=false), fix WINGET_PKGS_FORK," >&2
+    echo "  or set WINGET_PKGS_FORK=skip to release without a winget PR." >&2
+    exit 1
+  }
+  if [[ "$WINGET_FORK_INFO" != $'true\tmicrosoft/winget-pkgs\ttrue' ]]; then
+    echo "Error: ${WINGET_PKGS_FORK} must be a fork of microsoft/winget-pkgs with push access (got: ${WINGET_FORK_INFO})." >&2
+    exit 1
+  fi
+  # The package must already exist upstream, otherwise this would open a
+  # brand-new-package PR (different review process) instead of a version bump.
+  if ! gh api "repos/microsoft/winget-pkgs/contents/manifests/h/heptau/OmniDB" >/dev/null 2>&1; then
+    echo "Error: heptau.OmniDB not found in microsoft/winget-pkgs — refusing to auto-submit a new package." >&2
+    exit 1
+  fi
 fi
 
 echo "==> Building macOS (arm64)..."
@@ -130,8 +153,8 @@ else
     -f content="${CONTENT}"
 fi
 
-WINGET_STATUS="skipped (WINGET_PKGS_FORK not set)"
-if [[ -n "${WINGET_PKGS_FORK:-}" ]]; then
+WINGET_STATUS="skipped (WINGET_PKGS_FORK=skip)"
+if [[ "$WINGET_PKGS_FORK" != "skip" ]]; then
   echo "==> Submitting winget-pkgs PR..."
   # winget-pkgs' commit history has tens of thousands of package manifests
   # in it — a plain clone (even --filter=blob:none, which only skips file
@@ -162,7 +185,8 @@ if [[ -n "${WINGET_PKGS_FORK:-}" ]]; then
     git add "manifests/h/heptau/OmniDB/${VERSION}"
     git -c user.name="omnidb-release" -c user.email="noreply@omnidb.net" \
       commit --quiet -m "New version: heptau.OmniDB version ${VERSION}"
-    git push --quiet --force "https://github.com/${WINGET_PKGS_FORK}.git" "$WINGET_BRANCH"
+    git -c credential.helper= -c credential.helper='!gh auth git-credential' \
+      push --quiet --force "https://github.com/${WINGET_PKGS_FORK}.git" "$WINGET_BRANCH"
   )
   rm -rf "$WINGET_DIR"
 

@@ -152,6 +152,10 @@ func joinInside(dir, rel string) (string, error) {
 		return "", err
 	}
 	full := filepath.Join(dir, rel)
+	// Lexical guard first: the joined path must still be under dir.
+	if cd := filepath.Clean(dir); full != cd && !strings.HasPrefix(full, cd+string(filepath.Separator)) {
+		return "", fmt.Errorf("invalid path %q", filepath.ToSlash(rel))
+	}
 	// Resolve the deepest part that exists; the rest is created below it.
 	for p := full; ; {
 		if real, err := filepath.EvalSymlinks(p); err == nil {

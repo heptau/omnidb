@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- Hardened for the CodeQL code-scanning findings: the "does this table exist" probes (SQL diagnostics, rename
+  refactor) now only run for plain, optionally schema-qualified identifiers and never splice a `;`, comment or
+  subquery into SQL; the git folder path check in `vcsrepo` gained a lexical containment guard ahead of the
+  symlink-resolving one. The remaining findings are by design (running the user's own SQL, user-configured OAuth
+  token command/URL, AWS RDS IAM TLS without CA verification) and are dismissed on GitHub with a reason.
+
 ## [5.5.0] - 2026-11-04
 
 ### Added

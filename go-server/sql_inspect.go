@@ -234,6 +234,11 @@ func inspectSQL(text string) []sqlDiagnostic {
 
 // --- tables that do not exist -------------------------------------------------
 
+// plainObjectRefRe matches a possibly schema-qualified object name made only
+// of quoted or bare identifier parts. The existence probes splice the name into
+// SQL text, so anything else (a ';', a comment, a subquery) is never probed.
+var plainObjectRefRe = regexp.MustCompile("^\\s*(?:\"(?:[^\"]|\"\")+\"|`[^`]+`|\\[[^\\]]+\\]|[\\w$#@]+)(?:\\s*\\.\\s*(?:\"(?:[^\"]|\"\")+\"|`[^`]+`|\\[[^\\]]+\\]|[\\w$#@]+))*\\s*$")
+
 // missingObjectRe matches the "no such table or view" errors of the supported
 // engines; any other error (permissions, a dropped connection) is not a reason
 // to call the name wrong.
@@ -250,6 +255,9 @@ var probeCache sync.Map // "connID|name" -> probeEntry
 
 // objectMissing asks the database whether a table or view can be selected from.
 func objectMissing(db *sql.DB, connKey, name string) bool {
+	if !plainObjectRefRe.MatchString(name) {
+		return false
+	}
 	key := connKey + "|" + strings.ToLower(name)
 	if v, ok := probeCache.Load(key); ok {
 		if e := v.(probeEntry); time.Since(e.at) < probeCacheTTL {
