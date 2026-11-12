@@ -145,6 +145,12 @@ func deleteUserCascade(db *sql.DB, userID int64) error {
 	}
 
 	for _, stmt := range []string{
+		// The user's own schedules, and anyone's schedules on the connections
+		// about to go: the scheduler would otherwise keep running them.
+		`delete from OmniDB_app_schedule_run where schedule_id in (select id from OmniDB_app_schedule where user_id = ? or connection_id in (select id from OmniDB_app_connection where user_id = ?1))`,
+		`delete from OmniDB_app_schedule where user_id = ? or connection_id in (select id from OmniDB_app_connection where user_id = ?1)`,
+		`delete from OmniDB_app_notifychannel where user_id = ? or connection_id in (select id from OmniDB_app_connection where user_id = ?1)`,
+		`delete from OmniDB_app_uipref where user_id = ?`,
 		`delete from OmniDB_app_connection where user_id = ?`,
 		`delete from OmniDB_app_groupconnection where group_id in (select id from OmniDB_app_group where user_id = ?)`,
 		`delete from OmniDB_app_group where user_id = ?`,

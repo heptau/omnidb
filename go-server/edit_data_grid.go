@@ -94,7 +94,7 @@ func isNullCell(v *string) bool {
 // unlike scanRowAsStrings (which folds SQL NULL into ""), this needs to
 // distinguish a real NULL from an empty string, since the frontend/save
 // path round-trips NULL through the literal text "[null]".
-func scanRowWithNullSentinel(rows *sql.Rows, numCols int) ([]string, error) {
+func scanRowWithNullSentinel(rows *sql.Rows, numCols int, types []string) ([]string, error) {
 	values := make([]any, numCols)
 	ptrs := make([]any, numCols)
 	for i := range values {
@@ -108,7 +108,7 @@ func scanRowWithNullSentinel(rows *sql.Rows, numCols int) ([]string, error) {
 		if v == nil {
 			out[i] = "[null]"
 		} else {
-			out[i] = formatSQLValue(v)
+			out[i] = formatSQLValue(typedDisplayValue(v, typeAt(types, i)))
 		}
 	}
 	return out, nil
@@ -172,12 +172,40 @@ func normalizeColumnName(name string) string {
 // verifyEditDataColumnRefs/verifyEditDataPKValues use to confirm a
 // request-supplied column name is real before it's ever spliced into SQL
 // text.
-func columnNameLookup(cols []editDataColumn) map[string]string {
-	m := make(map[string]string, len(cols))
+//
+// An exact match on the catalog's own name always wins; the case- and
+// quote-insensitive match is only a fallback, and only while it is
+// unambiguous — a table may legitimately have both id and "ID", and folding
+// them together made an edit to one cell update the other column.
+func columnNameLookup(cols []editDataColumn) columnLookup {
+	l := columnLookup{exact: make(map[string]string, len(cols)), normalized: make(map[string]string, len(cols)), ambiguous: map[string]bool{}}
 	for _, c := range cols {
-		m[normalizeColumnName(c.Name)] = c.Name
+		l.exact[c.Name] = c.Name
+		n := normalizeColumnName(c.Name)
+		if _, dup := l.normalized[n]; dup {
+			l.ambiguous[n] = true
+		}
+		l.normalized[n] = c.Name
 	}
-	return m
+	return l
+}
+
+type columnLookup struct {
+	exact, normalized map[string]string
+	ambiguous         map[string]bool
+}
+
+// find returns the catalog's own name for a request-supplied column name.
+func (l columnLookup) find(name string) (string, bool) {
+	if real, ok := l.exact[name]; ok {
+		return real, true
+	}
+	n := normalizeColumnName(name)
+	if l.ambiguous[n] {
+		return "", false
+	}
+	real, ok := l.normalized[n]
+	return real, ok
 }
 
 // verifyEditDataColumnRefs confirms every requested column name is a real
@@ -187,10 +215,10 @@ func columnNameLookup(cols []editDataColumn) map[string]string {
 // editDataColumnList/buildInsertCommand/buildUpdateCommand all splice
 // column names directly into SQL text with no bind-parameter form available
 // for an identifier position.
-func verifyEditDataColumnRefs(technology string, byNormalized map[string]string, columns []editDataColumnRef) ([]editDataColumnRef, error) {
+func verifyEditDataColumnRefs(technology string, byNormalized columnLookup, columns []editDataColumnRef) ([]editDataColumnRef, error) {
 	out := make([]editDataColumnRef, len(columns))
 	for i, c := range columns {
-		real, ok := byNormalized[normalizeColumnName(c.VColumn)]
+		real, ok := byNormalized.find(c.VColumn)
 		if !ok {
 			return nil, fmt.Errorf("column %s does not exist anymore. Please refresh the tree view", c.VColumn)
 		}
@@ -203,10 +231,10 @@ func verifyEditDataColumnRefs(technology string, byNormalized map[string]string,
 // editDataPKValue, which additionally carries the row's own PK cell value —
 // data, not an identifier, so it's passed through unchanged and is always
 // bound as a query parameter, never spliced into SQL text.
-func verifyEditDataPKValues(technology string, byNormalized map[string]string, pk []editDataPKValue) ([]editDataPKValue, error) {
+func verifyEditDataPKValues(technology string, byNormalized columnLookup, pk []editDataPKValue) ([]editDataPKValue, error) {
 	out := make([]editDataPKValue, len(pk))
 	for i, p := range pk {
-		real, ok := byNormalized[normalizeColumnName(p.VColumn)]
+		real, ok := byNormalized.find(p.VColumn)
 		if !ok {
 			return nil, fmt.Errorf("column %s does not exist anymore. Please refresh the tree view", p.VColumn)
 		}
@@ -248,20 +276,26 @@ func fetchEditDataRows(db *sql.DB, technology, schema, table, filter string, cou
 	if err != nil {
 		return nil, nil, "", err
 	}
-	colIndex := make(map[string]int, len(cols))
-	for i, c := range cols {
-		colIndex[normalizeColumnName(c)] = i
+	// The result's columns are verifiedColumns, in order — locate each PK
+	// column by its verified catalog name, not by a case-folded result label
+	// (which cannot tell id from "ID").
+	colIndex := make(map[string]int, len(verifiedColumns))
+	for i, c := range verifiedColumns {
+		if i < len(cols) {
+			colIndex[c.VColumn] = i
+		}
 	}
 
+	colTypes := columnTypeNames(r, len(cols))
 	for r.Next() {
-		rowValues, err := scanRowWithNullSentinel(r, len(cols))
+		rowValues, err := scanRowWithNullSentinel(r, len(cols), colTypes)
 		if err != nil {
 			return nil, nil, "", err
 		}
 
 		rowPK := make([]map[string]any, 0, len(verifiedPKList))
 		for _, pk := range verifiedPKList {
-			idx, ok := colIndex[normalizeColumnName(pk.VColumn)]
+			idx, ok := colIndex[pk.VColumn]
 			value := ""
 			if ok {
 				value = rowValues[idx]
@@ -407,15 +441,36 @@ func saveEditDataRows(db *sql.DB, technology, schema, table string, dataRows [][
 		}
 
 		result := editDataRowResult{Mode: info.Mode, Index: info.Index, Command: sqlText}
-		if _, err := db.Exec(sqlText, args...); err != nil {
+		res, err := db.Exec(sqlText, args...)
+		switch {
+		case err != nil:
 			result.Error = true
 			result.Message = err.Error()
-		} else {
+		case editDataMatchedNothing(technology, info.Mode, res):
+			result.Error = true
+			result.Message = "No row was changed: it was modified or deleted in the meantime. Refresh the data and try again."
+		default:
 			result.Message = "Success."
 		}
 		results = append(results, result)
 	}
 	return results, nil
+}
+
+// editDataMatchedNothing reports an UPDATE/DELETE that affected no row — the
+// row's primary key no longer matches anything (deleted or re-keyed in
+// another session), which used to be reported as "Success.". MySQL/MariaDB
+// updates are exempt: there the count is rows actually changed, so writing a
+// value another session already wrote is a legitimate zero.
+func editDataMatchedNothing(technology string, mode int, res sql.Result) bool {
+	if mode != 1 && mode != -1 {
+		return false
+	}
+	if mode == 1 && (technology == "mysql" || technology == "mariadb") {
+		return false
+	}
+	n, err := res.RowsAffected()
+	return err == nil && n == 0
 }
 
 // validateEditDataRowShape checks that rowsInfo[i]'s mode-specific indexes

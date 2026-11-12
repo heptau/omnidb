@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"math"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -291,13 +293,15 @@ func continueCursor(clientID, tabID string) (*queryCursor, bool) {
 	}
 	c := v.(*queryCursor)
 	c.mu.Lock()
-	// Re-check: closeCursor may have deleted between Load and Lock.
+	// Re-check: closeCursor may have deleted it, or a re-run may have
+	// replaced it, between Load and Lock. Only the cursor whose mutex is held
+	// may be returned -- handing back a replacement would make the caller
+	// unlock a mutex it never locked (a fatal, unrecoverable runtime error).
 	v, ok = queryCursors.Load(key)
-	if !ok {
+	if !ok || v.(*queryCursor) != c {
 		c.mu.Unlock()
 		return nil, false
 	}
-	c = v.(*queryCursor)
 	return c, true
 }
 
@@ -374,7 +378,7 @@ func (c *queryCursor) fetchBlockLocked(blockSize int) (rowsOut [][]string, lastB
 		if !c.rows.Next() {
 			return out, true, c.rows.Err()
 		}
-		row, err := scanRowAsStrings(c.rows, len(c.cols))
+		row, err := scanRowAsStringsTyped(c.rows, len(c.cols), c.colTypes)
 		if err != nil {
 			return nil, false, err
 		}
@@ -382,7 +386,7 @@ func (c *queryCursor) fetchBlockLocked(blockSize int) (rowsOut [][]string, lastB
 	}
 
 	if c.rows.Next() {
-		row, err := scanRowAsStrings(c.rows, len(c.cols))
+		row, err := scanRowAsStringsTyped(c.rows, len(c.cols), c.colTypes)
 		if err != nil {
 			return nil, false, err
 		}
@@ -393,6 +397,13 @@ func (c *queryCursor) fetchBlockLocked(blockSize int) (rowsOut [][]string, lastB
 }
 
 func scanRowAsStrings(rows *sql.Rows, numCols int) ([]string, error) {
+	return scanRowAsStringsTyped(rows, numCols, nil)
+}
+
+// scanRowAsStringsTyped is scanRowAsStrings with each column's
+// DatabaseTypeName (see columnTypeNames) to format date/time and float4
+// values the way their type reads — see typedDisplayValue.
+func scanRowAsStringsTyped(rows *sql.Rows, numCols int, types []string) ([]string, error) {
 	values := make([]any, numCols)
 	ptrs := make([]any, numCols)
 	for i := range values {
@@ -404,9 +415,68 @@ func scanRowAsStrings(rows *sql.Rows, numCols int) ([]string, error) {
 
 	out := make([]string, numCols)
 	for i, v := range values {
-		out[i] = formatSQLValue(v)
+		out[i] = formatSQLValue(typedDisplayValue(v, typeAt(types, i)))
 	}
 	return out, nil
+}
+
+// columnTypeNames returns each result column's DatabaseTypeName ("" where
+// the driver reports none).
+func columnTypeNames(rows *sql.Rows, numCols int) []string {
+	out := make([]string, numCols)
+	if types, err := rows.ColumnTypes(); err == nil {
+		for i, t := range types {
+			if i < numCols {
+				out[i] = t.DatabaseTypeName()
+			}
+		}
+	}
+	return out
+}
+
+func typeAt(types []string, i int) string {
+	if i < len(types) {
+		return types[i]
+	}
+	return ""
+}
+
+// narrowFloat4 undoes a driver widening a 4-byte float to float64 (pgx does
+// for PostgreSQL real): 0.1::real would otherwise read 0.10000000149011612.
+func narrowFloat4(v any, dbType string) any {
+	if x, ok := v.(float64); ok && strings.EqualFold(dbType, "FLOAT4") {
+		if y, err := strconv.ParseFloat(strconv.FormatFloat(x, 'g', -1, 32), 64); err == nil {
+			return y
+		}
+	}
+	return v
+}
+
+// typedDisplayValue turns a date/time value into the text its column type
+// reads as: a date has no time of day and a zone-less timestamp no UTC
+// offset (drivers hand all of them back as a time.Time, which the generic
+// layout in formatSQLValue rendered as "2024-01-15 00:00:00+00:00"). Other
+// values pass through (float4 narrowed, see narrowFloat4).
+func typedDisplayValue(v any, dbType string) any {
+	t, ok := v.(time.Time)
+	if !ok {
+		return narrowFloat4(v, dbType)
+	}
+	up := strings.ToUpper(dbType)
+	switch {
+	case up == "" || strings.Contains(up, "TZ") || strings.Contains(up, "ZONE") || strings.Contains(up, "OFFSET"):
+		return v // unknown or zone-aware: keep the offset
+	case up == "DATE":
+		// Oracle's DATE carries a time of day.
+		if t.Hour() == 0 && t.Minute() == 0 && t.Second() == 0 && t.Nanosecond() == 0 {
+			return t.Format("2006-01-02")
+		}
+		return t.Format("2006-01-02 15:04:05")
+	case up == "TIME":
+		return t.Format("15:04:05.999999")
+	default:
+		return t.Format("2006-01-02 15:04:05.999999")
+	}
 }
 
 // formatSQLValue mirrors how the existing Python DataTable/DB-API layer
@@ -424,7 +494,12 @@ func formatSQLValue(v any) string {
 	case int64:
 		return fmt.Sprintf("%d", x)
 	case float64:
-		return fmt.Sprintf("%g", x)
+		return formatFloat(x)
+	case float32:
+		if y, err := strconv.ParseFloat(strconv.FormatFloat(float64(x), 'g', -1, 32), 64); err == nil {
+			return formatFloat(y)
+		}
+		return fmt.Sprintf("%v", x)
 	case bool:
 		if x {
 			return "true"
@@ -435,4 +510,15 @@ func formatSQLValue(v any) string {
 	default:
 		return fmt.Sprintf("%v", x)
 	}
+}
+
+// formatFloat renders a float the way a database client shows it: plain
+// decimal notation for everyday magnitudes (%g switches to an exponent from
+// 1e+06 up, turning 2500000 into "2.5e+06" in grids and exports), and the
+// shortest round-tripping exponent form only for the extremes.
+func formatFloat(x float64) string {
+	if abs := math.Abs(x); abs != 0 && (abs < 1e-6 || abs >= 1e21) || math.IsNaN(x) || math.IsInf(x, 0) {
+		return strconv.FormatFloat(x, 'g', -1, 64)
+	}
+	return strconv.FormatFloat(x, 'f', -1, 64)
 }

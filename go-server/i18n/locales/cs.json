@@ -672,6 +672,7 @@
   "tree.prop_delete_rule": "Pravidlo při odstranění: ",
   "tree.prop_enabled": "Povoleno: ",
   "tree.prop_event": "Událost: ",
+  "tree.prop_function": "Funkce: ",
   "tree.prop_insert": "Vložení: ",
   "tree.prop_nullable": "Povoluje NULL: ",
   "tree.prop_operators": "Operátory: ",

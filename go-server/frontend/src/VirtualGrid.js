@@ -493,6 +493,9 @@ export class VirtualGrid {
 			this._sortColIndex = colIndex;
 			this._sortDir = 1;
 		}
+		// The selection is a display index; it would point at another record
+		// once the order changes.
+		this._selectedDisplay = -1;
 		this._applySort();
 		this._applySortIndicators();
 		this._renderedStart = -1;
@@ -720,7 +723,10 @@ export class VirtualGrid {
 		const newValue = input.value;
 		const rowIndex = this._displayOrder[display];
 
-		if (oldValue !== newValue) {
+		// Compare as text: the cell may hold null (the spare "+" row) or a
+		// number, while the input always yields a string -- a strict !== would
+		// turn a click-in/click-out into a change (a phantom pending insert).
+		if ((oldValue == null ? "" : String(oldValue)) !== newValue) {
 			if (typeof this.options.beforeChange === "function") {
 				this.options.beforeChange.call(this, [[display, colIndex, oldValue, newValue]], "edit");
 			}
@@ -882,6 +888,7 @@ export class VirtualGrid {
 		const rowIndex = this._displayOrder[index];
 		if (rowIndex === undefined) return;
 		this._rows.splice(rowIndex, 1);
+		this._selectedDisplay = -1;
 		this._rebuildOrder();
 		this._renderedStart = -1;
 		this._renderNow();

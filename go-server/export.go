@@ -8,13 +8,16 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"math"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/xuri/excelize/v2"
+	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/htmlindex"
 	"golang.org/x/text/transform"
 )
@@ -127,8 +130,15 @@ func exportEncodingWriter(f *os.File, name string) *bufio.Writer {
 	if err != nil {
 		return bufio.NewWriter(f)
 	}
-	return bufio.NewWriter(transform.NewWriter(f, enc.NewEncoder()))
+	// A character the legacy encoding lacks becomes a substitute rather than
+	// failing the whole export.
+	return bufio.NewWriter(transform.NewWriter(f, encoding.ReplaceUnsupported(enc.NewEncoder())))
 }
+
+// defaultCSVEncoding is what a new user's CSV/TSV exports use until they pick
+// another in Settings: UTF-8 with a BOM, which is what makes Excel read
+// non-ASCII text correctly.
+const defaultCSVEncoding = "utf-8-sig"
 
 // --- CSV / TSV --------------------------------------------------------
 
@@ -274,6 +284,10 @@ func (j *jsonExportWriter) WriteHeader(cols []string) error {
 func jsonSafeValue(v any) any {
 	if b, ok := v.([]byte); ok {
 		return string(b)
+	}
+	// JSON has no NaN/Infinity, and json.Marshal fails the whole export on one.
+	if f, ok := v.(float64); ok && (math.IsNaN(f) || math.IsInf(f, 0)) {
+		return nil
 	}
 	return v
 }
@@ -442,7 +456,11 @@ func newExportWriter(format, outPath, csvDelimiter, csvEncoding, sqlTable, techn
 	case "csv":
 		delim := ';'
 		if csvDelimiter != "" {
-			delim = rune(csvDelimiter[0])
+			// First character, not first byte; anything encoding/csv would
+			// reject (quote, newline, invalid UTF-8) keeps the default.
+			if r, _ := utf8.DecodeRuneInString(csvDelimiter); r != utf8.RuneError && r != '"' && r != '\r' && r != '\n' {
+				delim = r
+			}
 		}
 		return newDelimitedExportWriter(outPath, delim, csvEncoding)
 	case "tsv":
@@ -486,11 +504,22 @@ func runExportQuery(db *sql.DB, sqlText, format, outPath, csvDelimiter, csvEncod
 		return err
 	}
 
+	// The text formats print dates and times as their column type reads (see
+	// typedDisplayValue); JSON, XLSX and SQL keep the native value.
+	colTypes := columnTypeNames(rows, len(cols))
+	textFormat := format == "csv" || format == "tsv" || format == "md" || format == "xml"
 	for rows.Next() {
 		values, err := scanRowNative(rows, len(cols))
 		if err != nil {
 			writer.Close()
 			return err
+		}
+		for i, v := range values {
+			if textFormat {
+				values[i] = typedDisplayValue(v, colTypes[i])
+			} else {
+				values[i] = narrowFloat4(v, colTypes[i])
+			}
 		}
 		if err := writer.WriteRow(values); err != nil {
 			writer.Close()
@@ -549,7 +578,7 @@ func runQueryExport(upstream *url.URL, cookie string, q queryRequestData, format
 
 	csvEncoding := who.CSVEncoding
 	if csvEncoding == "" {
-		csvEncoding = "utf-8-sig"
+		csvEncoding = defaultCSVEncoding
 	}
 	csvDelimiter := who.CSVDelimiter
 	if csvDelimiter == "" {

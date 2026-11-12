@@ -917,8 +917,7 @@ function renderConnectedUsersGrid(p_tag, p_data, p_reset_detail) {
 						false,
 					);
 				} else if (key === "copy") {
-					this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-					document.execCommand("copy");
+					uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
 				} else if (key === "terminate") {
 					connectedUsersAction(options[0].start.row, p_tag.terminateAction);
 				}

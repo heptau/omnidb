@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"os"
 	"path/filepath"
 	"testing"
@@ -55,6 +56,12 @@ func TestSQLExportLiteral(t *testing.T) {
 		{[]byte{0xff, 0x00}, "postgresql", `'\xff00'`},
 		{[]byte{0xff, 0x00}, "mssql", "0xff00"},
 		{[]byte{0xff, 0x00}, "mysql", "X'ff00'"},
+		{2500000.0, "postgresql", "2500000"},
+		{math.NaN(), "postgresql", "'NaN'::float8"},
+		{math.Inf(-1), "postgresql", "'-Infinity'::float8"},
+		{math.Inf(1), "mysql", "NULL"},
+		{"plain", "mssql", "'plain'"},
+		{"žluťoučký", "mssql", "N'žluťoučký'"},
 	}
 	for _, c := range cases {
 		if got := sqlExportLiteral(c.v, c.tech); got != c.want {

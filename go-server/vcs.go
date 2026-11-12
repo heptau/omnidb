@@ -95,8 +95,9 @@ func under(root string, files []vcsrepo.File) []vcsrepo.File {
 // uniquePath appends " (n)" before the extension until path is unused
 // (case-insensitively, as most filesystems are).
 func uniquePath(used map[string]bool, path, ext string) string {
+	base := strings.TrimSuffix(path, ext)
 	for n := 2; used[strings.ToLower(path)]; n++ {
-		path = fmt.Sprintf("%s (%d)%s", strings.TrimSuffix(path, ext), n, ext)
+		path = fmt.Sprintf("%s (%d)%s", base, n, ext)
 	}
 	used[strings.ToLower(path)] = true
 	return path
@@ -390,7 +391,9 @@ func importScheduleFiles(db *sql.DB, userID int64, files []vcsrepo.File) (vcsImp
 		case curSQL == s.SQL && curInterval == s.Interval:
 			res.Unchanged++
 		default:
-			if _, err := db.Exec(`update OmniDB_app_schedule set sql = ?, interval_minutes = ? where id = ?`, s.SQL, s.Interval, id); err != nil {
+			// Paused like a newly created one: changed SQL from a repository
+			// must not start running unattended either.
+			if _, err := db.Exec(`update OmniDB_app_schedule set sql = ?, interval_minutes = ?, enabled = 0 where id = ?`, s.SQL, s.Interval, id); err != nil {
 				return res, err
 			}
 			res.Updated++
@@ -464,7 +467,12 @@ func callShell(req shellRequest) (shellResponse, error) {
 	if err != nil {
 		return out, err
 	}
-	resp, err := postToShell(&http.Client{Timeout: 2 * time.Minute}, os.Getenv(omnidbVCSURLEnv), bytes.NewReader(payload))
+	timeout := 2 * time.Minute
+	if req.Action == "choose" {
+		// The shell answers only once the native folder picker is closed.
+		timeout = time.Hour
+	}
+	resp, err := postToShell(&http.Client{Timeout: timeout}, os.Getenv(omnidbVCSURLEnv), bytes.NewReader(payload))
 	if err != nil {
 		return out, fmt.Errorf("could not reach the desktop app: %w", err)
 	}

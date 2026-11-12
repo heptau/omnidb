@@ -188,16 +188,20 @@ func lookupAppUser(db *sql.DB, username string) (*appUser, error) {
 // yet reconciled against any request's Accept-Language header), so
 // finishLogin can seed the new native session's Language field without a
 // second query.
+//
+// The row is created here on a user's first login, before
+// loadOrCreateUserDetails (appdb_workspace.go) ever gets the chance — so the
+// defaults both write must agree (defaultCSVEncoding).
 func userCSVPrefs(db *sql.DB, userID int64) (encoding, delimiter, language string, err error) {
 	err = db.QueryRow(`select csv_encoding, csv_delimiter, coalesce(language, 'auto') from OmniDB_app_userdetails where user_id = ?`, userID).Scan(&encoding, &delimiter, &language)
 	if err == sql.ErrNoRows {
 		if _, insertErr := db.Exec(
-			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case, language) values (?, 'auto', 12, 'utf-8', ';', 0, '    ', 'space', 4, 'trailing', 'upper', 'auto')`,
-			userID,
+			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case, language) values (?, 'auto', 12, ?, ';', 0, '    ', 'space', 4, 'trailing', 'upper', 'auto')`,
+			userID, defaultCSVEncoding,
 		); insertErr != nil {
 			return "", "", "", insertErr
 		}
-		return "utf-8", ";", "auto", nil
+		return defaultCSVEncoding, ";", "auto", nil
 	}
 	if err != nil {
 		return "", "", "", err

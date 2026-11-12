@@ -135,6 +135,10 @@ func createNativeSession(userID int, username string, superuser bool, csvEncodin
 
 // lookupNativeSession returns the session for a cookie value, if valid and
 // unexpired.
+//
+// The result is a copy: the stored session is mutated in place under the
+// lock (CSV prefs, language, user-management sync) while callers read their
+// result after it is released.
 func lookupNativeSession(key string) (*nativeSession, bool) {
 	if key == "" {
 		return nil, false
@@ -149,7 +153,8 @@ func lookupNativeSession(key string) (*nativeSession, bool) {
 		delete(nativeSessions, key)
 		return nil, false
 	}
-	return sess, true
+	snapshot := *sess
+	return &snapshot, true
 }
 
 // destroyNativeSession mirrors login.py's logout() — removes the session

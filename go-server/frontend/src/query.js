@@ -834,8 +834,8 @@ export function querySQLReturnRender(p_message, p_context) {
 					}
 					p_context.tab_tag.ht.loadData(v_new_data);
 					applyResultFilter(p_context.tab_tag);
-					v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollTop =
-						v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollHeight;
+					var v_scroll_el = p_context.tab_tag.ht.getGridDiv();
+					v_scroll_el.scrollTop = v_scroll_el.scrollHeight;
 				}
 				//COMMIT or ROLLBACK
 				else {

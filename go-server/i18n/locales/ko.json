@@ -669,6 +669,7 @@
   "tree.prop_delete_rule": "삭제 규칙: ",
   "tree.prop_enabled": "활성화: ",
   "tree.prop_event": "이벤트: ",
+  "tree.prop_function": "함수: ",
   "tree.prop_insert": "삽입: ",
   "tree.prop_nullable": "NULL 허용: ",
   "tree.prop_operators": "연산자: ",

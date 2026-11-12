@@ -67,8 +67,10 @@ func handleGetConnections(upstream *url.URL) http.HandlerFunc {
 
 		conns, err := fetchConnectionsForUser(db, int64(who.UserID))
 		if err != nil {
+			// An empty list here would look like every connection was lost.
 			log.Printf("get_connections: fetchConnectionsForUser: %v", err)
-			conns = nil
+			writeDatabaseError(w, err.Error())
+			return
 		}
 
 		connList := make([]map[string]any, 0, len(conns))

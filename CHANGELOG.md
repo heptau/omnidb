@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `make release` now opens the winget version-bump PR by default (fork `heptau/winget-pkgs`; `WINGET_PKGS_FORK=skip`
+  opts out) instead of silently skipping it when the variable was unset. The fork, push access and the existing
+  `heptau.OmniDB` package upstream are verified before any build starts, so a misconfiguration stops the release
+  early; the push to the fork authenticates through `gh` rather than prompting for git credentials.
+
+### Fixed
+
+- Edit Data: clicking into the empty "+" row (or any cell) and leaving it without typing no longer registers a
+  change, which used to create a phantom pending insert of an all-NULL row.
+- "Copy" in the context menu of the console history, monitoring, Edit Data, Properties and Connected Users grids
+  copies the cell again (it did nothing since the grid replacement).
+- A multi-line message (column statistics, database errors) shown after any form dialog had been open no longer
+  collapses into one line.
+- Untranslated keys shown instead of text: the title of a new snippet tab, "Doc: Partitioning" and the trigger
+  function node in the MySQL, MariaDB and Oracle trees.
+- "Fetch more" scrolls to the newly loaded rows again, and no longer fails with "no open query for this tab" on a
+  result of 50–100 rows with autocommit on.
+- A failed long-poll request (proxy timeout, short network drop) no longer leaves running queries waiting forever;
+  polling retries.
+- Sorting a grid or removing a row no longer leaves the row highlight on a different record.
+- PostgreSQL: Edit Data, data import, compare, SQL generation and dump work for tables and schemas whose names need
+  quoting (`"Order"`, `"my table"`); they failed with "table does not exist anymore".
+- Result grids, Edit Data and the CSV/TSV/Markdown/XML exports show values the way their column type reads:
+  floating-point values from 1,000,000 up in plain notation (`2500000`, not `2.5e+06`), a PostgreSQL `real` as
+  `0.1` (not `0.10000000149011612`), a date as `2024-01-15` and a zone-less timestamp without a `+00:00` suffix.
+- Edit Data: saving a row that was deleted or re-keyed in another session reports that nothing was changed instead
+  of "Success."; a table with columns differing only in case (`id` and `"ID"`) no longer mixes them up (the edit
+  went to the other column and both were treated as the key).
+- "Export as SQL" writes non-ASCII text for MS SQL Server as `N'…'` and NaN/Infinity as a valid literal
+  (PostgreSQL) or `NULL`; a JSON export no longer fails on NaN/Infinity (written as `null`).
+- A user created on first login gets the documented default CSV encoding, UTF-8 with BOM, like every other code
+  path already assumed (they got plain UTF-8).
+- Server mode: a browser that disappears without signing off (crash, lost network) no longer leaves its open
+  cursors, transactions, console, SSH terminal and LISTEN sessions behind until the server restarts; they are
+  released after an hour without contact, and a terminal producing output can no longer grow memory unbounded.
+- An export whose query was still running when another export started could not be downloaded or saved.
+- Removing a user or a connection also removes the scheduled queries (and their run log), LISTEN channels and
+  interface preferences tied to it; orphaned schedules kept running unseen.
+- Importing from version control pauses a schedule whose SQL or interval it changes, the same as one it creates.
+- Version control export numbers a third and further same-named snippet `name (3)` rather than `name (2) (3)`,
+  which import could not map back.
+- The version-control folder picker no longer reports "could not reach the desktop app" when left open for more
+  than two minutes.
+- The connection list reports a database error instead of showing an empty list.
+- CSV export: a non-ASCII delimiter is used as typed (not its first byte), an unusable one (quote, line break)
+  falls back to the default instead of failing every export, and a character the chosen legacy encoding lacks is
+  substituted instead of aborting the export.
+- PostgreSQL monitoring rate charts (TPS, WAL, temp files, database growth) no longer show a bogus sample right
+  after midnight.
+- The server shuts down promptly on Ctrl+C/SIGTERM instead of waiting out open long-poll requests; a rare crash
+  when a query was re-run while a "fetch more" was in flight, and a data race on session data, are fixed.
+
 ### Security
 
 - Hardened for the CodeQL code-scanning findings: the "does this table exist" probes (SQL diagnostics, rename

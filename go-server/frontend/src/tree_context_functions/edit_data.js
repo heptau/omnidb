@@ -39,6 +39,7 @@ import { t } from "../i18n.js";
 import { SetAcked, createRequest, removeContext } from "../long_polling.js";
 import { showAlert, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
+import { uiCopyTextToClipboard } from "../workspace.js";
 import { escapeHtml, escapeHtmlAttribute, v_queryRequestCodes } from "../query.js";
 import { editDataActionRenderer, grayEmptyRenderer, grayRenderer, greenRenderer, newRowRenderer, redRenderer, whiteRenderer, yellowRenderer } from "../renderers.js";
 
@@ -439,8 +440,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 							this.setDataAtCell(v_dest_row, c + 1, v_src_values[c + 1]);
 						}
 					} else if (key === "copy") {
-						this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-						document.execCommand("copy");
+						uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
 					}
 				},
 				items: {

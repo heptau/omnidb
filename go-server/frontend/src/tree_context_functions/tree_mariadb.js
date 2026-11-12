@@ -873,7 +873,7 @@ export function getTreeMariadb(p_div) {
 							.text));
 				}
 			}, {
-				text: t('tree.doc_partitions'),
+				text: t('tree.doc_partitioning'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(

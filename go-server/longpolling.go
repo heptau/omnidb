@@ -557,6 +557,31 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 		var ok bool
 		cursor, ok = continueCursor(clientID, q.VTabID)
 		if !ok {
+			if q.VMode == 1 {
+				// The first block already drained (and closed) an autocommit
+				// cursor, yet the frontend offers "fetch more" from 50 rows
+				// up: there is simply nothing left, same answer as
+				// runNativeQueryAllData gives.
+				queueNativeResponse(cookie, map[string]any{
+					"v_code":         responseQueryResult,
+					"v_context_code": contextCode,
+					"v_error":        false,
+					"v_data": map[string]any{
+						"v_col_names":      []string{},
+						"v_col_types":      []string{},
+						"v_data":           [][]string{},
+						"v_last_block":     true,
+						"v_duration":       formatDuration(time.Since(start)),
+						"v_notices":        "",
+						"v_notices_length": 0,
+						"v_inserted_id":    nil,
+						"v_status":         nil,
+						"v_con_status":     1,
+						"v_chunks":         true,
+					},
+				})
+				return
+			}
 			queueQueryError(upstream, cookie, contextCode, fmt.Errorf("no open query for this tab, please re-run it"))
 			return
 		}

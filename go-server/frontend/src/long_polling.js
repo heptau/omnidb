@@ -93,7 +93,15 @@ export function call_polling(p_startup) {
 		"box",
 		false,
 		null,
-		function () {},
+		function () {
+			// A failed poll (proxy timeout, network blip) must not strand the
+			// requests still waiting for a result: try again shortly, unless
+			// createRequest already restarted the loop in the meantime.
+			var v_failed = v_polling_ajax;
+			setTimeout(function () {
+				if (v_polling_ajax === v_failed && v_context_object.contextList.length > 0) call_polling(false);
+			}, 2000);
+		},
 	);
 }
 

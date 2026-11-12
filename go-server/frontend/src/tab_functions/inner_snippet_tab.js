@@ -38,7 +38,7 @@ import { escapeHtml } from "../query.js";
 
 /** @param {{id: any, name: string, id_parent: any}|null} [p_snippet] */
 export var v_createSnippetTextTabFunction = function (p_snippet = null) {
-	var v_name = t("settings.shortcuts.new_snippet");
+	var v_name = t("snippets.new_snippet");
 	/** @type {{id: any, name: string|null, parent: any, type: string}} */
 	var v_details = {
 		id: null,

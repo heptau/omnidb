@@ -29,10 +29,16 @@ import (
 // condition-variable-style wakeup that also composes with context
 // cancellation (sync.Cond doesn't).
 type pollingClient struct {
-	mu         sync.Mutex
-	returning  []map[string]any
-	notify     chan struct{}
+	mu        sync.Mutex
+	returning []map[string]any
+	notify    chan struct{}
+	// lastUpdate is when the browser was last heard from (a poll starting or
+	// ending, a keep-alive) -- deliberately not when a response was queued:
+	// a producer that needs no user action (an SSH terminal running `top`)
+	// would keep an abandoned client alive forever.
 	lastUpdate time.Time
+	// waiters counts /long_polling/ requests currently parked on this client.
+	waiters int
 }
 
 func newPollingClient() *pollingClient {
@@ -79,31 +85,47 @@ var (
 	pollingReaperOnce sync.Once
 )
 
-// startPollingReaper launches a background goroutine that removes polling
-// clients whose lastUpdate is older than 1 hour. Analogous to
-// startSessionReaper in native_session.go — prevents unbounded map growth
-// on long-running server deployments when /clear_client/ doesn't fire
-// (browser crash, closed tab without unload handler, keepalive-only client
-// that never started polling).
+// startPollingReaper launches a background goroutine that releases clients
+// the browser has not been heard from for an hour (it pings every 60s while
+// open). Analogous to startSessionReaper in native_session.go — covers the
+// cases where /clear_client/ never fires (browser crash, lost network,
+// closed tab without unload handler).
 func startPollingReaper() {
 	pollingReaperOnce.Do(func() {
 		go func() {
 			for {
-				time.Sleep(1 * time.Hour)
-				threshold := time.Now().Add(-1 * time.Hour)
-				pollingClientsMu.Lock()
-				for k, c := range pollingClients {
-					c.mu.Lock()
-					stale := c.lastUpdate.Before(threshold)
-					c.mu.Unlock()
-					if stale {
-						delete(pollingClients, k)
-					}
-				}
-				pollingClientsMu.Unlock()
+				time.Sleep(15 * time.Minute)
+				reapStalePollingClients(time.Now().Add(-1 * time.Hour))
 			}
 		}()
 	})
+}
+
+// reapStalePollingClients drops every client last heard from before
+// threshold, together with everything held on its behalf — open cursors
+// (and their transactions and locks on the user's database), console, SSH
+// terminal and LISTEN sessions — exactly what handleClearClient releases
+// when the browser does say goodbye. Returns the reaped client ids.
+func reapStalePollingClients(threshold time.Time) []string {
+	var stale []string
+	pollingClientsMu.Lock()
+	for k, c := range pollingClients {
+		c.mu.Lock()
+		gone := c.waiters == 0 && c.lastUpdate.Before(threshold)
+		c.mu.Unlock()
+		if gone {
+			delete(pollingClients, k)
+			stale = append(stale, k)
+		}
+	}
+	pollingClientsMu.Unlock()
+	for _, clientID := range stale {
+		closeCursorsForClient(clientID)
+		closeConsoleSessionsForClient(clientID)
+		closeTerminalSessionsForClient(clientID)
+		closeNotifySessionsForClient(clientID)
+	}
+	return stale
 }
 
 // getPollingClient mirrors get_client_object — returns the existing entry
@@ -160,7 +182,6 @@ func queueNativeResponse(cookieHeader string, payload map[string]any) {
 	c := getPollingClient(clientID)
 	c.mu.Lock()
 	c.returning = append(c.returning, payload)
-	c.lastUpdate = time.Now()
 	c.signal()
 	c.mu.Unlock()
 }
@@ -211,7 +232,16 @@ func handleLongPolling() http.HandlerFunc {
 			return
 		}
 
-		rows := getPollingClient(clientID).waitForData(r.Context(), req.PStartup)
+		client := getPollingClient(clientID)
+		client.mu.Lock()
+		client.lastUpdate = time.Now()
+		client.waiters++
+		client.mu.Unlock()
+		rows := client.waitForData(r.Context(), req.PStartup)
+		client.mu.Lock()
+		client.lastUpdate = time.Now()
+		client.waiters--
+		client.mu.Unlock()
 		if rows == nil {
 			rows = []map[string]any{}
 		}
@@ -222,10 +252,7 @@ func handleLongPolling() http.HandlerFunc {
 
 // handleClientKeepAlive mirrors polling.py's client_keep_alive — the 60s
 // heartbeat ping long_polling.js sends so an idle-but-still-open session
-// isn't reaped. Nothing in this Go process currently reaps idle
-// pollingClient entries by age (unlike Python's cleanup_thread), so this is
-// mostly wire-compatibility today, but recording lastUpdate here keeps the
-// door open for adding that later without touching the frontend.
+// isn't reaped (see reapStalePollingClients).
 func handleClientKeepAlive() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if clientID := nativeSessionCookieValue(r); clientID != "" {

@@ -113,6 +113,10 @@ export function showMessageModal(p_content_function, p_large) {
 	var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
 	if (v_old_title) v_old_title.remove();
 
+	// Form dialogs set white-space: normal on the shared content element; restore
+	// that so the next plain message gets the markup's pre-line back.
+	el("modal_message_content").style.whiteSpace = "pre-line";
+
 	v_dialog.classList.toggle("modal-xl", p_large === true);
 	v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
 

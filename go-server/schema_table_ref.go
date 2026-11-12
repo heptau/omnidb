@@ -51,9 +51,15 @@ func verifiedSchemaTable(technology string, db *sql.DB, schema, table string) (s
 // cares which).
 func postgresqlVerifiedSchemaTable(db *sql.DB, schema, table string) (string, string, error) {
 	var s, t string
+	// The tree and the autocompleter hand names over in quote_ident() form
+	// ("Order", "my table"), other callers raw -- accept either, preferring
+	// the exact match; the catalog's own raw copy is what gets returned.
 	err := db.QueryRow(`
 		SELECT table_schema, table_name FROM information_schema.tables
-		WHERE table_schema = $1 AND table_name = $2
+		WHERE (table_schema = $1 OR quote_ident(table_schema) = $1)
+		  AND (table_name = $2 OR quote_ident(table_name) = $2)
+		ORDER BY (table_schema = $1)::int + (table_name = $2)::int DESC
+		LIMIT 1
 	`, schema, table).Scan(&s, &t)
 	if err == sql.ErrNoRows {
 		return "", "", nil

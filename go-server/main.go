@@ -627,6 +627,11 @@ func run() error {
 		}
 	}
 
+	// Also on a signal or a failed Serve, not only via /internal/shutdown/:
+	// parked long-poll waiters and running schedules watch this context, and
+	// Shutdown below would otherwise wait out its whole deadline for them.
+	shutdownCancel()
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_ = httpServer.Shutdown(ctx)

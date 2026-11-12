@@ -500,6 +500,11 @@ func cascadeDeleteConnection(db *sql.DB, connID int64) error {
 		`delete from OmniDB_app_connectionorder where connection_id = ?`,
 		`delete from OmniDB_app_bookmark where connection_id = ?`,
 		`delete from OmniDB_app_editorversion where connection_id = ?`,
+		// A schedule on a deleted connection would keep firing (and failing)
+		// unseen: the schedule list inner-joins the connection.
+		`delete from OmniDB_app_schedule_run where schedule_id in (select id from OmniDB_app_schedule where connection_id = ?)`,
+		`delete from OmniDB_app_schedule where connection_id = ?`,
+		`delete from OmniDB_app_notifychannel where connection_id = ?`,
 	} {
 		if _, err := db.Exec(stmt, connID); err != nil {
 			return err

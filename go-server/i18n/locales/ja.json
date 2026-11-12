@@ -669,6 +669,7 @@
   "tree.prop_delete_rule": "削除ルール: ",
   "tree.prop_enabled": "有効: ",
   "tree.prop_event": "イベント: ",
+  "tree.prop_function": "関数: ",
   "tree.prop_insert": "挿入: ",
   "tree.prop_nullable": "NULL許容: ",
   "tree.prop_operators": "演算子: ",

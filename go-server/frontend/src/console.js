@@ -40,6 +40,7 @@ import { escapeHtml, escapeHtmlAttribute, setTabStatus, v_queryRequestCodes } fr
 import { blueHtmlRenderer, whiteHtmlRenderer } from "./renderers.js";
 import { t } from "./i18n.js";
 import { setupTimeRangePicker } from "./time_range_picker.js";
+import { uiCopyTextToClipboard } from "./workspace.js";
 
 export var v_consoleState = {
 	Idle: 0,
@@ -191,8 +192,7 @@ export function showConsoleHistory() {
 						false,
 					);
 				} else if (key === "copy") {
-					this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-					document.execCommand("copy");
+					uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
 				} else if (key === "copy_to_console") {
 					consoleHistoryOpenCmd(options[0].start.row);
 				}

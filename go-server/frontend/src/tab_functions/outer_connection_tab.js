@@ -53,6 +53,7 @@ import {
 	showMenuNewTab,
 	toggleTreeContainer,
 	toggleTreeTabsContainer,
+	uiCopyTextToClipboard,
 } from "../workspace.js";
 
 // Refreshes the Notify section's content pane whenever the selected/open
@@ -468,8 +469,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 							false,
 						);
 					} else if (key === "copy") {
-						this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-						document.execCommand("copy");
+						uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
 					}
 				},
 				items: {

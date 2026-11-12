@@ -672,6 +672,7 @@
   "tree.prop_delete_rule": "Löschregel: ",
   "tree.prop_enabled": "Aktiviert: ",
   "tree.prop_event": "Ereignis: ",
+  "tree.prop_function": "Funktion: ",
   "tree.prop_insert": "Einfügen: ",
   "tree.prop_nullable": "NULL erlaubt: ",
   "tree.prop_operators": "Operatoren: ",

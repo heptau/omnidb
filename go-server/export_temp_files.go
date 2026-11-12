@@ -25,7 +25,11 @@ var (
 )
 
 // newExportTempFile reserves a fresh, owner-tagged file name in tempDir with
-// the given extension, creating tempDir (0700) if needed.
+// the given extension, creating tempDir (0700) if needed. The (empty) file is
+// created right away: the registry prunes entries whose file is gone, and a
+// slow export only writes its file once its query returns -- without the
+// placeholder a second export started meanwhile would drop the first one's
+// ownership entry.
 func newExportTempFile(tempDir string, userID int, ext string) (name, path string, err error) {
 	if err := os.MkdirAll(tempDir, 0o700); err != nil {
 		return "", "", err
@@ -44,9 +48,16 @@ func newExportTempFile(tempDir string, userID int, ext string) (name, path strin
 			delete(exportFileOwners, k)
 		}
 	}
+	path = filepath.Join(tempDir, name)
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+	if err != nil {
+		exportFileOwnersMu.Unlock()
+		return "", "", err
+	}
+	_ = f.Close()
 	exportFileOwners[name] = userID
 	exportFileOwnersMu.Unlock()
-	return name, filepath.Join(tempDir, name), nil
+	return name, path, nil
 }
 
 // exportFileOwnedBy reports whether name (a bare file name inside the temp

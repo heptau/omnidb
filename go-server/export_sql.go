@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"regexp"
 	"strings"
@@ -76,7 +77,21 @@ func sqlExportLiteral(v any, technology string) string {
 	case int64:
 		return fmt.Sprintf("%d", x)
 	case float64:
-		return fmt.Sprintf("%g", x)
+		if math.IsNaN(x) || math.IsInf(x, 0) {
+			// Not a literal anywhere; only PostgreSQL has a spelling for it.
+			if technology != "postgresql" {
+				return "NULL"
+			}
+			switch {
+			case math.IsNaN(x):
+				return "'NaN'::float8"
+			case x > 0:
+				return "'Infinity'::float8"
+			default:
+				return "'-Infinity'::float8"
+			}
+		}
+		return formatFloat(x)
 	case bool:
 		if isMSSQL(technology) || isOracle(technology) {
 			if x {
@@ -120,7 +135,18 @@ func sqlExportString(s, technology string) string {
 	if isMySQLFamily(technology) {
 		s = strings.ReplaceAll(s, `\`, `\\`)
 	}
-	return "'" + strings.ReplaceAll(s, "'", "''") + "'"
+	prefix := ""
+	if isMSSQL(technology) {
+		// Without N a literal is converted through the database's code page,
+		// turning anything outside it into "?".
+		for _, r := range s {
+			if r > 127 {
+				prefix = "N"
+				break
+			}
+		}
+	}
+	return prefix + "'" + strings.ReplaceAll(s, "'", "''") + "'"
 }
 
 // newSQLInsertWriter writes to a writer the caller owns (and closes itself);

@@ -1003,6 +1003,7 @@
     var v_dialog = el$b("modal_message_dialog");
     var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
     if (v_old_title) v_old_title.remove();
+    el$b("modal_message_content").style.whiteSpace = "pre-line";
     v_dialog.classList.toggle("modal-xl", p_large === true);
     v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
@@ -2950,8 +2951,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
               false
             );
           } else if (key === "copy") {
-            this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-            document.execCommand("copy");
+            uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
           } else if (key === "copy_to_console") {
             consoleHistoryOpenCmd(options[0].start.row);
           }
@@ -3958,6 +3958,10 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       false,
       null,
       function() {
+        var v_failed = v_polling_ajax;
+        setTimeout(function() {
+          if (v_polling_ajax === v_failed && v_context_object.contextList.length > 0) call_polling(false);
+        }, 2e3);
       }
     );
   }
@@ -4509,8 +4513,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                 this.setDataAtCell(v_dest_row, c2 + 1, v_src_values[c2 + 1]);
               }
             } else if (key === "copy") {
-              this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-              document.execCommand("copy");
+              uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
             }
           },
           items: {
@@ -5536,8 +5539,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
               false
             );
           } else if (key === "copy") {
-            this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-            document.execCommand("copy");
+            uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
           } else if (key === "terminate") {
             connectedUsersAction(options[0].start.row, p_tag.terminateAction);
           }
@@ -9822,8 +9824,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                         false
                       );
                     } else if (key === "copy") {
-                      this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-                      document.execCommand("copy");
+                      uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
                     }
                   },
                   items: {
@@ -10414,13 +10415,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                             false
                           );
                         } else if (key === "copy") {
-                          this.selectCell(
-                            options[0].start.row,
-                            options[0].start.col,
-                            options[0].end.row,
-                            options[0].end.col
-                          );
-                          document.execCommand("copy");
+                          uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
                         }
                       },
                       items: {
@@ -24254,7 +24249,7 @@ ${r2.message}`).join("\n\n");
     v_createQueryTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
   var v_createSnippetTextTabFunction = function(p_snippet = null) {
-    var v_name = t$1("settings.shortcuts.new_snippet");
+    var v_name = t$1("snippets.new_snippet");
     var v_details = {
       id: null,
       name: null,
@@ -24646,8 +24641,7 @@ ${r2.message}`).join("\n\n");
                 false
               );
             } else if (key === "copy") {
-              this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-              document.execCommand("copy");
+              uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
             }
           },
           items: {
@@ -25864,7 +25858,7 @@ ${r2.message}`).join("\n\n");
       					.text));
       		}
       	}, {
-      		text: t('tree.doc_partitions'),
+      		text: t('tree.doc_partitioning'),
       		icon: 'fas cm-all fa-globe-americas',
       		action: function(node) {
       			v_connTabControl.tag.createWebsiteTab(
@@ -28581,7 +28575,7 @@ ${r2.message}`).join("\n\n");
       					.text));
       		}
       	}, {
-      		text: t('tree.doc_partitions'),
+      		text: t('tree.doc_partitioning'),
       		icon: 'fas cm-all fa-globe-americas',
       		action: function(node) {
       			v_connTabControl.tag.createWebsiteTab(
@@ -34850,7 +34844,7 @@ ${r2.message}`).join("\n\n");
       					.text));
       		}
       	}, {
-      		text: t('tree.doc_partitions'),
+      		text: t('tree.doc_partitioning'),
       		icon: 'fas cm-all fa-globe-americas',
       		action: function(node) {
       			v_connTabControl.tag.createWebsiteTab(
@@ -44451,7 +44445,8 @@ ${r2.message}`).join("\n\n");
             }
             p_context.tab_tag.ht.loadData(v_new_data);
             applyResultFilter(p_context.tab_tag);
-            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollTop = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollHeight;
+            var v_scroll_el = p_context.tab_tag.ht.getGridDiv();
+            v_scroll_el.scrollTop = v_scroll_el.scrollHeight;
           } else {
             if (p_context.tab_tag.ht != null)
               v_query_info.innerHTML = "<b>" + t$1("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t$1("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration)) + "<br/>" + t$1("common.status") + ": " + escapeHtml(p_message.v_data.v_status);
@@ -45881,6 +45876,7 @@ ${r2.message}`).join("\n\n");
         this._sortColIndex = colIndex;
         this._sortDir = 1;
       }
+      this._selectedDisplay = -1;
       this._applySort();
       this._applySortIndicators();
       this._renderedStart = -1;
@@ -46064,7 +46060,7 @@ ${r2.message}`).join("\n\n");
       const { display, colIndex, input, oldValue } = editing;
       const newValue = input.value;
       const rowIndex = this._displayOrder[display];
-      if (oldValue !== newValue) {
+      if ((oldValue == null ? "" : String(oldValue)) !== newValue) {
         if (typeof this.options.beforeChange === "function") {
           this.options.beforeChange.call(this, [[display, colIndex, oldValue, newValue]], "edit");
         }
@@ -46199,6 +46195,7 @@ ${r2.message}`).join("\n\n");
       const rowIndex = this._displayOrder[index];
       if (rowIndex === void 0) return;
       this._rows.splice(rowIndex, 1);
+      this._selectedDisplay = -1;
       this._rebuildOrder();
       this._renderedStart = -1;
       this._renderNow();

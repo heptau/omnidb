@@ -189,7 +189,7 @@ func pgTransactionRateData(db *sql.DB, previous map[string]any) (map[string]any,
 		err = db.QueryRow(`select 0 as tps, sum(xact_commit+xact_rollback) as current_count, now()::time as current_time FROM pg_stat_database`).Scan(&tps, &currentCount, &currentTime)
 	} else {
 		err = db.QueryRow(
-			`select round((sum(xact_commit+xact_rollback) - $1::numeric)/(extract(epoch from now()::time - $2::time))::numeric,2) as tps, sum(xact_commit+xact_rollback) as current_count, now()::time as current_time FROM pg_stat_database`,
+			`select round((sum(xact_commit+xact_rollback) - $1::numeric)/mod((extract(epoch from now()::time - $2::time))::numeric + 86400, 86400),2) as tps, sum(xact_commit+xact_rollback) as current_count, now()::time as current_time FROM pg_stat_database`,
 			previous["current_count"], previous["current_time"],
 		).Scan(&tps, &currentCount, &currentTime)
 	}
@@ -259,7 +259,7 @@ func pgWALProductionRateData(db *sql.DB, previous map[string]any) (map[string]an
 		err = db.QueryRow(query).Scan(&rate, &currentLSN, &currentTime)
 	} else {
 		query := fmt.Sprintf(`
-			SELECT round((%s(current_lsn,$1::pg_lsn)/1048576.0)/(extract(epoch from now()::time - $2::time))::numeric,2) as rate,
+			SELECT round((%s(current_lsn,$1::pg_lsn)/1048576.0)/mod((extract(epoch from now()::time - $2::time))::numeric + 86400, 86400),2) as rate,
 			       current_lsn, current_time::text
 			FROM (SELECT CASE WHEN pg_is_in_recovery() THEN null ELSE %s() END as current_lsn, now() as current_time) t
 		`, diffFunc, lsnFunc)
@@ -283,7 +283,7 @@ func pgTempFilesRateData(db *sql.DB, previous map[string]any) (map[string]any, e
 		err = db.QueryRow(`SELECT 0 as rate, sum(temp_bytes) current_temp_bytes, now()::text as current_time FROM pg_stat_database`).Scan(&rate, &currentBytes, &currentTime)
 	} else {
 		err = db.QueryRow(
-			`SELECT round(((sum(temp_bytes) - $1::numeric)/1048576.0)/(extract(epoch from now()::time - $2::time))::numeric,2) as rate, sum(temp_bytes) current_temp_bytes, now()::text as current_time FROM pg_stat_database`,
+			`SELECT round(((sum(temp_bytes) - $1::numeric)/1048576.0)/mod((extract(epoch from now()::time - $2::time))::numeric + 86400, 86400),2) as rate, sum(temp_bytes) current_temp_bytes, now()::text as current_time FROM pg_stat_database`,
 			previous["current_temp_bytes"], previous["current_time"],
 		).Scan(&rate, &currentBytes, &currentTime)
 	}
@@ -354,7 +354,7 @@ func pgDatabaseGrowthData(db *sql.DB, previous map[string]any) (map[string]any, 
 		err = db.QueryRow(`SELECT 0 AS database_growth, sum(pg_database_size(datname)) AS current_sum, now()::text AS current_time FROM pg_stat_database WHERE datname IS NOT NULL`).Scan(&growth, &currentSum, &currentTime)
 	} else {
 		err = db.QueryRow(
-			`SELECT round(((sum(pg_database_size(datname)) - $1::numeric)/1048576.0) / (extract(epoch from now()::time - $2::time))::numeric,2) AS database_growth, sum(pg_database_size(datname)) AS current_sum, now()::text AS current_time FROM pg_stat_database WHERE datname IS NOT NULL`,
+			`SELECT round(((sum(pg_database_size(datname)) - $1::numeric)/1048576.0) / mod((extract(epoch from now()::time - $2::time))::numeric + 86400, 86400),2) AS database_growth, sum(pg_database_size(datname)) AS current_sum, now()::text AS current_time FROM pg_stat_database WHERE datname IS NOT NULL`,
 			previous["current_sum"], previous["current_time"],
 		).Scan(&growth, &currentSum, &currentTime)
 	}

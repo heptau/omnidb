@@ -83,8 +83,9 @@ func snippetExportEntries(db *sql.DB, userID int64) ([]snippetExportEntry, error
 		if dir != "" {
 			path = dir + "/" + path
 		}
+		stem := strings.TrimSuffix(path, ".sql")
 		for n := 2; used[strings.ToLower(path)]; n++ {
-			path = fmt.Sprintf("%s (%d)%s", strings.TrimSuffix(path, ".sql"), n, ".sql")
+			path = fmt.Sprintf("%s (%d)%s", stem, n, ".sql")
 		}
 		used[strings.ToLower(path)] = true
 		out = append(out, snippetExportEntry{Path: path, Text: text})

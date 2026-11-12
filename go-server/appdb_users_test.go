@@ -26,6 +26,10 @@ var cascadeSchema = []string{
 	`create table OmniDB_app_connectionorder (id integer primary key, user_id integer, connection_id integer, position integer)`,
 	`create table OmniDB_app_bookmark (id integer primary key, user_id integer, connection_id integer)`,
 	`create table OmniDB_app_editorversion (id integer primary key, user_id integer, connection_id integer)`,
+	`create table OmniDB_app_schedule (id integer primary key, user_id integer, connection_id integer)`,
+	`create table OmniDB_app_schedule_run (id integer primary key, schedule_id integer)`,
+	`create table OmniDB_app_notifychannel (id integer primary key, user_id integer, connection_id integer)`,
+	`create table OmniDB_app_uipref (user_id integer, key text, value text)`,
 }
 
 // The four Django framework tables bootstrapAppDB deliberately never creates.
@@ -57,6 +61,9 @@ func newCascadeDB(t *testing.T, extra []string) *sql.DB {
 		`insert into OmniDB_app_groupconnection (id, connection_id, group_id) values (1, 70, 700)`,
 		`insert into OmniDB_app_shortcut (id, user_id) values (1, 7), (2, 8)`,
 		`insert into OmniDB_app_userdetails (id, user_id) values (1, 7), (2, 8)`,
+		`insert into OmniDB_app_schedule (id, user_id, connection_id) values (1, 7, 80), (2, 8, 70), (3, 8, 80)`,
+		`insert into OmniDB_app_schedule_run (id, schedule_id) values (1, 1), (2, 2), (3, 3)`,
+		`insert into OmniDB_app_uipref (user_id, key, value) values (7, 'k', 'v'), (8, 'k', 'v')`,
 	} {
 		if _, err := db.Exec(stmt); err != nil {
 			t.Fatalf("seed %q: %v", stmt, err)
@@ -96,6 +103,21 @@ func TestDeleteUserCascadeOnSchemaWithoutDjangoTables(t *testing.T) {
 	}
 	if n := count(t, db, `select count(*) from OmniDB_app_groupconnection`); n != 0 {
 		t.Errorf("group connections not cascaded: %d rows", n)
+	}
+
+	// Schedules of the removed user, and anyone's on the removed connections,
+	// must go -- the scheduler would otherwise keep running them unseen.
+	if n := count(t, db, `select count(*) from OmniDB_app_schedule where id in (1, 2)`); n != 0 {
+		t.Errorf("schedules not cascaded: %d rows", n)
+	}
+	if n := count(t, db, `select count(*) from OmniDB_app_schedule_run where schedule_id in (1, 2)`); n != 0 {
+		t.Errorf("schedule runs not cascaded: %d rows", n)
+	}
+	if n := count(t, db, `select count(*) from OmniDB_app_schedule_run where schedule_id = 3`); n != 1 {
+		t.Errorf("other user's schedule affected: %d rows", n)
+	}
+	if n := count(t, db, `select count(*) from OmniDB_app_uipref`); n != 1 {
+		t.Errorf("ui prefs: want only the other user's row, got %d", n)
 	}
 
 	// The other user is untouched.

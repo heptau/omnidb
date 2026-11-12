@@ -37,6 +37,7 @@ import { showPasswordPrompt } from "./passwords.js";
 import { escapeHtml } from "./query.js";
 import { toggleMonitorUnitChartType } from "./tab_functions/inner_monitoring_dashboard_tab.js";
 import { switchSection } from "./section_switcher.js";
+import { uiCopyTextToClipboard } from "./workspace.js";
 
 // Chart.js v2 had a chart.generateLegend()/options.legendCallback pair for
 // building a custom HTML legend from a chart instance; both were removed in
@@ -672,8 +673,7 @@ export function selectUnitTemplate(p_value) {
 										false,
 									);
 								} else if (key === "copy") {
-									this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-									document.execCommand("copy");
+									uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
 								}
 							},
 							items: {
@@ -1511,13 +1511,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 													false,
 												);
 											} else if (key === "copy") {
-												this.selectCell(
-													options[0].start.row,
-													options[0].start.col,
-													options[0].end.row,
-													options[0].end.col,
-												);
-												document.execCommand("copy");
+												uiCopyTextToClipboard(String(this.getDataAtCell(options[0].start.row, options[0].start.col) ?? ""));
 											}
 										},
 										items: {

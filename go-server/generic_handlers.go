@@ -84,15 +84,26 @@ func handleStartEditData(upstream *url.URL, fallback http.Handler) http.HandlerF
 			return
 		}
 
+		// Exact names first; the case-insensitive match (engines that report
+		// the two lists in different case) only for a name no other column
+		// shares when folded, so "ID" being the key doesn't flag id as well.
+		pkExact := make(map[string]bool, len(pkCols))
 		pkSet := make(map[string]bool, len(pkCols))
 		for _, c := range pkCols {
+			pkExact[c] = true
 			pkSet[strings.ToLower(c)] = true
+		}
+		folded := make(map[string]int, len(cols))
+		exactHit := false
+		for _, c := range cols {
+			folded[strings.ToLower(c.Name)]++
+			exactHit = exactHit || pkExact[c.Name]
 		}
 
 		vPK := make([]map[string]any, 0)
 		vCols := make([]map[string]any, 0, len(cols))
 		for i, c := range cols {
-			isPK := pkSet[strings.ToLower(c.Name)]
+			isPK := pkExact[c.Name] || (pkSet[strings.ToLower(c.Name)] && (!exactHit || folded[strings.ToLower(c.Name)] == 1))
 			vCols = append(vCols, map[string]any{"v_type": c.DataType, "v_column": c.Name, "v_is_pk": isPK})
 			if isPK {
 				vPK = append(vPK, map[string]any{"v_column": c.Name, "v_index": i, "v_type": c.DataType})
