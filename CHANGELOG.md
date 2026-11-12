@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.5.1] - 2026-11-12
+
 ### Changed
 
 - `make release` now opens the winget version-bump PR by default (fork `heptau/winget-pkgs`; `WINGET_PKGS_FORK=skip`
